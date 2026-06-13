@@ -113,7 +113,7 @@ export default async function PostPage({
       </Container>
 
       <Container className="pb-16">
-        <div className="grid gap-10 lg:grid-cols-[1fr_300px]">
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_300px]">
           {/* main column */}
           <div className="min-w-0">
             {canRead ? (

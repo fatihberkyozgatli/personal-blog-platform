@@ -3,9 +3,7 @@
 import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
 import type { Category, Tag } from "@/lib/data/types";
-
-const select =
-  "rounded-md border border-gold/30 bg-parchment px-3 py-2.5 text-sm text-ink outline-none focus:border-gold cursor-pointer";
+import { Select } from "./Select";
 
 export function FilterBar({
   categories,
@@ -50,44 +48,39 @@ export function FilterBar({
         />
       </form>
 
-      <select
-        aria-label="Filter by category"
-        className={select}
+      <Select
+        ariaLabel="Filter by category"
+        className="sm:w-44"
         value={current.c ?? ""}
-        onChange={(e) => go({ c: e.target.value })}
-      >
-        <option value="">All Categories</option>
-        {categories.map((c) => (
-          <option key={c.id} value={c.slug}>
-            {c.name}
-          </option>
-        ))}
-      </select>
+        onChange={(v) => go({ c: v })}
+        options={[
+          { value: "", label: "All Categories" },
+          ...categories.map((c) => ({ value: c.slug, label: c.name })),
+        ]}
+      />
 
-      <select
-        aria-label="Filter by tag"
-        className={select}
+      <Select
+        ariaLabel="Filter by tag"
+        className="sm:w-40"
         value={current.tag ?? ""}
-        onChange={(e) => go({ tag: e.target.value })}
-      >
-        <option value="">All Tags</option>
-        {tags.map((t) => (
-          <option key={t.id} value={t.slug}>
-            {t.name}
-          </option>
-        ))}
-      </select>
+        onChange={(v) => go({ tag: v })}
+        options={[
+          { value: "", label: "All Tags" },
+          ...tags.map((t) => ({ value: t.slug, label: t.name })),
+        ]}
+      />
 
-      <select
-        aria-label="Sort posts"
-        className={select}
+      <Select
+        ariaLabel="Sort posts"
+        className="sm:w-40"
         value={current.sort ?? "newest"}
-        onChange={(e) => go({ sort: e.target.value })}
-      >
-        <option value="newest">Newest First</option>
-        <option value="oldest">Oldest First</option>
-        <option value="popular">Most Read</option>
-      </select>
+        onChange={(v) => go({ sort: v })}
+        options={[
+          { value: "newest", label: "Newest First" },
+          { value: "oldest", label: "Oldest First" },
+          { value: "popular", label: "Most Read" },
+        ]}
+      />
     </div>
   );
 }

@@ -4,6 +4,7 @@ import type { Category } from "@/lib/data/types";
 import { Logo } from "@/components/shared/Logo";
 import { Floret } from "@/components/shared/Ornament";
 import { PerchedBird, ManuscriptPanel } from "@/components/shared/ornaments";
+import { PatternBg } from "@/components/shared/ornament-kit";
 import { NewsletterForm } from "./NewsletterForm";
 
 export function SiteFooter({ categories }: { categories: Category[] }) {
@@ -24,8 +25,9 @@ export function SiteFooter({ categories }: { categories: Category[] }) {
       </section>
 
       {/* Footer columns */}
-      <div className="bg-maroon-800 text-ivory">
-        <div className="mx-auto grid w-full max-w-6xl grid-cols-2 gap-10 px-5 py-14 sm:px-8 md:grid-cols-4">
+      <div className="relative overflow-hidden bg-maroon-800 text-ivory">
+        <PatternBg opacity={0.06} size={320} />
+        <div className="relative mx-auto grid w-full max-w-6xl grid-cols-2 gap-10 px-5 py-14 sm:px-8 md:grid-cols-4">
           <div className="col-span-2 md:col-span-1">
             <Logo tone="light" showTagline={false} />
             <p className="mt-4 max-w-xs text-sm text-ivory/70">

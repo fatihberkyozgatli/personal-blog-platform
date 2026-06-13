@@ -22,7 +22,7 @@ export function PostEditor({
   const [content, setContent] = useState<unknown>(post?.content ?? null);
 
   return (
-    <form action={action} className="grid gap-6 lg:grid-cols-[1fr_300px]">
+    <form action={action} className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_300px]">
       {/* main column */}
       <div className="space-y-5">
         {post && <input type="hidden" name="id" value={post.id} />}

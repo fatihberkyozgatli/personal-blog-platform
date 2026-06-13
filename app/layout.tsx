@@ -26,7 +26,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={cn(fontDisplay.variable, fontSans.variable)}>
-      <body className="min-h-dvh">{children}</body>
+      <body className="min-h-dvh overflow-x-hidden">{children}</body>
     </html>
   );
 }

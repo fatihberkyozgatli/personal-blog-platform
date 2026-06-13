@@ -1,9 +1,15 @@
 import Link from "next/link";
-import { ArrowRight, CalendarDays, Clock } from "lucide-react";
+import { ArrowRight, CalendarDays, Clock, Quote } from "lucide-react";
 import { Container } from "@/components/shared/Container";
 import { ButtonLink } from "@/components/shared/Button";
-import { Floret, FloretLabel, OrnamentRule } from "@/components/shared/Ornament";
-import { FloralBorder } from "@/components/shared/ornaments";
+import { Floret, FloretLabel } from "@/components/shared/Ornament";
+import {
+  ArchClip,
+  CornerOrnament,
+  Divider,
+  FloralAccent,
+  PatternBg,
+} from "@/components/shared/ornament-kit";
 import { CoverArt } from "@/components/shared/CoverArt";
 import { Reveal, Stagger, StaggerItem } from "@/components/shared/Motion";
 import { PostCard, PostRailItem } from "@/components/public/PostCard";
@@ -23,22 +29,26 @@ export default async function LandingPage() {
     <>
       {/* ── Hero ───────────────────────────────────────────── */}
       <section className="relative overflow-hidden">
-        {/* signature floral arabesque border, left edge (desktop) */}
-        <FloralBorder className="pointer-events-none absolute left-0 top-0 hidden h-full w-24 opacity-90 lg:block" />
-        <Container className="grid gap-6 py-10 lg:grid-cols-[1.05fr_0.95fr] lg:py-16 lg:pl-24">
-          <Reveal className="relative rounded-t-[6rem] border border-gold/30 bg-parchment px-8 py-14 shadow-card sm:px-14">
+        <PatternBg opacity={0.05} />
+        {/* Persian floral creeping from the top-left corner */}
+        <FloralAccent className="absolute -left-16 -top-16 h-72 w-72 opacity-70 sm:h-96 sm:w-96" />
+        <FloralAccent
+          className="absolute -bottom-24 -right-20 hidden h-80 w-80 opacity-40 lg:block"
+          style={{ transform: "rotate(180deg)" }}
+        />
+
+        <Container className="grid grid-cols-1 gap-6 py-12 lg:grid-cols-[1.05fr_0.95fr] lg:py-20">
+          <Reveal className="relative min-w-0 overflow-hidden rounded-t-[6rem] border border-gold/30 bg-parchment/90 px-6 py-14 shadow-card backdrop-blur-sm sm:px-14">
             <div className="pointer-events-none absolute inset-3 rounded-t-[5.5rem] border border-gold/15" />
-            {/* slim floral border for mobile, inside the panel's top */}
-            <FloralBorder className="pointer-events-none absolute -left-1 top-6 block h-[85%] w-10 opacity-80 lg:hidden" />
+            <CornerOrnament corner="tl" />
+            <CornerOrnament corner="tr" />
             <div className="relative mx-auto max-w-md text-center">
               <Floret className="mx-auto mb-6 h-5 w-5" />
-              <h1 className="font-display text-5xl leading-[1.05] text-ink sm:text-6xl">
+              <h1 className="text-balance break-words font-display text-[2rem] leading-[1.1] text-ink sm:text-5xl lg:text-6xl">
                 Thoughts from the <span className="text-maroon">Heart</span>, Stories from the{" "}
                 <span className="text-maroon">Soul</span>.
               </h1>
-              <div className="my-7">
-                <OrnamentRule />
-              </div>
+              <Divider className="my-7" />
               <p className="text-[0.95rem] leading-relaxed text-ink-muted">
                 A space for personal reflections on life, faith, history, and everything in
                 between. Welcome to my journey of thought and discovery.
@@ -51,7 +61,8 @@ export default async function LandingPage() {
             </div>
           </Reveal>
 
-          <Reveal delay={0.12} className="rounded-xl2 bg-maroon p-6 shadow-panel sm:p-8">
+          <Reveal delay={0.12} className="relative min-w-0 rounded-xl2 bg-maroon p-6 shadow-panel sm:p-8">
+            <CornerOrnament corner="tr" tint="gold" />
             <div className="mb-5 flex items-center justify-between">
               <h2 className="font-display text-2xl text-ivory">Latest Posts</h2>
               <Link
@@ -70,29 +81,45 @@ export default async function LandingPage() {
         </Container>
       </section>
 
-      {/* ── Featured ───────────────────────────────────────── */}
+      {/* ── Featured: "start here" ─────────────────────────── */}
       {featured && (
-        <section className="py-14">
+        <section className="relative overflow-hidden py-16">
+          <PatternBg opacity={0.04} />
           <Container>
-            <Reveal className="grid items-center gap-8 lg:grid-cols-2">
-              <CoverArt
-                src={featured.coverImage}
-                alt={featured.title}
-                seed={featured.slug}
-                priority
-                sizes="(max-width: 1024px) 100vw, 520px"
-                className="aspect-[5/4] w-full rounded-xl2 shadow-card"
-              />
-              <div>
-                <FloretLabel>Featured Post</FloretLabel>
-                <h2 className="mt-3 font-display text-4xl leading-tight text-ink">{featured.title}</h2>
-                <p className="mt-4 leading-relaxed text-ink-muted">{featured.excerpt}</p>
-                <div className="mt-5 flex flex-wrap items-center gap-4 text-xs text-ink-muted">
-                  {featured.category && (
-                    <span className="inline-flex items-center gap-1">
-                      <Floret className="h-3 w-3" /> {featured.category.name}
-                    </span>
-                  )}
+            <Reveal className="mb-10 text-center">
+              <FloretLabel>The Essay to Begin With</FloretLabel>
+            </Reveal>
+            <Reveal className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[0.85fr_1fr]">
+              <ArchClip
+                piece="arch-1.svg"
+                className="mx-auto aspect-[4/5] w-full max-w-sm shadow-panel"
+              >
+                <CoverArt
+                  src={featured.coverImage}
+                  alt={featured.title}
+                  seed={featured.slug}
+                  priority
+                  sizes="(max-width: 1024px) 100vw, 420px"
+                  className="h-full w-full"
+                />
+              </ArchClip>
+
+              <div className="relative">
+                {featured.category && (
+                  <span className="text-xs font-semibold uppercase tracking-[0.2em] text-gold-700">
+                    {featured.category.name}
+                  </span>
+                )}
+                <h2 className="mt-3 font-display text-4xl leading-[1.1] text-ink sm:text-5xl">
+                  {featured.title}
+                </h2>
+                <div className="mt-6 flex gap-3 border-l-2 border-gold pl-5">
+                  <Quote className="h-6 w-6 shrink-0 text-gold" />
+                  <p className="font-display text-xl italic leading-relaxed text-ink-muted">
+                    {featured.excerpt}
+                  </p>
+                </div>
+                <div className="mt-6 flex flex-wrap items-center gap-4 text-xs text-ink-muted">
                   <span className="inline-flex items-center gap-1">
                     <CalendarDays className="h-3.5 w-3.5" /> {formatDate(featured.publishedAt)}
                   </span>
@@ -100,9 +127,9 @@ export default async function LandingPage() {
                     <Clock className="h-3.5 w-3.5" /> {featured.readingTime} min read
                   </span>
                 </div>
-                <div className="mt-7">
+                <div className="mt-8">
                   <ButtonLink href={`/blogs/${featured.slug}`} variant="secondary">
-                    Read More <ArrowRight className="h-4 w-4" />
+                    Read the Essay <ArrowRight className="h-4 w-4" />
                   </ButtonLink>
                 </div>
               </div>
@@ -122,9 +149,9 @@ export default async function LandingPage() {
             </h2>
           </Reveal>
           <Stagger className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-6">
-            {categories.map((c) => (
+            {categories.map((c, i) => (
               <StaggerItem key={c.id}>
-                <CategoryCard category={c} />
+                <CategoryCard category={c} index={i} />
               </StaggerItem>
             ))}
           </Stagger>

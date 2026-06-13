@@ -23,7 +23,7 @@ export default function ContactPage() {
         </p>
       </div>
 
-      <div className="mx-auto mt-12 grid max-w-4xl gap-10 md:grid-cols-[1fr_1.4fr]">
+      <div className="mx-auto mt-12 grid max-w-4xl grid-cols-1 gap-10 md:grid-cols-[1fr_1.4fr]">
         <aside className="space-y-5 text-sm text-ink-muted">
           <div className="flex items-start gap-3">
             <Mail className="mt-0.5 h-5 w-5 text-gold" />

@@ -48,3 +48,6 @@ next-env.d.ts
 *.swp
 .DS_Store
 Thumbs.db
+
+# Heavy ornament source sheets (sliced assets live in public/ornaments/lib)
+public/ornaments/_raw/
