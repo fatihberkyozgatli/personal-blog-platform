@@ -3,7 +3,7 @@ import { ArrowRight, CalendarDays, Clock, Quote } from "lucide-react";
 import { Container } from "@/components/shared/Container";
 import { ButtonLink } from "@/components/shared/Button";
 import { Floret, FloretLabel } from "@/components/shared/Ornament";
-import { ArchClip, Divider } from "@/components/shared/ornament-kit";
+import { ArchClip, CornerOrnament, Divider } from "@/components/shared/ornament-kit";
 import { CoverArt } from "@/components/shared/CoverArt";
 import { Reveal, Stagger, StaggerItem } from "@/components/shared/Motion";
 import { PostCard, PostRailItem } from "@/components/public/PostCard";
@@ -26,6 +26,9 @@ export default async function LandingPage() {
         <Container className="grid grid-cols-1 gap-6 py-12 lg:grid-cols-[1.05fr_0.95fr] lg:py-20">
           <Reveal className="relative min-w-0 overflow-hidden rounded-t-[6rem] border border-gold/30 bg-parchment/90 px-6 py-14 shadow-card backdrop-blur-sm sm:px-14">
             <div className="pointer-events-none absolute inset-3 rounded-t-[5.5rem] border border-gold/15" />
+            {/* corners only on the square (90°) bottom of the arched panel */}
+            <CornerOrnament corner="bl" />
+            <CornerOrnament corner="br" />
             <div className="relative mx-auto max-w-md text-center">
               <Floret className="mx-auto mb-6 h-5 w-5" />
               <h1 className="text-balance break-words font-display text-[2rem] leading-[1.1] text-ink sm:text-5xl lg:text-6xl">
@@ -71,7 +74,12 @@ export default async function LandingPage() {
             <Reveal className="mb-10 text-center">
               <FloretLabel>The Essay to Begin With</FloretLabel>
             </Reveal>
-            <Reveal className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[0.85fr_1fr]">
+            <Reveal className="relative rounded-xl border border-gold/40 bg-parchment/70 p-6 shadow-card sm:p-10">
+              <CornerOrnament corner="tl" />
+              <CornerOrnament corner="tr" />
+              <CornerOrnament corner="bl" />
+              <CornerOrnament corner="br" />
+              <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[0.85fr_1fr]">
               <ArchClip
                 piece="arch-1.svg"
                 className="mx-auto aspect-[4/5] w-full max-w-sm shadow-panel"
@@ -114,6 +122,7 @@ export default async function LandingPage() {
                     Read the Essay <ArrowRight className="h-4 w-4" />
                   </ButtonLink>
                 </div>
+              </div>
               </div>
             </Reveal>
           </Container>

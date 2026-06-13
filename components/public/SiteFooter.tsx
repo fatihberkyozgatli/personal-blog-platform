@@ -57,9 +57,9 @@ export function SiteFooter() {
       {/* Footer */}
       <div className="relative overflow-hidden bg-maroon-800 text-ivory">
         <PatternBg opacity={0.06} size={320} />
-        <div className="relative mx-auto grid w-full max-w-6xl grid-cols-2 gap-10 px-5 py-14 sm:px-8 md:grid-cols-4 md:gap-8">
+        <div className="relative mx-auto flex w-full max-w-6xl flex-col gap-12 px-5 py-14 sm:px-8 md:flex-row md:items-start md:justify-between">
           {/* Brand */}
-          <div className="col-span-2 md:col-span-1">
+          <div className="max-w-sm">
             <Logo tone="light" showTagline={false} />
             <p className="mt-4 text-sm text-ivory/70">
               Personal thoughts, reflections, and writings inspired by faith, history, culture,
@@ -81,11 +81,11 @@ export function SiteFooter() {
             </div>
           </div>
 
-          <FooterCol heading="Explore" links={EXPLORE} />
-          <FooterCol heading="More" links={MORE} />
-
-          <div className="hidden items-start justify-end md:flex">
-            <ManuscriptPanel className="h-28 w-36 opacity-80" />
+          {/* Navigation, pushed to the right */}
+          <div className="flex items-start gap-12 sm:gap-16">
+            <FooterCol heading="Explore" links={EXPLORE} />
+            <FooterCol heading="More" links={MORE} />
+            <ManuscriptPanel className="hidden h-28 w-36 opacity-80 lg:block" />
           </div>
         </div>
 
