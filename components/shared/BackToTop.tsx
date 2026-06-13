@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowUp } from "lucide-react";
 
-/** Floating "back to top" control that appears after scrolling. */
 export function BackToTop() {
   const [show, setShow] = useState(false);
   const reduce = useReducedMotion();

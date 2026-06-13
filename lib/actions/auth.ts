@@ -17,7 +17,7 @@ const credsSchema = z.object({
 
 function safeRedirect(target: FormDataEntryValue | null): string {
   const value = typeof target === "string" ? target : "";
-  // Only allow internal paths to avoid open-redirects.
+
   return value.startsWith("/") && !value.startsWith("//") ? value : "/";
 }
 

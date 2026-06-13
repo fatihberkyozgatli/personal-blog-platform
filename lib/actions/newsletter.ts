@@ -26,7 +26,6 @@ export async function subscribe(_prev: FormState, formData: FormData): Promise<F
     .from("newsletter_subscribers")
     .insert({ email: parsed.data.email });
 
-  // Unique-violation means already subscribed — treat as success.
   if (error && error.code !== "23505") {
     return { ok: false, message: "Something went wrong. Please try again." };
   }

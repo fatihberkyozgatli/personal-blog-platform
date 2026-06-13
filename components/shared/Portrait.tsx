@@ -2,10 +2,6 @@ import Image from "next/image";
 import { cn } from "@/lib/utils/cn";
 import { Floret } from "./Ornament";
 
-/**
- * A framed author portrait. Renders the image when a URL is set, otherwise an
- * ornamental gold-framed monogram placeholder (the client can drop in a photo).
- */
 export function Portrait({
   src,
   name,
@@ -23,7 +19,6 @@ export function Portrait({
       className={cn("relative shrink-0", className)}
       style={{ width: size, height: size }}
     >
-      {/* gold ring frame */}
       <div className="absolute inset-0 rounded-full border-2 border-gold/60" />
       <div className="absolute inset-[3px] overflow-hidden rounded-full border border-gold/30 bg-gradient-to-br from-maroon to-maroon-800">
         {src ? (
@@ -39,7 +34,6 @@ export function Portrait({
   );
 }
 
-/** The "About the Author" sidebar card used on post pages. */
 export function AuthorCard({
   name,
   short,

@@ -9,11 +9,6 @@ export interface CurrentUser {
   role: Role;
 }
 
-/**
- * The signed-in user with their profile role, or null.
- * In sample-content mode (no Supabase) there is no auth, so this returns null
- * and the post pages render in "sample mode" (see the post detail page).
- */
 export async function getCurrentUser(): Promise<CurrentUser | null> {
   if (!isSupabaseConfigured()) return null;
 

@@ -9,7 +9,6 @@ export interface Option {
   label: string;
 }
 
-/** A small custom-styled dropdown that matches the manuscript aesthetic. */
 export function Select({
   value,
   options,

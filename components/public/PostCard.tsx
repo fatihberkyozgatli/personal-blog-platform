@@ -4,7 +4,6 @@ import type { PostCard as PostCardType } from "@/lib/data/types";
 import { CoverArt } from "@/components/shared/CoverArt";
 import { formatDate } from "@/lib/utils/format";
 
-/** Standard grid card (the "Latest Posts" grid on the landing + listing). */
 export function PostCard({ post, priority }: { post: PostCardType; priority?: boolean }) {
   return (
     <article className="group flex flex-col overflow-hidden rounded-xl2 border border-gold/20 bg-parchment shadow-card transition-shadow duration-300 hover:shadow-panel">
@@ -50,7 +49,6 @@ export function PostCard({ post, priority }: { post: PostCardType; priority?: bo
   );
 }
 
-/** Compact row used on the dark "Latest Posts" rail in the hero. */
 export function PostRailItem({ post }: { post: PostCardType }) {
   return (
     <Link

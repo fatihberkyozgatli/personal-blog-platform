@@ -22,7 +22,6 @@ export default async function CategoriesPage({
   const categories = await getCategories();
   const active = categories.find((cat) => cat.slug === c) ?? null;
 
-  // Show all recent posts until a category is chosen.
   const { items: posts } = await getPosts({ categorySlug: active?.slug, perPage: 9, sort: "newest" });
 
   return (

@@ -32,7 +32,6 @@ export default function AboutPage() {
           <p>{author.bio}</p>
         </Reveal>
 
-        {/* Favorite quote, in a Persian arch frame */}
         <Reveal delay={0.1} className="mx-auto my-16 max-w-3xl">
           <ArchFrame
             piece="arch-11-h.svg"
@@ -49,7 +48,6 @@ export default function AboutPage() {
           </ArchFrame>
         </Reveal>
 
-        {/* Why I write */}
         <Reveal delay={0.05} className="mx-auto max-w-2xl text-center">
           <h2 className="font-display text-3xl text-ink">
             <span className="inline-flex items-center gap-3">
@@ -59,7 +57,6 @@ export default function AboutPage() {
           <p className="prose-editorial mx-auto mt-5 max-w-2xl">{author.why}</p>
         </Reveal>
 
-        {/* Timeline */}
         <Reveal delay={0.05} className="mx-auto mt-16 max-w-2xl">
           <h2 className="mb-8 text-center font-display text-3xl text-ink">A Few Marks Along the Way</h2>
           <ol className="relative border-l border-gold/40 pl-8">

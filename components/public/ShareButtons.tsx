@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { Check, Link2, Share2 } from "lucide-react";
 
-/** Share-this-post controls: native share if available, plus copy-link. */
 export function ShareButtons({ title }: { title: string }) {
   const [copied, setCopied] = useState(false);
 
@@ -17,7 +16,7 @@ export function ShareButtons({ title }: { title: string }) {
       try {
         await navigator.share({ title, url: u });
       } catch {
-        /* user cancelled */
+
       }
     } else {
       await copy();
@@ -30,7 +29,7 @@ export function ShareButtons({ title }: { title: string }) {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      /* clipboard unavailable */
+
     }
   }
 

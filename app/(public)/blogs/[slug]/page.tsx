@@ -114,7 +114,6 @@ export default async function PostPage({
 
       <Container className="pb-16">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_300px]">
-          {/* main column */}
           <div className="min-w-0">
             {canRead ? (
               <>
@@ -163,7 +162,6 @@ export default async function PostPage({
             )}
           </div>
 
-          {/* sidebar */}
           <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">
             <AuthorCard
               name={siteAuthor.name}

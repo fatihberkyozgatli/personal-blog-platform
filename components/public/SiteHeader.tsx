@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Menu, Search, X } from "lucide-react";
 import { Logo } from "@/components/shared/Logo";
 import { ButtonLink, Button } from "@/components/shared/Button";
@@ -13,6 +14,7 @@ import { isSupabaseConfigured } from "@/lib/supabase/config";
 const NAV = [
   { href: "/", label: "Home" },
   { href: "/blogs", label: "Blogs" },
+  { href: "/categories", label: "Categories" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ];
@@ -27,6 +29,7 @@ export function SiteHeader({
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [term, setTerm] = useState("");
+  const reduceMotion = useReducedMotion();
 
   function submitSearch(e: React.FormEvent) {
     e.preventDefault();
@@ -49,10 +52,12 @@ export function SiteHeader({
 
   return (
     <header className="sticky top-0 z-40 border-b border-gold/25 bg-ivory/90 backdrop-blur supports-[backdrop-filter]:bg-ivory/75">
-      {/* thin illuminated top border */}
       <div className="h-1 w-full bg-gradient-to-r from-transparent via-gold/60 to-transparent" />
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-5 py-3 sm:px-8">
-        <Logo showTagline className="[&_span:first-of-type]:text-xl sm:[&_span:first-of-type]:text-2xl" />
+      <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-3 px-4 py-2 sm:px-8 sm:py-3">
+        <Logo
+          showTagline
+          className="max-w-[13rem] shrink-0 gap-2 [&_svg]:h-8 [&_svg]:w-8 [&_span:first-of-type]:text-lg [&_span:last-child]:mt-0.5 [&_span:last-child]:text-[0.5rem] [&_span:last-child]:tracking-[0.08em] min-[380px]:max-w-none min-[380px]:[&_span:last-child]:text-[0.56rem] sm:gap-3 sm:[&_svg]:h-9 sm:[&_svg]:w-9 sm:[&_span:first-of-type]:text-2xl sm:[&_span:last-child]:mt-1 sm:[&_span:last-child]:text-[0.7rem] sm:[&_span:last-child]:tracking-[0.22em]"
+        />
 
         <nav className="hidden items-center gap-7 md:flex" aria-label="Primary">
           {NAV.map((item) => (
@@ -73,29 +78,56 @@ export function SiteHeader({
         </nav>
 
         <div className="flex items-center gap-2">
+          <AnimatePresence initial={false}>
+            {searchOpen && (
+              <motion.form
+                key="desktop-search"
+                onSubmit={submitSearch}
+                initial={reduceMotion ? false : { width: 0, opacity: 0 }}
+                animate={{ width: 240, opacity: 1 }}
+                exit={reduceMotion ? { opacity: 0 } : { width: 0, opacity: 0 }}
+                transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                className="hidden overflow-hidden md:flex"
+              >
+                <input
+                  autoFocus
+                  value={term}
+                  onChange={(e) => setTerm(e.target.value)}
+                  placeholder="Search posts..."
+                  className="w-60 rounded-md border border-gold/30 bg-parchment px-3 py-2 text-sm text-ink outline-none focus:border-gold"
+                  aria-label="Search posts"
+                />
+              </motion.form>
+            )}
+          </AnimatePresence>
+
           <button
             type="button"
             onClick={() => setSearchOpen((v) => !v)}
             aria-label="Search"
             aria-expanded={searchOpen}
-            className="grid h-10 w-10 place-items-center rounded-md text-ink transition-colors hover:bg-gold/10 cursor-pointer"
+            className="hidden h-10 w-10 place-items-center rounded-md text-ink transition-colors hover:bg-gold/10 md:grid cursor-pointer"
           >
-            <Search className="h-5 w-5" />
+            {searchOpen ? <X className="h-5 w-5" /> : <Search className="h-5 w-5" />}
           </button>
 
           {user ? (
-            <div className="hidden items-center gap-2 md:flex">
+            <div className="hidden shrink-0 items-center gap-2 md:flex">
               {user.role === "admin" && (
-                <ButtonLink href="/admin" variant="ghost">
+                <ButtonLink href="/admin" variant="ghost" className="shrink-0 whitespace-nowrap">
                   Dashboard
                 </ButtonLink>
               )}
-              <Button variant="secondary" onClick={signOut}>
+              <Button variant="secondary" onClick={signOut} className="shrink-0 whitespace-nowrap">
                 Sign Out
               </Button>
             </div>
           ) : (
-            <ButtonLink href="/signup" variant="secondary" className="hidden md:inline-flex">
+            <ButtonLink
+              href="/signup"
+              variant="secondary"
+              className="hidden shrink-0 whitespace-nowrap md:inline-flex"
+            >
               Sign Up
             </ButtonLink>
           )}
@@ -112,24 +144,6 @@ export function SiteHeader({
         </div>
       </div>
 
-      {/* search drawer */}
-      {searchOpen && (
-        <div className="border-t border-gold/20 bg-parchment">
-          <form onSubmit={submitSearch} className="mx-auto flex w-full max-w-6xl gap-2 px-5 py-3 sm:px-8">
-            <input
-              autoFocus
-              value={term}
-              onChange={(e) => setTerm(e.target.value)}
-              placeholder="Search reflections, essays, histories…"
-              className="w-full rounded-md border border-gold/30 bg-ivory px-4 py-2.5 text-sm text-ink outline-none focus:border-gold"
-              aria-label="Search posts"
-            />
-            <Button type="submit">Search</Button>
-          </form>
-        </div>
-      )}
-
-      {/* mobile menu */}
       {menuOpen && (
         <nav className="border-t border-gold/20 bg-parchment md:hidden" aria-label="Mobile">
           <div className="mx-auto flex w-full max-w-6xl flex-col px-5 py-2 sm:px-8">

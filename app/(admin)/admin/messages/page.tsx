@@ -17,7 +17,7 @@ export default async function AdminMessagesPage() {
         <div className="space-y-4">
           {messages.map((m) => (
             <Card key={m.id} className={m.read ? "opacity-75" : ""}>
-              <div className="mb-1 flex items-center justify-between gap-3">
+              <div className="mb-1 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
                 <div className="text-sm">
                   <span className="font-medium text-ink">{m.name}</span>{" "}
                   <a href={`mailto:${m.email}`} className="text-persian hover:underline">

@@ -5,7 +5,6 @@ import { cn } from "@/lib/utils/cn";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-/** Reveal-on-scroll wrapper. Falls back to a plain div when reduced-motion is on. */
 export function Reveal({
   children,
   delay = 0,
@@ -41,7 +40,6 @@ const item: Variants = {
   show: { opacity: 1, y: 0, transition: { duration: 0.5, ease } },
 };
 
-/** Staggered grid/list container. Children should be <Stagger.Item>. */
 export function Stagger({
   children,
   className,

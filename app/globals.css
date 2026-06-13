@@ -18,8 +18,7 @@
 
   body {
     @apply bg-ivory text-ink font-sans antialiased;
-    /* Faint Persian manuscript pattern across the whole site (the "About" look,
-       everywhere) layered over a subtle parchment grain. Both nearly disappear. */
+
     background-image:
       url("/ornaments/lib/pattern-faint.png"),
       radial-gradient(rgba(110, 20, 35, 0.02) 1px, transparent 1px);
@@ -45,7 +44,7 @@
 }
 
 @layer components {
-  /* Thin illuminated rule used between sections, with a centred floret. */
+
   .ornament-rule {
     @apply flex items-center justify-center gap-3 text-gold;
   }
@@ -55,7 +54,6 @@
     @apply h-px w-16 bg-gradient-to-r from-transparent via-gold to-transparent;
   }
 
-  /* Editorial reading column for post bodies. */
   .prose-editorial {
     @apply text-[1.0625rem] leading-[1.8] text-ink;
   }

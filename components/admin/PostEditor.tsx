@@ -1,15 +1,21 @@
 "use client";
 
 import { useActionState, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion, type Transition } from "framer-motion";
+import { Eye, X } from "lucide-react";
 import { TiptapEditor } from "./TiptapEditor";
+import { PostPreview } from "./PostPreview";
 import { Button } from "@/components/shared/Button";
 import { savePost, type ActionState } from "@/lib/actions/admin";
-import type { Category } from "@/lib/data/types";
+import type { Category, PostStatus } from "@/lib/data/types";
 import type { EditablePost } from "@/lib/data/admin";
 
 const initial: ActionState = { ok: false, message: "" };
 const field =
   "w-full rounded-md border border-gold/30 bg-parchment px-4 py-2.5 text-sm text-ink outline-none focus:border-gold";
+const layoutTransition: Transition = { type: "spring", stiffness: 230, damping: 32, mass: 0.9 };
+const panelTransition: Transition = { type: "spring", stiffness: 260, damping: 30, mass: 0.85 };
+const instantTransition: Transition = { duration: 0 };
 
 export function PostEditor({
   post,
@@ -20,34 +26,104 @@ export function PostEditor({
 }) {
   const [state, action, pending] = useActionState(savePost, initial);
   const [content, setContent] = useState<unknown>(post?.content ?? null);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewSlotOpen, setPreviewSlotOpen] = useState(false);
+  const [title, setTitle] = useState(post?.title ?? "");
+  const [status, setStatus] = useState<PostStatus>(post?.status ?? "draft");
+  const [categoryId, setCategoryId] = useState(post?.categoryId ?? "");
+  const [slug, setSlug] = useState(post?.slug ?? "");
+  const [excerpt, setExcerpt] = useState(post?.excerpt ?? "");
+  const [coverImage, setCoverImage] = useState(post?.coverImage ?? "");
+  const reduceMotion = useReducedMotion();
+  const selectedCategory = categories.find((c) => c.id === categoryId) ?? null;
+
+  function togglePreview() {
+    if (previewOpen) {
+      setPreviewOpen(false);
+    } else {
+      setPreviewSlotOpen(true);
+      setPreviewOpen(true);
+    }
+  }
 
   return (
     <form action={action} className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_300px]">
-      {/* main column */}
-      <div className="space-y-5">
-        {post && <input type="hidden" name="id" value={post.id} />}
-        <input type="hidden" name="content" value={JSON.stringify(content ?? {})} />
+      <motion.div
+        layout
+        transition={layoutTransition}
+        className={`grid min-w-0 gap-6 ${previewSlotOpen ? "xl:grid-cols-2" : ""}`}
+      >
+        <motion.div
+          layout
+          animate={reduceMotion ? { x: 0, scale: 1 } : { x: previewOpen ? -14 : 0, scale: previewOpen ? 0.992 : 1 }}
+          transition={reduceMotion ? instantTransition : layoutTransition}
+          className="min-w-0 space-y-5"
+          style={{ transformOrigin: "left center" }}
+        >
+          {post && <input type="hidden" name="id" value={post.id} />}
+          <input type="hidden" name="content" value={JSON.stringify(content ?? {})} />
 
-        <div>
-          <label htmlFor="title" className="mb-1 block text-sm font-medium text-ink">
-            Title
-          </label>
-          <input
-            id="title"
-            name="title"
-            required
-            defaultValue={post?.title}
-            className={`${field} font-display text-lg`}
-          />
-        </div>
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="font-display text-xl text-ink">{post ? "Edit Post" : "New Post"}</p>
+              <p className="text-xs text-ink-muted">Draft, compose, then preview before saving.</p>
+            </div>
+            <Button
+              type="button"
+              variant={previewOpen ? "secondary" : "ghost"}
+              onClick={togglePreview}
+              className="shrink-0"
+            >
+              {previewOpen ? <X className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              {previewOpen ? "Close" : "Preview"}
+            </Button>
+          </div>
 
-        <div>
-          <label className="mb-1 block text-sm font-medium text-ink">Body</label>
-          <TiptapEditor initialContent={post?.content} onChange={setContent} />
-        </div>
-      </div>
+          <div>
+            <label htmlFor="title" className="mb-1 block text-sm font-medium text-ink">
+              Title
+            </label>
+            <input
+              id="title"
+              name="title"
+              required
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className={`${field} font-display text-lg`}
+            />
+          </div>
 
-      {/* sidebar */}
+          <div>
+            <label className="mb-1 block text-sm font-medium text-ink">Body</label>
+            <TiptapEditor initialContent={post?.content} onChange={setContent} />
+          </div>
+        </motion.div>
+
+        <AnimatePresence initial={false} onExitComplete={() => setPreviewSlotOpen(false)}>
+          {previewOpen && (
+            <motion.section
+              key="post-preview"
+              layout
+              initial={reduceMotion ? false : { opacity: 0, x: 72, scale: 0.985 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={reduceMotion ? { opacity: 0 } : { opacity: 0, x: 72, scale: 0.985 }}
+              transition={reduceMotion ? instantTransition : panelTransition}
+              className="min-w-0 overflow-hidden xl:max-h-[calc(100dvh-8rem)] xl:overflow-y-auto"
+              style={{ transformOrigin: "right center" }}
+            >
+              <PostPreview
+                title={title}
+                excerpt={excerpt}
+                coverImage={coverImage}
+                category={selectedCategory}
+                content={content}
+                status={status}
+              />
+            </motion.section>
+          )}
+        </AnimatePresence>
+      </motion.div>
+
       <aside className="space-y-5">
         <div className="rounded-xl2 border border-gold/20 bg-parchment p-4">
           <h2 className="mb-3 font-display text-lg text-ink">Settings</h2>
@@ -55,7 +131,13 @@ export function PostEditor({
           <label htmlFor="status" className="mb-1 block text-sm font-medium text-ink">
             Status
           </label>
-          <select id="status" name="status" defaultValue={post?.status ?? "draft"} className={field}>
+          <select
+            id="status"
+            name="status"
+            value={status}
+            onChange={(e) => setStatus(e.target.value as PostStatus)}
+            className={field}
+          >
             <option value="draft">Draft</option>
             <option value="published">Published</option>
           </select>
@@ -66,7 +148,8 @@ export function PostEditor({
           <select
             id="categoryId"
             name="categoryId"
-            defaultValue={post?.categoryId ?? ""}
+            value={categoryId}
+            onChange={(e) => setCategoryId(e.target.value)}
             className={field}
           >
             <option value="">Uncategorized</option>
@@ -80,7 +163,14 @@ export function PostEditor({
           <label htmlFor="slug" className="mb-1 mt-4 block text-sm font-medium text-ink">
             Slug <span className="text-ink-muted">(optional)</span>
           </label>
-          <input id="slug" name="slug" defaultValue={post?.slug} placeholder="auto from title" className={field} />
+          <input
+            id="slug"
+            name="slug"
+            value={slug}
+            onChange={(e) => setSlug(e.target.value)}
+            placeholder="auto from title"
+            className={field}
+          />
         </div>
 
         <div className="rounded-xl2 border border-gold/20 bg-parchment p-4">
@@ -91,7 +181,8 @@ export function PostEditor({
             id="excerpt"
             name="excerpt"
             rows={3}
-            defaultValue={post?.excerpt}
+            value={excerpt}
+            onChange={(e) => setExcerpt(e.target.value)}
             placeholder="A short teaser shown on cards and to non-members."
             className={field}
           />
@@ -102,8 +193,9 @@ export function PostEditor({
           <input
             id="coverImage"
             name="coverImage"
-            defaultValue={post?.coverImage ?? ""}
-            placeholder="https://…/storage/v1/object/…"
+            value={coverImage}
+            onChange={(e) => setCoverImage(e.target.value)}
+            placeholder="Cover image URL"
             className={field}
           />
         </div>

@@ -36,7 +36,7 @@ export async function addComment(
   const supabase = await createClient();
   const { error } = await supabase.from("comments").insert({
     post_id: parsed.data.postId,
-    user_id: user.id, // RLS also enforces user_id = auth.uid()
+    user_id: user.id,
     parent_id: parsed.data.parentId ?? null,
     body: parsed.data.body,
     approved: false,
@@ -88,10 +88,6 @@ export async function toggleLike(postId: string, slug: string): Promise<LikeResu
   return { liked: !existing, count: count ?? 0 };
 }
 
-/**
- * Records a single post view. Called once per page load from the client (see
- * ViewPing), so it never blocks render and isn't re-counted on prefetch.
- */
 export async function recordView(slug: string): Promise<void> {
   if (!isSupabaseConfigured()) return;
   const supabase = await createClient();

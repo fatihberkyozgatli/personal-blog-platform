@@ -1,7 +1,3 @@
-// Domain types shared across the app. These mirror the database schema
-// (see documentation/database.md) but stay decoupled from generated DB types
-// so UI code reads cleanly.
-
 export type Role = "admin" | "reader";
 export type PostStatus = "draft" | "published";
 
@@ -25,7 +21,6 @@ export interface Author {
   avatarUrl?: string | null;
 }
 
-/** Public-safe post shape (from the `posts_public` view). No body content. */
 export interface PostCard {
   id: string;
   title: string;
@@ -40,9 +35,8 @@ export interface PostCard {
   tags?: Tag[];
 }
 
-/** Full post including the gated body (Tiptap JSON). Only for authed reads. */
 export interface PostFull extends PostCard {
-  content: unknown; // Tiptap JSON document
+  content: unknown;
   status: PostStatus;
   likeCount: number;
 }

@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils/cn";
 
-/** A rosette emblem + wordmark. Brand name is a placeholder until finalized. */
 export function Logo({
   className,
   showTagline = true,
@@ -12,7 +11,7 @@ export function Logo({
   tone?: "dark" | "light";
 }) {
   return (
-    <Link href="/" className={cn("group inline-flex items-center gap-3", className)}>
+    <Link href="/" className={cn("group inline-flex min-w-0 items-center gap-3", className)}>
       <svg viewBox="0 0 48 48" aria-hidden="true" className="h-9 w-9 text-gold">
         <circle cx="24" cy="24" r="22" fill="none" stroke="currentColor" strokeWidth="1.2" opacity="0.5" />
         <path
@@ -21,10 +20,10 @@ export function Logo({
         />
         <circle cx="24" cy="24" r="3.4" fill="#6E1423" />
       </svg>
-      <span className="flex flex-col leading-none">
+      <span className="flex min-w-0 flex-col leading-none">
         <span
           className={cn(
-            "font-display text-2xl font-semibold tracking-wide",
+            "whitespace-nowrap font-display text-2xl font-semibold tracking-wide",
             tone === "light" ? "text-ivory" : "text-ink",
           )}
         >
@@ -33,7 +32,7 @@ export function Logo({
         {showTagline && (
           <span
             className={cn(
-              "mt-1 text-[0.7rem] uppercase tracking-[0.22em]",
+              "mt-1 whitespace-nowrap text-[0.7rem] uppercase tracking-[0.22em]",
               tone === "light" ? "text-ivory/70" : "text-ink-muted",
             )}
           >

@@ -6,12 +6,10 @@ import { ManuscriptPanel } from "@/components/shared/ornaments";
 import { PatternBg, FloralAccent } from "@/components/shared/ornament-kit";
 import { NewsletterForm } from "./NewsletterForm";
 
-const EXPLORE: [string, string][] = [
+const NAV_LINKS: [string, string][] = [
   ["Home", "/"],
   ["Blogs", "/blogs"],
   ["Categories", "/categories"],
-];
-const MORE: [string, string][] = [
   ["About", "/about"],
   ["Contact", "/contact"],
 ];
@@ -40,10 +38,9 @@ function FooterCol({ heading, links }: { heading: string; links: [string, string
 export function SiteFooter() {
   return (
     <footer className="mt-20">
-      {/* Join the Journey band */}
-      <section className="relative overflow-hidden bg-maroon text-ivory">
-        <FloralAccent className="pointer-events-none absolute -right-10 -top-8 h-44 w-44 opacity-50 sm:h-56 sm:w-56" />
-        <div className="relative mx-auto flex w-full max-w-6xl flex-col items-start justify-between gap-6 px-5 py-12 sm:px-8 md:flex-row md:items-center">
+      <section className="relative isolate overflow-hidden bg-maroon text-ivory">
+        <FloralAccent className="pointer-events-none absolute inset-0 h-full w-full bg-cover bg-center opacity-20 md:inset-y-0 md:left-[-3rem] md:right-auto md:h-full md:w-80 md:bg-contain md:bg-left md:opacity-55" />
+        <div className="relative mx-auto flex w-full max-w-6xl flex-col items-start justify-between gap-6 px-5 py-12 sm:px-8 md:flex-row md:items-center md:pl-44 lg:pl-52">
           <div className="max-w-md">
             <h2 className="font-display text-3xl text-ivory">Join the Journey</h2>
             <p className="mt-2 text-sm text-ivory/75">
@@ -54,11 +51,9 @@ export function SiteFooter() {
         </div>
       </section>
 
-      {/* Footer */}
-      <div className="relative overflow-hidden bg-maroon-800 text-ivory">
+      <div className="relative isolate overflow-hidden bg-maroon-800 text-ivory">
         <PatternBg opacity={0.06} size={320} />
-        <div className="relative mx-auto flex w-full max-w-6xl flex-col gap-12 px-5 py-14 sm:px-8 md:flex-row md:items-start md:justify-between">
-          {/* Brand */}
+        <div className="relative mx-auto flex w-full max-w-6xl flex-col gap-7 px-5 py-9 sm:px-8 md:flex-row md:items-start md:justify-between md:gap-12 md:py-14">
           <div className="max-w-sm">
             <Logo tone="light" showTagline={false} />
             <p className="mt-4 text-sm text-ivory/70">
@@ -79,12 +74,24 @@ export function SiteFooter() {
                 <Mail className="h-5 w-5" />
               </a>
             </div>
+
+            <nav
+              aria-label="Footer"
+              className="mt-5 flex flex-wrap items-center gap-x-2 gap-y-2 text-sm text-ivory/75 md:hidden"
+            >
+              {NAV_LINKS.map(([label, href], index) => (
+                <span key={href} className="inline-flex items-center gap-2">
+                  {index > 0 && <Floret className="h-2.5 w-2.5 text-gold/70" />}
+                  <Link href={href} className="transition-colors hover:text-gold">
+                    {label}
+                  </Link>
+                </span>
+              ))}
+            </nav>
           </div>
 
-          {/* Navigation, pushed to the right */}
-          <div className="flex items-start gap-12 sm:gap-16">
-            <FooterCol heading="Explore" links={EXPLORE} />
-            <FooterCol heading="More" links={MORE} />
+          <div className="hidden items-start gap-12 sm:gap-16 md:flex">
+            <FooterCol heading="Navigate" links={NAV_LINKS} />
             <ManuscriptPanel className="hidden h-28 w-36 opacity-80 lg:block" />
           </div>
         </div>

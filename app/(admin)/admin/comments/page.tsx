@@ -19,16 +19,16 @@ export default async function AdminCommentsPage() {
       ) : (
         <div className="space-y-4">
           {pending.map((c) => (
-            <Card key={c.id} className="flex items-start justify-between gap-4">
+            <Card key={c.id} className="flex flex-col items-start justify-between gap-4 sm:flex-row">
               <div>
-                <div className="mb-1 flex items-center gap-2 text-sm">
+                <div className="mb-1 flex flex-wrap items-center gap-2 text-sm">
                   <span className="font-medium text-ink">{c.authorName}</span>
                   <span className="text-ink-muted">on “{c.postTitle}”</span>
                   <span className="text-xs text-ink-muted">· {formatDate(c.createdAt)}</span>
                 </div>
                 <p className="text-sm leading-relaxed text-ink-muted">{c.body}</p>
               </div>
-              <div className="flex shrink-0 items-center gap-2">
+              <div className="flex w-full shrink-0 items-center gap-2 sm:w-auto">
                 <form action={approveComment}>
                   <input type="hidden" name="id" value={c.id} />
                   <button

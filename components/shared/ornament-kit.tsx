@@ -1,13 +1,5 @@
 import { cn } from "@/lib/utils/cn";
 
-/**
- * Reusable "illuminated manuscript" decorative system, backed by the sliced
- * ornament assets in /public/ornaments/lib. Line-art pieces are rendered as CSS
- * masks so they tint to the palette via the `color-*` Tailwind utility on the
- * element (we map it through `backgroundColor: currentColor` on a colored span).
- * Swap the underlying SVG/PNG files later without touching components.
- */
-
 const BASE = "/ornaments/lib";
 
 type Tint = "gold" | "maroon" | "ink" | "ivory" | "emerald";
@@ -19,7 +11,6 @@ const tintClass: Record<Tint, string> = {
   emerald: "bg-emerald",
 };
 
-/** A single mask-tinted ornament. `src` is a file under /ornaments/lib. */
 function Masked({
   src,
   tint = "gold",
@@ -55,10 +46,6 @@ function Masked({
   );
 }
 
-/**
- * Horizontal section divider: one small motif looped a few times, flanked by
- * thin gold rules. (Single repeating unit, not a strip of mixed designs.)
- */
 export function Divider({
   tint = "gold",
   className,
@@ -88,10 +75,6 @@ export function Divider({
   );
 }
 
-/**
- * A corner ornament. Mirrors (not rotates) into each corner so asymmetric
- * pieces frame the box correctly, like a picture-frame corner.
- */
 export function CornerOrnament({
   corner = "tl",
   tint = "gold",
@@ -103,8 +86,7 @@ export function CornerOrnament({
   piece?: string;
   className?: string;
 }) {
-  // corner-9 (the default piece) is naturally a top-RIGHT corner, so the
-  // top-right slot is un-flipped and the others mirror from it.
+
   const flip = {
     tr: "",
     tl: "-scale-x-100",
@@ -127,31 +109,6 @@ export function CornerOrnament({
   );
 }
 
-/** A vertical geometric interlace border (tileable). */
-export function GeometricBorder({
-  tint = "gold",
-  piece = "border-3.svg",
-  className,
-}: {
-  tint?: Tint;
-  piece?: string;
-  className?: string;
-}) {
-  return (
-    <Masked
-      src={piece}
-      tint={tint}
-      repeat
-      size="auto 100%"
-      className={cn("pointer-events-none w-3", className)}
-    />
-  );
-}
-
-/**
- * Faint repeating pattern background. Sits behind content at low opacity.
- * Place inside a `relative` parent.
- */
 export function PatternBg({
   opacity = 0.05,
   size = 360,
@@ -174,7 +131,6 @@ export function PatternBg({
   );
 }
 
-/** Colored Persian floral accent (e.g. creeping from a corner). Decorative. */
 export function FloralAccent({
   className,
   style,
@@ -191,10 +147,6 @@ export function FloralAccent({
   );
 }
 
-/**
- * Wrap content in a Persian arch silhouette (the content is clipped to the arch
- * shape). Great for featured images and portraits.
- */
 export function ArchClip({
   piece = "arch-1.svg",
   className,
@@ -222,7 +174,6 @@ export function ArchClip({
   );
 }
 
-/** An outlined Persian arch frame drawn around content. */
 export function ArchFrame({
   piece = "arch-11.svg",
   tint = "gold",

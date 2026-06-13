@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Search } from "lucide-react";
+import { Search, X } from "lucide-react";
 import type { Category, Tag } from "@/lib/data/types";
 import { Select } from "./Select";
 
@@ -15,6 +15,9 @@ export function FilterBar({
   current: { q?: string; c?: string; tag?: string; sort?: string };
 }) {
   const router = useRouter();
+  const hasActiveFilters = Boolean(
+    current.q || current.c || current.tag || (current.sort && current.sort !== "newest"),
+  );
 
   function go(next: Partial<{ q: string; c: string; tag: string; sort: string }>) {
     const params = new URLSearchParams();
@@ -23,7 +26,7 @@ export function FilterBar({
     if (merged.c) params.set("c", merged.c);
     if (merged.tag) params.set("tag", merged.tag);
     if (merged.sort && merged.sort !== "newest") params.set("sort", merged.sort);
-    // changing a filter resets to page 1 (omit page)
+
     router.push(`/blogs${params.toString() ? `?${params}` : ""}`);
   }
 
@@ -81,6 +84,17 @@ export function FilterBar({
           { value: "popular", label: "Most Read" },
         ]}
       />
+
+      {hasActiveFilters && (
+        <button
+          type="button"
+          onClick={() => router.push("/blogs")}
+          className="inline-flex items-center justify-center gap-1.5 rounded-md border border-gold/30 px-3 py-2.5 text-sm font-medium text-ink-muted transition-colors hover:border-gold hover:text-maroon sm:shrink-0 cursor-pointer"
+        >
+          <X className="h-4 w-4" />
+          Clear
+        </button>
+      )}
     </div>
   );
 }

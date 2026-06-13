@@ -20,7 +20,6 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-/** Curated icon set offered in the admin category picker. */
 export const categoryIcons: Record<string, LucideIcon> = {
   feather: Feather,
   flame: Flame,
@@ -44,7 +43,6 @@ export const categoryIcons: Record<string, LucideIcon> = {
 
 export const categoryIconNames = Object.keys(categoryIcons);
 
-/** Sensible defaults for the seeded categories (used until an icon is set). */
 export const defaultIconBySlug: Record<string, string> = {
   reflections: "feather",
   faith: "flame",
@@ -54,7 +52,6 @@ export const defaultIconBySlug: Record<string, string> = {
   "personal-growth": "sprout",
 };
 
-/** Resolve the icon component for a category (explicit icon → slug default → fallback). */
 export function getCategoryIcon(opts: { icon?: string | null; slug?: string }): LucideIcon {
   const key = opts.icon || (opts.slug ? defaultIconBySlug[opts.slug] : undefined);
   return (key && categoryIcons[key]) || Sparkles;

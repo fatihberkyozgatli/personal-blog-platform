@@ -9,7 +9,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Ottoman / Persian editorial palette (see documentation/design.md)
+
         ivory: "#F7EFDD",
         parchment: "#FBF6EA",
         maroon: {
@@ -21,7 +21,7 @@ const config: Config = {
           DEFAULT: "#C9A24B",
           400: "#D8B564",
           600: "#A8842F",
-          // Text-safe gold: ~4.7:1 on ivory/parchment (WCAG AA for small text).
+
           700: "#7A5E1E",
         },
         persian: "#1F4E79",
@@ -33,7 +33,7 @@ const config: Config = {
         },
       },
       fontFamily: {
-        // Bound to next/font CSS variables (see app/fonts.ts)
+
         display: ["var(--font-display)", "Cormorant Garamond", "serif"],
         sans: ["var(--font-sans)", "Inter", "system-ui", "sans-serif"],
       },

@@ -2,7 +2,6 @@ import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 
-/** Page navigation that preserves the current query params. */
 export function Pagination({
   page,
   totalPages,

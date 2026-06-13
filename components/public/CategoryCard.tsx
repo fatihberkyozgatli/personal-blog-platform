@@ -4,7 +4,6 @@ import { ArchClip } from "@/components/shared/ornament-kit";
 import { getCategoryIcon } from "@/lib/category-icons";
 import { cn } from "@/lib/utils/cn";
 
-// Each category gets a distinct accent so the row reads as six themes, not one.
 const accents = [
   "from-maroon to-maroon-800",
   "from-persian to-[#143b5e]",
@@ -14,10 +13,6 @@ const accents = [
   "from-maroon-700 to-persian",
 ];
 
-/**
- * Arched "Explore by Category" tile: a Persian arch silhouette emblem + name,
- * with a per-category accent and a hover lift. Comfortable 2-up on mobile.
- */
 export function CategoryCard({ category, index = 0 }: { category: Category; index?: number }) {
   const accent = accents[index % accents.length];
   const Icon = getCategoryIcon({ icon: category.icon, slug: category.slug });

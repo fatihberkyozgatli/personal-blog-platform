@@ -18,11 +18,6 @@ const notConfigured: ActionState = {
 };
 const notAuthorized: ActionState = { ok: false, message: "You are not authorized to do that." };
 
-/**
- * Defense-in-depth: admin Server Actions verify the caller's role explicitly
- * rather than relying on RLS alone (Server Actions bypass the /admin middleware
- * guard, which only protects page navigations).
- */
 async function ensureAdmin(): Promise<boolean> {
   const user = await getCurrentUser();
   return user?.role === "admin";
@@ -37,7 +32,6 @@ function slugify(input: string) {
     .replace(/-+/g, "-");
 }
 
-/** Estimate reading time (minutes) from a Tiptap JSON doc. */
 function readingTimeFrom(content: unknown): number {
   let text = "";
   const walk = (node: any) => {
@@ -90,8 +84,6 @@ export async function savePost(_prev: ActionState, formData: FormData): Promise<
   const supabase = await createClient();
   const slug = parsed.data.slug ? slugify(parsed.data.slug) : slugify(parsed.data.title);
 
-  // Only stamp published_at when a post first becomes published; never reset it
-  // on subsequent edits (which would reorder feeds and change the shown date).
   let setPublishedAt: string | undefined;
   if (parsed.data.status === "published") {
     if (parsed.data.id) {
@@ -142,7 +134,6 @@ export async function deletePost(formData: FormData): Promise<void> {
   revalidatePath("/blogs");
 }
 
-// ── Taxonomy ───────────────────────────────────────────────────────────────
 export async function createCategory(_prev: ActionState, formData: FormData): Promise<ActionState> {
   if (!isSupabaseConfigured()) return notConfigured;
   if (!(await ensureAdmin())) return notAuthorized;
@@ -198,7 +189,6 @@ export async function deleteSubscriber(formData: FormData): Promise<void> {
   await deleteFrom("newsletter_subscribers", String(formData.get("id")), "/admin/subscribers");
 }
 
-// ── Moderation & inbox ─────────────────────────────────────────────────────
 export async function approveComment(formData: FormData): Promise<void> {
   if (!isSupabaseConfigured() || !(await ensureAdmin())) return;
   const supabase = await createClient();

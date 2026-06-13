@@ -24,8 +24,8 @@ export default async function AdminPostsPage() {
       {posts.length === 0 ? (
         <EmptyState>No posts yet. Begin with your first reflection.</EmptyState>
       ) : (
-        <Card className="p-0">
-          <table className="w-full text-sm">
+        <Card className="overflow-x-auto p-0">
+          <table className="min-w-[760px] text-sm">
             <thead>
               <tr className="border-b border-gold/20 text-left text-xs uppercase tracking-wide text-ink-muted">
                 <th className="px-5 py-3 font-medium">Title</th>

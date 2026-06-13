@@ -21,12 +21,10 @@ export default async function LandingPage() {
 
   return (
     <>
-      {/* ── Hero ───────────────────────────────────────────── */}
       <section className="relative overflow-hidden">
         <Container className="grid grid-cols-1 gap-6 py-12 lg:grid-cols-[1.05fr_0.95fr] lg:py-20">
           <Reveal className="relative min-w-0 overflow-hidden rounded-t-[6rem] border border-gold/30 bg-parchment/90 px-6 py-14 shadow-card backdrop-blur-sm sm:px-14">
             <div className="pointer-events-none absolute inset-3 rounded-t-[5.5rem] border border-gold/15" />
-            {/* corners only on the square (90°) bottom of the arched panel */}
             <CornerOrnament corner="bl" />
             <CornerOrnament corner="br" />
             <div className="relative mx-auto max-w-md text-center">
@@ -67,7 +65,6 @@ export default async function LandingPage() {
         </Container>
       </section>
 
-      {/* ── Featured: "start here" ─────────────────────────── */}
       {featured && (
         <section className="relative overflow-hidden py-16">
           <Container>
@@ -129,7 +126,6 @@ export default async function LandingPage() {
         </section>
       )}
 
-      {/* ── Explore by Category ────────────────────────────── */}
       <section className="py-14">
         <Container>
           <Reveal className="mb-8 text-center">
@@ -149,7 +145,6 @@ export default async function LandingPage() {
         </Container>
       </section>
 
-      {/* ── Latest Posts grid ──────────────────────────────── */}
       {latest.length > 0 && (
         <section className="py-14">
           <Container>

@@ -111,7 +111,7 @@ export function TiptapEditor({
   onChange: (json: unknown) => void;
 }) {
   const editor = useEditor({
-    immediatelyRender: false, // required under Next.js SSR
+    immediatelyRender: false,
     extensions: [
       ...contentExtensions,
       Placeholder.configure({ placeholder: "Begin writing…" }),

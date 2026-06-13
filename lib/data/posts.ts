@@ -3,7 +3,6 @@ import { isSupabaseConfigured } from "@/lib/supabase/config";
 import type { Category, Comment, PostCard, Tag } from "./types";
 import { mockCategories, mockComments, mockPosts, mockTags } from "./mock";
 
-// DB rows are dynamically shaped (snake_case columns from views/joins).
 type Row = Record<string, any>;
 
 function mapCard(row: Row, categories: Category[]): PostCard {
@@ -23,7 +22,6 @@ function mapCard(row: Row, categories: Category[]): PostCard {
 
 export type SortOrder = "newest" | "oldest" | "popular";
 
-// ── Taxonomy ─────────────────────────────────────────────────────────────
 export async function getCategories(): Promise<Category[]> {
   if (!isSupabaseConfigured()) return mockCategories;
   const supabase = await createClient();
@@ -44,7 +42,6 @@ export async function getTags(): Promise<Tag[]> {
   return (data ?? []) as Tag[];
 }
 
-// ── Listing (filters, search, sort, pagination) ────────────────────────────
 export interface PostQuery {
   categorySlug?: string;
   tagSlug?: string;
@@ -100,7 +97,6 @@ export async function getPosts(query: PostQuery = {}): Promise<PostPage> {
   const supabase = await createClient();
   const categories = await getCategories();
 
-  // Full-text search goes through the RPC (safe columns only).
   if (query.q) {
     const { data } = await supabase.rpc("search_posts", { q: query.q });
     let items = (data ?? []).map((r: Row) => mapCard(r, categories));
@@ -133,7 +129,6 @@ export async function getPosts(query: PostQuery = {}): Promise<PostPage> {
   };
 }
 
-/** Convenience for the landing page (no pagination shell). */
 export async function getLatestPosts(limit: number): Promise<PostCard[]> {
   const { items } = await getPosts({ perPage: limit, page: 1, sort: "newest" });
   return items;
@@ -144,9 +139,6 @@ export async function getFeaturedPost(): Promise<PostCard | null> {
   return items[0] ?? null;
 }
 
-// ── Single post: public card (teaser) vs gated content ─────────────────────
-
-/** Public-safe card for everyone (from posts_public). Null if not published. */
 export async function getPublicPostCard(slug: string): Promise<PostCard | null> {
   if (!isSupabaseConfigured()) {
     const p = mockPosts.find((x) => x.slug === slug);
@@ -158,7 +150,6 @@ export async function getPublicPostCard(slug: string): Promise<PostCard | null> 
   return data ? mapCard(data, categories) : null;
 }
 
-/** Gated body (Tiptap JSON). Only returns content to authenticated users (RLS). */
 export async function getPostContent(slug: string): Promise<unknown | null> {
   if (!isSupabaseConfigured()) {
     return mockPosts.find((x) => x.slug === slug)?.content ?? null;
@@ -213,7 +204,6 @@ export async function getRelatedPosts(post: PostCard, limit = 3): Promise<PostCa
   return items.filter((p) => p.id !== post.id).slice(0, limit);
 }
 
-// ── Comments (threaded) ────────────────────────────────────────────────────
 function buildTree(all: Comment[]): Comment[] {
   const byId = new Map(all.map((c) => [c.id, { ...c, replies: [] as Comment[] }]));
   const roots: Comment[] = [];
@@ -226,7 +216,7 @@ function buildTree(all: Comment[]): Comment[] {
 
 export async function getCommentsForPost(postId: string): Promise<Comment[]> {
   if (!isSupabaseConfigured()) {
-    // mock comments already carry their replies
+
     return mockComments.filter((c) => c.postId === postId);
   }
   const supabase = await createClient();

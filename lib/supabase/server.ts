@@ -2,10 +2,6 @@ import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { SUPABASE_ANON_KEY, SUPABASE_URL } from "./config";
 
-/**
- * Server Supabase client for Server Components and Server Actions.
- * Runs under the user's session via cookies, so RLS authorizes every query.
- */
 export async function createClient() {
   const cookieStore = await cookies();
 
@@ -20,8 +16,7 @@ export async function createClient() {
             cookieStore.set(name, value, options),
           );
         } catch {
-          // Called from a Server Component where cookies are read-only.
-          // Session refresh is handled in middleware, so this is safe to ignore.
+
         }
       },
     },

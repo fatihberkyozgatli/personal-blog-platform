@@ -6,7 +6,6 @@ import { categoryIcons, categoryIconNames, getCategoryIcon } from "@/lib/categor
 import { updateCategoryIcon } from "@/lib/actions/admin";
 import { cn } from "@/lib/utils/cn";
 
-/** Per-row icon editor: shows the current icon, opens a picker to change it. */
 export function CategoryIconEditor({
   id,
   slug,

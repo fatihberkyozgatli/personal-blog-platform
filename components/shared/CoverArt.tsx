@@ -3,8 +3,6 @@ import { cn } from "@/lib/utils/cn";
 import { hashIndex } from "@/lib/utils/format";
 import { Floret } from "./Ornament";
 
-// Ornamental gradient covers used when a post has no uploaded cover image, so
-// cards look intentional rather than broken. Themed to the palette.
 const gradients = [
   "from-maroon via-maroon-700 to-maroon-800",
   "from-persian via-[#2A5E86] to-[#143b5e]",
@@ -43,7 +41,6 @@ export function CoverArt({
       aria-label={alt}
       className={cn("relative overflow-hidden bg-gradient-to-br", g, className)}
     >
-      {/* arabesque lattice */}
       <svg
         aria-hidden="true"
         className="absolute inset-0 h-full w-full text-ivory/15"

@@ -48,7 +48,6 @@ export interface SubscriberRow {
   createdAt: string;
 }
 
-// ── Stats ──────────────────────────────────────────────────────────────────
 export async function getAdminStats(): Promise<AdminStats> {
   if (!isSupabaseConfigured()) {
     return {
@@ -86,7 +85,6 @@ export async function getAdminStats(): Promise<AdminStats> {
   };
 }
 
-// ── Posts ────────────────────────────────────────────────────────────────
 export async function listPosts(): Promise<AdminPostRow[]> {
   if (!isSupabaseConfigured()) {
     return mockPosts.map((p) => ({
@@ -161,7 +159,6 @@ export async function getEditablePost(id: string): Promise<EditablePost | null> 
   };
 }
 
-// ── Taxonomy ───────────────────────────────────────────────────────────────
 export async function listCategories(): Promise<Category[]> {
   if (!isSupabaseConfigured()) return mockCategories;
   const supabase = await createClient();
@@ -176,7 +173,6 @@ export async function listTags(): Promise<Tag[]> {
   return (data ?? []) as Tag[];
 }
 
-// ── Moderation & inbox ─────────────────────────────────────────────────────
 export async function listPendingComments(): Promise<PendingComment[]> {
   if (!isSupabaseConfigured()) {
     return [

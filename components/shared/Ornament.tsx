@@ -1,6 +1,5 @@
 import { cn } from "@/lib/utils/cn";
 
-/** An eight-point gold floret used as a divider/accent mark throughout. */
 export function Floret({ className }: { className?: string }) {
   return (
     <svg
@@ -14,7 +13,6 @@ export function Floret({ className }: { className?: string }) {
   );
 }
 
-/** A horizontal illuminated rule with a centred floret. */
 export function OrnamentRule({ className }: { className?: string }) {
   return (
     <div className={cn("ornament-rule", className)} aria-hidden="true">
@@ -23,7 +21,6 @@ export function OrnamentRule({ className }: { className?: string }) {
   );
 }
 
-/** A small caption label with florets on either side (e.g. "Featured Post"). */
 export function FloretLabel({ children }: { children: React.ReactNode }) {
   return (
     <span className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.2em] text-gold-700">

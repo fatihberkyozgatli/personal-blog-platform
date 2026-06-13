@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -9,9 +10,11 @@ import {
   LayoutDashboard,
   LogOut,
   Mail,
+  Menu,
   MessageSquare,
   Tags,
   Users,
+  X,
 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { Floret } from "@/components/shared/Ornament";
@@ -32,6 +35,7 @@ const items = [
 export function AdminSidebar({ name }: { name: string }) {
   const pathname = usePathname();
   const router = useRouter();
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const active = (href: string, exact?: boolean) =>
     exact ? pathname === href : pathname.startsWith(href);
@@ -41,48 +45,104 @@ export function AdminSidebar({ name }: { name: string }) {
     router.push("/");
   }
 
-  return (
-    <aside className="flex w-60 shrink-0 flex-col bg-maroon-800 text-ivory">
-      <div className="flex items-center gap-2 px-5 py-5">
-        <Floret className="h-5 w-5 text-gold" />
-        <span className="font-display text-xl text-ivory">Admin</span>
-      </div>
-
-      <nav className="flex-1 space-y-1 px-3" aria-label="Admin">
-        {items.map(({ href, label, icon: Icon, exact }) => (
-          <Link
-            key={href}
-            href={href}
-            className={cn(
-              "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
-              active(href, exact)
-                ? "bg-gold/15 text-gold-400"
-                : "text-ivory/75 hover:bg-ivory/5 hover:text-ivory",
-            )}
-          >
-            <Icon className="h-4 w-4" />
-            {label}
-          </Link>
-        ))}
-      </nav>
-
-      <div className="border-t border-ivory/10 px-3 py-4">
-        <p className="px-3 pb-2 text-xs text-ivory/50">Signed in as {name}</p>
+  const nav = (
+    <nav className="flex-1 space-y-1 px-3" aria-label="Admin">
+      {items.map(({ href, label, icon: Icon, exact }) => (
         <Link
-          href="/"
-          className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-ivory/75 hover:bg-ivory/5 hover:text-ivory"
+          key={href}
+          href={href}
+          onClick={() => setMobileOpen(false)}
+          className={cn(
+            "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
+            active(href, exact)
+              ? "bg-gold/15 text-gold-400"
+              : "text-ivory/75 hover:bg-ivory/5 hover:text-ivory",
+          )}
         >
-          View site
+          <Icon className="h-4 w-4" />
+          {label}
         </Link>
+      ))}
+    </nav>
+  );
+
+  const footer = (
+    <div className="border-t border-ivory/10 px-3 py-4">
+      <p className="px-3 pb-2 text-xs text-ivory/50">Signed in as {name}</p>
+      <Link
+        href="/"
+        onClick={() => setMobileOpen(false)}
+        className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-ivory/75 hover:bg-ivory/5 hover:text-ivory"
+      >
+        View site
+      </Link>
+      <button
+        type="button"
+        onClick={signOut}
+        className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-ivory/75 hover:bg-ivory/5 hover:text-ivory cursor-pointer"
+      >
+        <LogOut className="h-4 w-4" />
+        Sign out
+      </button>
+    </div>
+  );
+
+  return (
+    <>
+      <div className="sticky top-0 z-40 flex items-center justify-between border-b border-gold/20 bg-maroon-800 px-4 py-3 text-ivory lg:hidden">
+        <div className="flex items-center gap-2">
+          <Floret className="h-5 w-5 text-gold" />
+          <span className="font-display text-xl text-ivory">Admin</span>
+        </div>
         <button
           type="button"
-          onClick={signOut}
-          className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-ivory/75 hover:bg-ivory/5 hover:text-ivory cursor-pointer"
+          onClick={() => setMobileOpen(true)}
+          aria-label="Open admin navigation"
+          aria-expanded={mobileOpen}
+          className="grid h-10 w-10 place-items-center rounded-md text-ivory/85 transition-colors hover:bg-ivory/10 hover:text-ivory cursor-pointer"
         >
-          <LogOut className="h-4 w-4" />
-          Sign out
+          <Menu className="h-5 w-5" />
         </button>
       </div>
-    </aside>
+
+      {mobileOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden">
+          <button
+            type="button"
+            aria-label="Close admin navigation"
+            className="absolute inset-0 bg-ink/45 cursor-default"
+            onClick={() => setMobileOpen(false)}
+          />
+          <aside className="relative flex h-full w-72 max-w-[85vw] flex-col bg-maroon-800 text-ivory shadow-panel">
+            <div className="flex items-center justify-between px-5 py-5">
+              <div className="flex items-center gap-2">
+                <Floret className="h-5 w-5 text-gold" />
+                <span className="font-display text-xl text-ivory">Admin</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setMobileOpen(false)}
+                aria-label="Close admin navigation"
+                className="grid h-9 w-9 place-items-center rounded-md text-ivory/75 transition-colors hover:bg-ivory/10 hover:text-ivory cursor-pointer"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            {nav}
+            {footer}
+          </aside>
+        </div>
+      )}
+
+      <aside className="hidden w-60 shrink-0 flex-col bg-maroon-800 text-ivory lg:flex">
+        <div className="flex items-center gap-2 px-5 py-5">
+          <Floret className="h-5 w-5 text-gold" />
+          <span className="font-display text-xl text-ivory">Admin</span>
+        </div>
+
+        {nav}
+        {footer}
+      </aside>
+    </>
   );
 }

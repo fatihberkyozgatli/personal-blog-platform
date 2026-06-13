@@ -47,6 +47,11 @@ Full design docs: `documentation/architecture.md`, `documentation/database.md`,
   see `design.md`. Headings: Playfair Display; body: Inter (via `next/font`).
 - Decorative ornament is `aria-hidden`; never required for meaning.
 
+## Rules
+
+- Do not add any comments
+- Remove any unused file/code when you find one if it is safe to do so!
+
 ## Git commits
 
 - Do NOT add a `Co-Authored-By: Claude ...` trailer to commit messages. The user doesn't want Claude showing up in the repo's contributor list.

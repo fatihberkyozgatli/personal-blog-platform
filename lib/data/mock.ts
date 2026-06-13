@@ -8,9 +8,6 @@ export const mockTags: Tag[] = [
   { id: "t5", name: "Gratitude", slug: "gratitude" },
 ];
 
-// Sample content used when Supabase is not configured, so the public site
-// renders out of the box. Mirrors the wireframe (documentation/wireframes.png).
-
 export const mockCategories: Category[] = [
   { id: "c1", name: "Reflections", slug: "reflections", description: "Quiet thoughts on living well." },
   { id: "c2", name: "Faith", slug: "faith", description: "On belief, doubt, and devotion." },
@@ -111,7 +108,6 @@ export const mockPosts: PostFull[] = [
     "Exploring the delicate balance between what we dream and what we live."),
 ];
 
-// Give the sample posts a couple of tags each so the filter bar feels real.
 mockPosts.forEach((p, i) => {
   p.tags = [mockTags[i % mockTags.length], mockTags[(i + 2) % mockTags.length]];
 });
