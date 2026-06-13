@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Category } from "@/lib/data/types";
-import { Floret } from "@/components/shared/Ornament";
 import { ArchClip } from "@/components/shared/ornament-kit";
+import { getCategoryIcon } from "@/lib/category-icons";
 import { cn } from "@/lib/utils/cn";
 
 // Each category gets a distinct accent so the row reads as six themes, not one.
@@ -20,6 +20,7 @@ const accents = [
  */
 export function CategoryCard({ category, index = 0 }: { category: Category; index?: number }) {
   const accent = accents[index % accents.length];
+  const Icon = getCategoryIcon({ icon: category.icon, slug: category.slug });
   return (
     <Link
       href={`/categories?c=${category.slug}`}
@@ -29,7 +30,7 @@ export function CategoryCard({ category, index = 0 }: { category: Category; inde
         <ArchClip piece="arch-1.svg" className="absolute inset-0">
           <span className={cn("block h-full w-full bg-gradient-to-b", accent)} />
         </ArchClip>
-        <Floret className="absolute left-1/2 top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 text-ivory/90 transition-transform duration-300 group-hover:scale-110" />
+        <Icon className="absolute left-1/2 top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-[60%] text-ivory/90 transition-transform duration-300 group-hover:scale-110" />
       </span>
       <span className="font-display text-base leading-tight text-ink sm:text-lg">
         {category.name}

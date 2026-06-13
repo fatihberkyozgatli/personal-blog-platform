@@ -18,9 +18,13 @@
 
   body {
     @apply bg-ivory text-ink font-sans antialiased;
-    /* Faint parchment grain so the background has atmosphere, not a flat fill. */
-    background-image: radial-gradient(rgba(110, 20, 35, 0.025) 1px, transparent 1px);
-    background-size: 22px 22px;
+    /* Faint Persian manuscript pattern across the whole site (the "About" look,
+       everywhere) layered over a subtle parchment grain. Both nearly disappear. */
+    background-image:
+      url("/ornaments/lib/pattern-faint.png"),
+      radial-gradient(rgba(110, 20, 35, 0.02) 1px, transparent 1px);
+    background-size: 360px 360px, 22px 22px;
+    background-attachment: fixed, scroll;
   }
 
   h1, h2, h3, h4, h5 {

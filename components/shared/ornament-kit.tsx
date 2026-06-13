@@ -55,7 +55,10 @@ function Masked({
   );
 }
 
-/** Horizontal section divider flourish (gold by default). */
+/**
+ * Horizontal section divider: one small motif looped a few times, flanked by
+ * thin gold rules. (Single repeating unit, not a strip of mixed designs.)
+ */
 export function Divider({
   tint = "gold",
   className,
@@ -63,14 +66,32 @@ export function Divider({
   tint?: Tint;
   className?: string;
 }) {
+  const mask = `url(${BASE}/divider-unit.svg)`;
   return (
-    <div className={cn("flex justify-center", className)}>
-      <Masked src="divider-2.svg" tint={tint} className="h-5 w-64 opacity-90 sm:w-80" />
+    <div className={cn("flex items-center justify-center gap-3", className)} aria-hidden="true">
+      <span className="h-px w-12 bg-gradient-to-r from-transparent to-gold/60 sm:w-20" />
+      <span
+        className={cn("h-4 w-36", tintClass[tint])}
+        style={{
+          WebkitMaskImage: mask,
+          maskImage: mask,
+          WebkitMaskRepeat: "repeat-x",
+          maskRepeat: "repeat-x",
+          WebkitMaskPosition: "center",
+          maskPosition: "center",
+          WebkitMaskSize: "44px 18px",
+          maskSize: "44px 18px",
+        }}
+      />
+      <span className="h-px w-12 bg-gradient-to-l from-transparent to-gold/60 sm:w-20" />
     </div>
   );
 }
 
-/** A corner ornament; rotates to sit in any corner. */
+/**
+ * A corner ornament. Mirrors (not rotates) into each corner so asymmetric
+ * pieces frame the box correctly, like a picture-frame corner.
+ */
 export function CornerOrnament({
   corner = "tl",
   tint = "gold",
@@ -82,7 +103,12 @@ export function CornerOrnament({
   piece?: string;
   className?: string;
 }) {
-  const rot = { tl: "rotate-0", tr: "rotate-90", br: "rotate-180", bl: "-rotate-90" }[corner];
+  const flip = {
+    tl: "",
+    tr: "-scale-x-100",
+    bl: "-scale-y-100",
+    br: "-scale-x-100 -scale-y-100",
+  }[corner];
   const pos = {
     tl: "left-2 top-2",
     tr: "right-2 top-2",
@@ -93,7 +119,8 @@ export function CornerOrnament({
     <Masked
       src={piece}
       tint={tint}
-      className={cn("pointer-events-none absolute h-10 w-10", pos, rot, className)}
+      size="100% 100%"
+      className={cn("pointer-events-none absolute h-9 w-9", pos, flip, className)}
     />
   );
 }

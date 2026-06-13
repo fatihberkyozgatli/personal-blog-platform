@@ -1,13 +1,20 @@
 import Link from "next/link";
-import { Instagram, Mail, MapPin, Twitter, Youtube } from "lucide-react";
-import type { Category } from "@/lib/data/types";
+import { Instagram, Mail, Twitter, Youtube } from "lucide-react";
 import { Logo } from "@/components/shared/Logo";
 import { Floret } from "@/components/shared/Ornament";
 import { PerchedBird, ManuscriptPanel } from "@/components/shared/ornaments";
 import { PatternBg } from "@/components/shared/ornament-kit";
 import { NewsletterForm } from "./NewsletterForm";
 
-export function SiteFooter({ categories }: { categories: Category[] }) {
+const NAV: [string, string][] = [
+  ["Home", "/"],
+  ["Blogs", "/blogs"],
+  ["Categories", "/categories"],
+  ["About", "/about"],
+  ["Contact", "/contact"],
+];
+
+export function SiteFooter() {
   return (
     <footer className="mt-20">
       {/* Join the Journey band */}
@@ -24,13 +31,14 @@ export function SiteFooter({ categories }: { categories: Category[] }) {
         </div>
       </section>
 
-      {/* Footer columns */}
+      {/* Footer */}
       <div className="relative overflow-hidden bg-maroon-800 text-ivory">
         <PatternBg opacity={0.06} size={320} />
-        <div className="relative mx-auto grid w-full max-w-6xl grid-cols-2 gap-10 px-5 py-14 sm:px-8 md:grid-cols-4">
-          <div className="col-span-2 md:col-span-1">
+        <div className="relative mx-auto flex w-full max-w-6xl flex-col gap-10 px-5 py-14 sm:px-8 md:flex-row md:items-start md:justify-between">
+          {/* Brand */}
+          <div className="max-w-sm">
             <Logo tone="light" showTagline={false} />
-            <p className="mt-4 max-w-xs text-sm text-ivory/70">
+            <p className="mt-4 text-sm text-ivory/70">
               Personal thoughts, reflections, and writings inspired by faith, history, culture,
               and life.
             </p>
@@ -50,53 +58,23 @@ export function SiteFooter({ categories }: { categories: Category[] }) {
             </div>
           </div>
 
-          <nav aria-label="Navigate">
-            <h3 className="font-display text-lg text-gold-400">Navigate</h3>
-            <ul className="mt-4 space-y-2 text-sm text-ivory/75">
-              {[
-                ["Home", "/"],
-                ["Blogs", "/blogs"],
-                ["Categories", "/categories"],
-                ["About", "/about"],
-                ["Contact", "/contact"],
-              ].map(([label, href]) => (
+          {/* Navigation */}
+          <nav aria-label="Footer" className="flex items-start gap-12">
+            <ul className="space-y-2.5 text-sm text-ivory/75">
+              {NAV.map(([label, href]) => (
                 <li key={href}>
-                  <Link href={href} className="transition-colors hover:text-gold">
+                  <Link
+                    href={href}
+                    className="inline-flex items-center gap-2 transition-colors hover:text-gold"
+                  >
+                    <Floret className="h-2.5 w-2.5 text-gold/60" />
                     {label}
                   </Link>
                 </li>
               ))}
             </ul>
+            <ManuscriptPanel className="hidden h-24 w-32 opacity-80 sm:block" />
           </nav>
-
-          <nav aria-label="Categories">
-            <h3 className="font-display text-lg text-gold-400">Categories</h3>
-            <ul className="mt-4 space-y-2 text-sm text-ivory/75">
-              {categories.map((c) => (
-                <li key={c.id}>
-                  <Link href={`/categories?c=${c.slug}`} className="transition-colors hover:text-gold">
-                    {c.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          <div>
-            <h3 className="font-display text-lg text-gold-400">Contact</h3>
-            <ul className="mt-4 space-y-3 text-sm text-ivory/75">
-              <li className="flex items-center gap-2">
-                <Mail className="h-4 w-4 text-gold/80" /> hello@placeholder.com
-              </li>
-              <li className="flex items-center gap-2">
-                <Instagram className="h-4 w-4 text-gold/80" /> @placeholder
-              </li>
-              <li className="flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-gold/80" /> New York, USA
-              </li>
-            </ul>
-            <ManuscriptPanel className="mt-5 h-24 w-32 opacity-80" />
-          </div>
         </div>
 
         <div className="border-t border-ivory/10">

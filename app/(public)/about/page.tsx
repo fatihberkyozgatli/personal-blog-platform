@@ -3,7 +3,7 @@ import { Quote } from "lucide-react";
 import { Container } from "@/components/shared/Container";
 import { Floret } from "@/components/shared/Ornament";
 import { Portrait } from "@/components/shared/Portrait";
-import { Divider, PatternBg, ArchFrame } from "@/components/shared/ornament-kit";
+import { Divider, ArchFrame } from "@/components/shared/ornament-kit";
 import { Reveal } from "@/components/shared/Motion";
 import { author } from "@/lib/site";
 
@@ -15,7 +15,6 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <section className="relative overflow-hidden">
-      <PatternBg opacity={0.05} />
       <Container className="py-16">
         <Reveal className="mx-auto flex max-w-2xl flex-col items-center text-center">
           <Portrait src={author.portraitUrl} name={author.name} size={140} />
@@ -34,13 +33,17 @@ export default function AboutPage() {
         </Reveal>
 
         {/* Favorite quote, in a Persian arch frame */}
-        <Reveal delay={0.1} className="mx-auto my-14 max-w-xl">
-          <ArchFrame piece="arch-11.svg" tint="gold" className="px-10 py-14 text-center">
-            <Quote className="mx-auto mb-3 h-7 w-7 text-gold" />
-            <p className="font-display text-2xl italic leading-snug text-ink">
+        <Reveal delay={0.1} className="mx-auto my-16 max-w-2xl">
+          <ArchFrame
+            piece="arch-11-h.svg"
+            tint="gold"
+            className="px-16 py-14 text-center sm:px-24"
+          >
+            <Quote className="mx-auto mb-3 h-6 w-6 text-gold" />
+            <p className="mx-auto max-w-md font-display text-xl italic leading-snug text-ink sm:text-2xl">
               “{author.favoriteQuote.text}”
             </p>
-            <p className="mt-3 text-sm uppercase tracking-[0.18em] text-gold-700">
+            <p className="mt-3 text-xs uppercase tracking-[0.18em] text-gold-700">
               {author.favoriteQuote.source}
             </p>
           </ArchFrame>

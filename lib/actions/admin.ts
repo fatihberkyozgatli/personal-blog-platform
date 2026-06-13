@@ -147,11 +147,15 @@ export async function createCategory(_prev: ActionState, formData: FormData): Pr
   if (!isSupabaseConfigured()) return notConfigured;
   if (!(await ensureAdmin())) return notAuthorized;
   const name = String(formData.get("name") ?? "").trim();
+  const icon = String(formData.get("icon") ?? "").trim() || null;
   if (!name) return { ok: false, message: "Category name is required." };
   const supabase = await createClient();
-  const { error } = await supabase.from("categories").insert({ name, slug: slugify(name) });
+  const { error } = await supabase
+    .from("categories")
+    .insert({ name, slug: slugify(name), icon });
   if (error) return { ok: false, message: error.message };
   revalidatePath("/admin/categories");
+  revalidatePath("/categories");
   return { ok: true, message: `Added “${name}”.` };
 }
 

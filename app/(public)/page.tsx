@@ -3,13 +3,7 @@ import { ArrowRight, CalendarDays, Clock, Quote } from "lucide-react";
 import { Container } from "@/components/shared/Container";
 import { ButtonLink } from "@/components/shared/Button";
 import { Floret, FloretLabel } from "@/components/shared/Ornament";
-import {
-  ArchClip,
-  CornerOrnament,
-  Divider,
-  FloralAccent,
-  PatternBg,
-} from "@/components/shared/ornament-kit";
+import { ArchClip, CornerOrnament, Divider } from "@/components/shared/ornament-kit";
 import { CoverArt } from "@/components/shared/CoverArt";
 import { Reveal, Stagger, StaggerItem } from "@/components/shared/Motion";
 import { PostCard, PostRailItem } from "@/components/public/PostCard";
@@ -29,14 +23,6 @@ export default async function LandingPage() {
     <>
       {/* ── Hero ───────────────────────────────────────────── */}
       <section className="relative overflow-hidden">
-        <PatternBg opacity={0.05} />
-        {/* Persian floral creeping from the top-left corner */}
-        <FloralAccent className="absolute -left-16 -top-16 h-72 w-72 opacity-70 sm:h-96 sm:w-96" />
-        <FloralAccent
-          className="absolute -bottom-24 -right-20 hidden h-80 w-80 opacity-40 lg:block"
-          style={{ transform: "rotate(180deg)" }}
-        />
-
         <Container className="grid grid-cols-1 gap-6 py-12 lg:grid-cols-[1.05fr_0.95fr] lg:py-20">
           <Reveal className="relative min-w-0 overflow-hidden rounded-t-[6rem] border border-gold/30 bg-parchment/90 px-6 py-14 shadow-card backdrop-blur-sm sm:px-14">
             <div className="pointer-events-none absolute inset-3 rounded-t-[5.5rem] border border-gold/15" />
@@ -84,7 +70,6 @@ export default async function LandingPage() {
       {/* ── Featured: "start here" ─────────────────────────── */}
       {featured && (
         <section className="relative overflow-hidden py-16">
-          <PatternBg opacity={0.04} />
           <Container>
             <Reveal className="mb-10 text-center">
               <FloretLabel>The Essay to Begin With</FloretLabel>

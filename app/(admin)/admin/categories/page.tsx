@@ -1,8 +1,9 @@
 import { Trash2 } from "lucide-react";
 import { PageHeader, Card, EmptyState } from "@/components/admin/ui";
-import { AddItemForm } from "@/components/admin/AddItemForm";
+import { CategoryForm } from "@/components/admin/CategoryForm";
 import { listCategories } from "@/lib/data/admin";
-import { createCategory, deleteCategory } from "@/lib/actions/admin";
+import { deleteCategory } from "@/lib/actions/admin";
+import { getCategoryIcon } from "@/lib/category-icons";
 
 export default async function AdminCategoriesPage() {
   const categories = await listCategories();
@@ -12,7 +13,7 @@ export default async function AdminCategoriesPage() {
       <PageHeader title="Categories" description="The themes posts are filed under." />
 
       <Card className="mb-6">
-        <AddItemForm action={createCategory} placeholder="New category name" />
+        <CategoryForm />
       </Card>
 
       {categories.length === 0 ? (
@@ -20,11 +21,18 @@ export default async function AdminCategoriesPage() {
       ) : (
         <Card className="p-0">
           <ul className="divide-y divide-gold/10">
-            {categories.map((c) => (
+            {categories.map((c) => {
+              const Icon = getCategoryIcon({ icon: c.icon, slug: c.slug });
+              return (
               <li key={c.id} className="flex items-center justify-between px-5 py-3">
-                <div>
-                  <p className="font-medium text-ink">{c.name}</p>
-                  <p className="text-xs text-ink-muted">/{c.slug}</p>
+                <div className="flex items-center gap-3">
+                  <span className="grid h-9 w-9 place-items-center rounded-md border border-gold/30 text-maroon">
+                    <Icon className="h-4 w-4" />
+                  </span>
+                  <div>
+                    <p className="font-medium text-ink">{c.name}</p>
+                    <p className="text-xs text-ink-muted">/{c.slug}</p>
+                  </div>
                 </div>
                 <form action={deleteCategory}>
                   <input type="hidden" name="id" value={c.id} />
@@ -37,7 +45,8 @@ export default async function AdminCategoriesPage() {
                   </button>
                 </form>
               </li>
-            ))}
+              );
+            })}
           </ul>
         </Card>
       )}

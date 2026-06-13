@@ -10,6 +10,7 @@ export interface Category {
   name: string;
   slug: string;
   description?: string | null;
+  icon?: string | null;
 }
 
 export interface Tag {

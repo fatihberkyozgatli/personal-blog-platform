@@ -28,7 +28,13 @@ export async function getCategories(): Promise<Category[]> {
   if (!isSupabaseConfigured()) return mockCategories;
   const supabase = await createClient();
   const { data } = await supabase.from("categories").select("*").order("name");
-  return (data ?? []).map((c) => ({ id: c.id, name: c.name, slug: c.slug, description: c.description }));
+  return (data ?? []).map((c) => ({
+    id: c.id,
+    name: c.name,
+    slug: c.slug,
+    description: c.description,
+    icon: c.icon,
+  }));
 }
 
 export async function getTags(): Promise<Tag[]> {
