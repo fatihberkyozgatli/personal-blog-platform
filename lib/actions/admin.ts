@@ -171,6 +171,15 @@ export async function createTag(_prev: ActionState, formData: FormData): Promise
   return { ok: true, message: `Added “${name}”.` };
 }
 
+export async function updateCategoryIcon(id: string, icon: string): Promise<void> {
+  if (!isSupabaseConfigured() || !(await ensureAdmin())) return;
+  const supabase = await createClient();
+  const { error } = await supabase.from("categories").update({ icon }).eq("id", id);
+  if (error) console.error("updateCategoryIcon failed:", error.message);
+  revalidatePath("/admin/categories");
+  revalidatePath("/categories");
+}
+
 async function deleteFrom(table: string, id: string, path: string) {
   if (!isSupabaseConfigured() || !(await ensureAdmin())) return;
   const supabase = await createClient();

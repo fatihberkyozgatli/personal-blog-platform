@@ -33,14 +33,14 @@ export default function AboutPage() {
         </Reveal>
 
         {/* Favorite quote, in a Persian arch frame */}
-        <Reveal delay={0.1} className="mx-auto my-16 max-w-2xl">
+        <Reveal delay={0.1} className="mx-auto my-16 max-w-3xl">
           <ArchFrame
             piece="arch-11-h.svg"
             tint="gold"
-            className="px-16 py-14 text-center sm:px-24"
+            className="px-14 py-16 text-center sm:px-28"
           >
             <Quote className="mx-auto mb-3 h-6 w-6 text-gold" />
-            <p className="mx-auto max-w-md font-display text-xl italic leading-snug text-ink sm:text-2xl">
+            <p className="mx-auto max-w-lg font-display text-xl italic leading-snug text-ink sm:text-2xl">
               “{author.favoriteQuote.text}”
             </p>
             <p className="mt-3 text-xs uppercase tracking-[0.18em] text-gold-700">

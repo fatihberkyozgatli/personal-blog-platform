@@ -3,7 +3,7 @@ import { ArrowRight, CalendarDays, Clock, Quote } from "lucide-react";
 import { Container } from "@/components/shared/Container";
 import { ButtonLink } from "@/components/shared/Button";
 import { Floret, FloretLabel } from "@/components/shared/Ornament";
-import { ArchClip, CornerOrnament, Divider } from "@/components/shared/ornament-kit";
+import { ArchClip, Divider } from "@/components/shared/ornament-kit";
 import { CoverArt } from "@/components/shared/CoverArt";
 import { Reveal, Stagger, StaggerItem } from "@/components/shared/Motion";
 import { PostCard, PostRailItem } from "@/components/public/PostCard";
@@ -26,8 +26,6 @@ export default async function LandingPage() {
         <Container className="grid grid-cols-1 gap-6 py-12 lg:grid-cols-[1.05fr_0.95fr] lg:py-20">
           <Reveal className="relative min-w-0 overflow-hidden rounded-t-[6rem] border border-gold/30 bg-parchment/90 px-6 py-14 shadow-card backdrop-blur-sm sm:px-14">
             <div className="pointer-events-none absolute inset-3 rounded-t-[5.5rem] border border-gold/15" />
-            <CornerOrnament corner="tl" />
-            <CornerOrnament corner="tr" />
             <div className="relative mx-auto max-w-md text-center">
               <Floret className="mx-auto mb-6 h-5 w-5" />
               <h1 className="text-balance break-words font-display text-[2rem] leading-[1.1] text-ink sm:text-5xl lg:text-6xl">
@@ -48,7 +46,6 @@ export default async function LandingPage() {
           </Reveal>
 
           <Reveal delay={0.12} className="relative min-w-0 rounded-xl2 bg-maroon p-6 shadow-panel sm:p-8">
-            <CornerOrnament corner="tr" tint="gold" />
             <div className="mb-5 flex items-center justify-between">
               <h2 className="font-display text-2xl text-ivory">Latest Posts</h2>
               <Link

@@ -1,9 +1,9 @@
 import { Trash2 } from "lucide-react";
 import { PageHeader, Card, EmptyState } from "@/components/admin/ui";
 import { CategoryForm } from "@/components/admin/CategoryForm";
+import { CategoryIconEditor } from "@/components/admin/CategoryIconEditor";
 import { listCategories } from "@/lib/data/admin";
 import { deleteCategory } from "@/lib/actions/admin";
-import { getCategoryIcon } from "@/lib/category-icons";
 
 export default async function AdminCategoriesPage() {
   const categories = await listCategories();
@@ -22,13 +22,10 @@ export default async function AdminCategoriesPage() {
         <Card className="p-0">
           <ul className="divide-y divide-gold/10">
             {categories.map((c) => {
-              const Icon = getCategoryIcon({ icon: c.icon, slug: c.slug });
               return (
               <li key={c.id} className="flex items-center justify-between px-5 py-3">
                 <div className="flex items-center gap-3">
-                  <span className="grid h-9 w-9 place-items-center rounded-md border border-gold/30 text-maroon">
-                    <Icon className="h-4 w-4" />
-                  </span>
+                  <CategoryIconEditor id={c.id} slug={c.slug} icon={c.icon} />
                   <div>
                     <p className="font-medium text-ink">{c.name}</p>
                     <p className="text-xs text-ink-muted">/{c.slug}</p>

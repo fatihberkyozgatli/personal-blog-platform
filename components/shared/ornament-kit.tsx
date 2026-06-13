@@ -103,11 +103,13 @@ export function CornerOrnament({
   piece?: string;
   className?: string;
 }) {
+  // corner-9 (the default piece) is naturally a top-RIGHT corner, so the
+  // top-right slot is un-flipped and the others mirror from it.
   const flip = {
-    tl: "",
-    tr: "-scale-x-100",
-    bl: "-scale-y-100",
-    br: "-scale-x-100 -scale-y-100",
+    tr: "",
+    tl: "-scale-x-100",
+    br: "-scale-y-100",
+    bl: "-scale-x-100 -scale-y-100",
   }[corner];
   const pos = {
     tl: "left-2 top-2",

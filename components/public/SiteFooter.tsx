@@ -2,25 +2,48 @@ import Link from "next/link";
 import { Instagram, Mail, Twitter, Youtube } from "lucide-react";
 import { Logo } from "@/components/shared/Logo";
 import { Floret } from "@/components/shared/Ornament";
-import { PerchedBird, ManuscriptPanel } from "@/components/shared/ornaments";
-import { PatternBg } from "@/components/shared/ornament-kit";
+import { ManuscriptPanel } from "@/components/shared/ornaments";
+import { PatternBg, FloralAccent } from "@/components/shared/ornament-kit";
 import { NewsletterForm } from "./NewsletterForm";
 
-const NAV: [string, string][] = [
+const EXPLORE: [string, string][] = [
   ["Home", "/"],
   ["Blogs", "/blogs"],
   ["Categories", "/categories"],
+];
+const MORE: [string, string][] = [
   ["About", "/about"],
   ["Contact", "/contact"],
 ];
+
+function FooterCol({ heading, links }: { heading: string; links: [string, string][] }) {
+  return (
+    <nav aria-label={heading}>
+      <h3 className="mb-4 font-display text-lg text-gold-400">{heading}</h3>
+      <ul className="space-y-2.5 text-sm text-ivory/75">
+        {links.map(([label, href]) => (
+          <li key={href}>
+            <Link
+              href={href}
+              className="inline-flex items-center gap-2 transition-colors hover:text-gold"
+            >
+              <Floret className="h-2.5 w-2.5 text-gold/60" />
+              {label}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
+}
 
 export function SiteFooter() {
   return (
     <footer className="mt-20">
       {/* Join the Journey band */}
       <section className="relative overflow-hidden bg-maroon text-ivory">
-        <PerchedBird className="pointer-events-none absolute right-6 top-4 h-10 w-12 opacity-80" />
-        <div className="mx-auto flex w-full max-w-6xl flex-col items-start justify-between gap-6 px-5 py-12 sm:px-8 md:flex-row md:items-center">
+        <FloralAccent className="pointer-events-none absolute -right-10 -top-8 h-44 w-44 opacity-50 sm:h-56 sm:w-56" />
+        <div className="relative mx-auto flex w-full max-w-6xl flex-col items-start justify-between gap-6 px-5 py-12 sm:px-8 md:flex-row md:items-center">
           <div className="max-w-md">
             <h2 className="font-display text-3xl text-ivory">Join the Journey</h2>
             <p className="mt-2 text-sm text-ivory/75">
@@ -34,9 +57,9 @@ export function SiteFooter() {
       {/* Footer */}
       <div className="relative overflow-hidden bg-maroon-800 text-ivory">
         <PatternBg opacity={0.06} size={320} />
-        <div className="relative mx-auto flex w-full max-w-6xl flex-col gap-10 px-5 py-14 sm:px-8 md:flex-row md:items-start md:justify-between">
+        <div className="relative mx-auto grid w-full max-w-6xl grid-cols-2 gap-10 px-5 py-14 sm:px-8 md:grid-cols-4 md:gap-8">
           {/* Brand */}
-          <div className="max-w-sm">
+          <div className="col-span-2 md:col-span-1">
             <Logo tone="light" showTagline={false} />
             <p className="mt-4 text-sm text-ivory/70">
               Personal thoughts, reflections, and writings inspired by faith, history, culture,
@@ -58,23 +81,12 @@ export function SiteFooter() {
             </div>
           </div>
 
-          {/* Navigation */}
-          <nav aria-label="Footer" className="flex items-start gap-12">
-            <ul className="space-y-2.5 text-sm text-ivory/75">
-              {NAV.map(([label, href]) => (
-                <li key={href}>
-                  <Link
-                    href={href}
-                    className="inline-flex items-center gap-2 transition-colors hover:text-gold"
-                  >
-                    <Floret className="h-2.5 w-2.5 text-gold/60" />
-                    {label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-            <ManuscriptPanel className="hidden h-24 w-32 opacity-80 sm:block" />
-          </nav>
+          <FooterCol heading="Explore" links={EXPLORE} />
+          <FooterCol heading="More" links={MORE} />
+
+          <div className="hidden items-start justify-end md:flex">
+            <ManuscriptPanel className="h-28 w-36 opacity-80" />
+          </div>
         </div>
 
         <div className="border-t border-ivory/10">
