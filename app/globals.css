@@ -1,0 +1,93 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --ivory: #f7efdd;
+    --parchment: #fbf6ea;
+    --maroon: #6e1423;
+    --gold: #c9a24b;
+    --persian: #1f4e79;
+    --ink: #2b2018;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-ivory text-ink font-sans antialiased;
+    /* Faint parchment grain so the background has atmosphere, not a flat fill. */
+    background-image: radial-gradient(rgba(110, 20, 35, 0.025) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+
+  h1, h2, h3, h4, h5 {
+    @apply font-display text-ink;
+    font-feature-settings: "liga" 1, "dlig" 1;
+  }
+
+  ::selection {
+    background: rgba(201, 162, 75, 0.35);
+    color: var(--ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+}
+
+@layer components {
+  /* Thin illuminated rule used between sections, with a centred floret. */
+  .ornament-rule {
+    @apply flex items-center justify-center gap-3 text-gold;
+  }
+  .ornament-rule::before,
+  .ornament-rule::after {
+    content: "";
+    @apply h-px w-16 bg-gradient-to-r from-transparent via-gold to-transparent;
+  }
+
+  /* Editorial reading column for post bodies. */
+  .prose-editorial {
+    @apply text-[1.0625rem] leading-[1.8] text-ink;
+  }
+  .prose-editorial > * + * {
+    @apply mt-6;
+  }
+  .prose-editorial h2 {
+    @apply font-display text-3xl text-maroon mt-12 mb-2;
+  }
+  .prose-editorial h3 {
+    @apply font-display text-2xl text-maroon mt-10 mb-1;
+  }
+  .prose-editorial a {
+    @apply text-persian underline decoration-gold/60 underline-offset-2 transition-colors hover:text-maroon;
+  }
+  .prose-editorial blockquote {
+    @apply border-l-2 border-gold pl-5 italic text-ink-muted;
+  }
+  .prose-editorial ul {
+    @apply list-disc pl-6 marker:text-gold;
+  }
+  .prose-editorial ol {
+    @apply list-decimal pl-6 marker:text-gold;
+  }
+  .prose-editorial img {
+    @apply rounded-lg shadow-card;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
