@@ -53,7 +53,7 @@ export function SiteHeader({
       {/* thin illuminated top border */}
       <div className="h-1 w-full bg-gradient-to-r from-transparent via-gold/60 to-transparent" />
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-5 py-3 sm:px-8">
-        <Logo showTagline={false} className="md:[&_span:first-of-type]:text-2xl" />
+        <Logo showTagline className="[&_span:first-of-type]:text-xl sm:[&_span:first-of-type]:text-2xl" />
 
         <nav className="hidden items-center gap-7 md:flex" aria-label="Primary">
           {NAV.map((item) => (

@@ -24,7 +24,7 @@ export default async function AdminMessagesPage() {
                     {m.email}
                   </a>
                   {!m.read && (
-                    <span className="ml-2 rounded-full bg-gold/15 px-2 py-0.5 text-xs text-gold-600">
+                    <span className="ml-2 rounded-full bg-gold/15 px-2 py-0.5 text-xs text-gold-700">
                       new
                     </span>
                   )}

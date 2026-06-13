@@ -3,13 +3,15 @@ import { Instagram, Mail, MapPin, Twitter, Youtube } from "lucide-react";
 import type { Category } from "@/lib/data/types";
 import { Logo } from "@/components/shared/Logo";
 import { Floret } from "@/components/shared/Ornament";
+import { PerchedBird, ManuscriptPanel } from "@/components/shared/ornaments";
 import { NewsletterForm } from "./NewsletterForm";
 
 export function SiteFooter({ categories }: { categories: Category[] }) {
   return (
     <footer className="mt-20">
       {/* Join the Journey band */}
-      <section className="bg-maroon text-ivory">
+      <section className="relative overflow-hidden bg-maroon text-ivory">
+        <PerchedBird className="pointer-events-none absolute right-6 top-4 h-10 w-12 opacity-80" />
         <div className="mx-auto flex w-full max-w-6xl flex-col items-start justify-between gap-6 px-5 py-12 sm:px-8 md:flex-row md:items-center">
           <div className="max-w-md">
             <h2 className="font-display text-3xl text-ivory">Join the Journey</h2>
@@ -91,6 +93,7 @@ export function SiteFooter({ categories }: { categories: Category[] }) {
                 <MapPin className="h-4 w-4 text-gold/80" /> New York, USA
               </li>
             </ul>
+            <ManuscriptPanel className="mt-5 h-24 w-32 opacity-80" />
           </div>
         </div>
 

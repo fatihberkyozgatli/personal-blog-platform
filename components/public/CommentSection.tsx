@@ -66,8 +66,8 @@ export function CommentSection({
           />
           {state.message && (
             <p
-              role="status"
-              aria-live="polite"
+              role={state.ok ? "status" : "alert"}
+              aria-live={state.ok ? "polite" : "assertive"}
               className={state.ok ? "mt-2 text-sm text-emerald" : "mt-2 text-sm text-clay"}
             >
               {state.message}

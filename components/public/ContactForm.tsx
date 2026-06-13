@@ -50,8 +50,8 @@ export function ContactForm() {
 
       {state.message && (
         <p
-          role="status"
-          aria-live="polite"
+          role={state.ok ? "status" : "alert"}
+          aria-live={state.ok ? "polite" : "assertive"}
           className={state.ok ? "text-sm text-emerald" : "text-sm text-clay"}
         >
           {state.message}

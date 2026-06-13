@@ -12,5 +12,11 @@ export const contentExtensions = [
     heading: { levels: [2, 3] },
   }),
   Image.configure({ inline: false, allowBase64: false }),
-  Link.configure({ openOnClick: false, autolink: true, HTMLAttributes: { rel: "noopener noreferrer" } }),
+  Link.configure({
+    openOnClick: false,
+    autolink: true,
+    // Only safe protocols — blocks javascript:/data: links at the schema level.
+    protocols: ["http", "https", "mailto"],
+    HTMLAttributes: { rel: "noopener noreferrer nofollow", target: "_blank" },
+  }),
 ];

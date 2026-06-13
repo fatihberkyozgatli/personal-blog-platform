@@ -1,9 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
-import type { Category, Comment, PostCard, PostFull } from "./types";
-import { mockCategories, mockComments, mockPosts } from "./mock";
-
-// ── Mappers ────────────────────────────────────────────────────────────────
+import type { Category, Comment, PostCard, Tag } from "./types";
+import { mockCategories, mockComments, mockPosts, mockTags } from "./mock";
 
 // DB rows are dynamically shaped (snake_case columns from views/joins).
 type Row = Record<string, any>;
@@ -23,99 +21,206 @@ function mapCard(row: Row, categories: Category[]): PostCard {
   };
 }
 
-// ── Reads ────────────────────────────────────────────────────────────────
+export type SortOrder = "newest" | "oldest" | "popular";
 
+// ── Taxonomy ─────────────────────────────────────────────────────────────
 export async function getCategories(): Promise<Category[]> {
   if (!isSupabaseConfigured()) return mockCategories;
   const supabase = await createClient();
   const { data } = await supabase.from("categories").select("*").order("name");
-  return (data ?? []).map((c) => ({
-    id: c.id,
-    name: c.name,
-    slug: c.slug,
-    description: c.description,
-  }));
+  return (data ?? []).map((c) => ({ id: c.id, name: c.name, slug: c.slug, description: c.description }));
 }
 
-export async function getPosts(opts: {
+export async function getTags(): Promise<Tag[]> {
+  if (!isSupabaseConfigured()) return mockTags;
+  const supabase = await createClient();
+  const { data } = await supabase.from("tags").select("*").order("name");
+  return (data ?? []) as Tag[];
+}
+
+// ── Listing (filters, search, sort, pagination) ────────────────────────────
+export interface PostQuery {
   categorySlug?: string;
-  limit?: number;
-} = {}): Promise<PostCard[]> {
+  tagSlug?: string;
+  q?: string;
+  sort?: SortOrder;
+  page?: number;
+  perPage?: number;
+}
+
+export interface PostPage {
+  items: PostCard[];
+  total: number;
+  page: number;
+  perPage: number;
+  totalPages: number;
+}
+
+function sortMock(posts: PostCard[], sort: SortOrder): PostCard[] {
+  const copy = [...posts];
+  if (sort === "oldest")
+    return copy.sort((a, b) => (a.publishedAt ?? "").localeCompare(b.publishedAt ?? ""));
+  if (sort === "popular") return copy.sort((a, b) => b.viewCount - a.viewCount);
+  return copy.sort((a, b) => (b.publishedAt ?? "").localeCompare(a.publishedAt ?? ""));
+}
+
+export async function getPosts(query: PostQuery = {}): Promise<PostPage> {
+  const page = Math.max(1, query.page ?? 1);
+  const perPage = query.perPage ?? 9;
+  const sort = query.sort ?? "newest";
+
   if (!isSupabaseConfigured()) {
     let posts = mockPosts.map((p) => p as PostCard);
-    if (opts.categorySlug) posts = posts.filter((p) => p.category?.slug === opts.categorySlug);
-    return opts.limit ? posts.slice(0, opts.limit) : posts;
+    if (query.categorySlug) posts = posts.filter((p) => p.category?.slug === query.categorySlug);
+    if (query.tagSlug) posts = posts.filter((p) => p.tags?.some((t) => t.slug === query.tagSlug));
+    if (query.q) {
+      const l = query.q.toLowerCase();
+      posts = posts.filter(
+        (p) => p.title.toLowerCase().includes(l) || p.excerpt.toLowerCase().includes(l),
+      );
+    }
+    posts = sortMock(posts, sort);
+    const total = posts.length;
+    const start = (page - 1) * perPage;
+    return {
+      items: posts.slice(start, start + perPage),
+      total,
+      page,
+      perPage,
+      totalPages: Math.max(1, Math.ceil(total / perPage)),
+    };
   }
 
   const supabase = await createClient();
   const categories = await getCategories();
-  let query = supabase
-    .from("posts_public")
-    .select("*")
-    .order("published_at", { ascending: false });
 
-  if (opts.categorySlug) {
-    const cat = categories.find((c) => c.slug === opts.categorySlug);
-    if (cat) query = query.eq("category_id", cat.id);
+  // Full-text search goes through the RPC (safe columns only).
+  if (query.q) {
+    const { data } = await supabase.rpc("search_posts", { q: query.q });
+    let items = (data ?? []).map((r: Row) => mapCard(r, categories));
+    if (query.categorySlug) {
+      const cat = categories.find((c) => c.slug === query.categorySlug);
+      items = items.filter((p: PostCard) => p.category?.id === cat?.id);
+    }
+    const total = items.length;
+    const start = (page - 1) * perPage;
+    return { items: items.slice(start, start + perPage), total, page, perPage, totalPages: Math.max(1, Math.ceil(total / perPage)) };
   }
-  if (opts.limit) query = query.limit(opts.limit);
 
-  const { data } = await query;
-  return (data ?? []).map((row) => mapCard(row, categories));
-}
-
-/** The most-viewed recent post, used for the "Featured" block. */
-export async function getFeaturedPost(): Promise<PostCard | null> {
-  if (!isSupabaseConfigured()) {
-    return [...mockPosts].sort((a, b) => b.viewCount - a.viewCount)[0] ?? null;
+  let q = supabase.from("posts_public").select("*", { count: "exact" });
+  if (query.categorySlug) {
+    const cat = categories.find((c) => c.slug === query.categorySlug);
+    if (cat) q = q.eq("category_id", cat.id);
   }
-  const supabase = await createClient();
-  const categories = await getCategories();
-  const { data } = await supabase
-    .from("posts_public")
-    .select("*")
-    .order("view_count", { ascending: false })
-    .limit(1);
-  const row = data?.[0];
-  return row ? mapCard(row, categories) : null;
-}
+  if (sort === "popular") q = q.order("view_count", { ascending: false });
+  else q = q.order("published_at", { ascending: sort === "oldest" });
 
-export async function getPostBySlug(slug: string): Promise<PostFull | null> {
-  if (!isSupabaseConfigured()) {
-    return mockPosts.find((p) => p.slug === slug) ?? null;
-  }
-  const supabase = await createClient();
-  const categories = await getCategories();
-  // Full row (incl. content) — RLS only returns it to authenticated users.
-  const { data } = await supabase.from("posts").select("*").eq("slug", slug).single();
-  if (!data) return null;
-  const card = mapCard(data, categories);
+  q = q.range((page - 1) * perPage, page * perPage - 1);
+  const { data, count } = await q;
+  const total = count ?? 0;
   return {
-    ...card,
-    content: data.content,
-    status: data.status,
-    likeCount: 0,
+    items: (data ?? []).map((r: Row) => mapCard(r, categories)),
+    total,
+    page,
+    perPage,
+    totalPages: Math.max(1, Math.ceil(total / perPage)),
   };
 }
 
-export async function searchPosts(q: string): Promise<PostCard[]> {
-  const term = q.trim();
-  if (!term) return [];
+/** Convenience for the landing page (no pagination shell). */
+export async function getLatestPosts(limit: number): Promise<PostCard[]> {
+  const { items } = await getPosts({ perPage: limit, page: 1, sort: "newest" });
+  return items;
+}
+
+export async function getFeaturedPost(): Promise<PostCard | null> {
+  const { items } = await getPosts({ perPage: 1, sort: "popular" });
+  return items[0] ?? null;
+}
+
+// ── Single post: public card (teaser) vs gated content ─────────────────────
+
+/** Public-safe card for everyone (from posts_public). Null if not published. */
+export async function getPublicPostCard(slug: string): Promise<PostCard | null> {
   if (!isSupabaseConfigured()) {
-    const lower = term.toLowerCase();
-    return mockPosts.filter(
-      (p) =>
-        p.title.toLowerCase().includes(lower) || p.excerpt.toLowerCase().includes(lower),
-    ) as PostCard[];
+    const p = mockPosts.find((x) => x.slug === slug);
+    return p ? (p as PostCard) : null;
   }
   const supabase = await createClient();
   const categories = await getCategories();
-  const { data } = await supabase.rpc("search_posts", { q: term });
-  return (data ?? []).map((row: Row) => mapCard(row, categories));
+  const { data } = await supabase.from("posts_public").select("*").eq("slug", slug).maybeSingle();
+  return data ? mapCard(data, categories) : null;
+}
+
+/** Gated body (Tiptap JSON). Only returns content to authenticated users (RLS). */
+export async function getPostContent(slug: string): Promise<unknown | null> {
+  if (!isSupabaseConfigured()) {
+    return mockPosts.find((x) => x.slug === slug)?.content ?? null;
+  }
+  const supabase = await createClient();
+  const { data } = await supabase.from("posts").select("content").eq("slug", slug).maybeSingle();
+  return data?.content ?? null;
+}
+
+export interface Engagement {
+  likeCount: number;
+  liked: boolean;
+}
+
+export async function getPostEngagement(postId: string, userId?: string): Promise<Engagement> {
+  if (!isSupabaseConfigured()) {
+    const p = mockPosts.find((x) => x.id === postId);
+    return { likeCount: p?.likeCount ?? 0, liked: false };
+  }
+  const supabase = await createClient();
+  const { count } = await supabase
+    .from("post_likes")
+    .select("*", { count: "exact", head: true })
+    .eq("post_id", postId);
+  let liked = false;
+  if (userId) {
+    const { data } = await supabase
+      .from("post_likes")
+      .select("post_id")
+      .eq("post_id", postId)
+      .eq("user_id", userId)
+      .maybeSingle();
+    liked = !!data;
+  }
+  return { likeCount: count ?? 0, liked };
+}
+
+export async function getPostTags(postId: string): Promise<Tag[]> {
+  if (!isSupabaseConfigured()) {
+    return mockPosts.find((p) => p.id === postId)?.tags ?? [];
+  }
+  const supabase = await createClient();
+  const { data } = await supabase.from("post_tags").select("tags(id, name, slug)").eq("post_id", postId);
+  return (data ?? []).map((r: Row) => r.tags).filter(Boolean) as Tag[];
+}
+
+export async function getRelatedPosts(post: PostCard, limit = 3): Promise<PostCard[]> {
+  const { items } = await getPosts({
+    categorySlug: post.category?.slug,
+    perPage: limit + 1,
+  });
+  return items.filter((p) => p.id !== post.id).slice(0, limit);
+}
+
+// ── Comments (threaded) ────────────────────────────────────────────────────
+function buildTree(all: Comment[]): Comment[] {
+  const byId = new Map(all.map((c) => [c.id, { ...c, replies: [] as Comment[] }]));
+  const roots: Comment[] = [];
+  for (const c of byId.values()) {
+    if (c.parentId && byId.has(c.parentId)) byId.get(c.parentId)!.replies!.push(c);
+    else roots.push(c);
+  }
+  return roots;
 }
 
 export async function getCommentsForPost(postId: string): Promise<Comment[]> {
   if (!isSupabaseConfigured()) {
+    // mock comments already carry their replies
     return mockComments.filter((c) => c.postId === postId);
   }
   const supabase = await createClient();
@@ -126,7 +231,6 @@ export async function getCommentsForPost(postId: string): Promise<Comment[]> {
     .eq("approved", true)
     .order("created_at", { ascending: true });
 
-  // Flat list → threaded (one level).
   const all: Comment[] = (data ?? []).map((c: Row) => ({
     id: c.id,
     postId: c.post_id,
@@ -140,9 +244,5 @@ export async function getCommentsForPost(postId: string): Promise<Comment[]> {
       avatarUrl: c.profiles?.avatar_url,
     },
   }));
-  const roots = all.filter((c) => !c.parentId);
-  for (const root of roots) {
-    root.replies = all.filter((c) => c.parentId === root.id);
-  }
-  return roots;
+  return buildTree(all);
 }

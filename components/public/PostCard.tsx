@@ -20,7 +20,7 @@ export function PostCard({ post, priority }: { post: PostCardType; priority?: bo
       </Link>
       <div className="flex flex-1 flex-col gap-2 p-5">
         {post.category && (
-          <span className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-gold-600">
+          <span className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-gold-700">
             {post.category.name}
           </span>
         )}
@@ -40,7 +40,7 @@ export function PostCard({ post, priority }: { post: PostCardType; priority?: bo
         <p className="line-clamp-3 text-sm leading-relaxed text-ink-muted">{post.excerpt}</p>
         <Link
           href={`/blogs/${post.slug}`}
-          className="mt-auto inline-flex items-center gap-1 pt-2 text-sm font-medium text-maroon transition-colors hover:text-gold-600"
+          className="mt-auto inline-flex items-center gap-1 pt-2 text-sm font-medium text-maroon transition-colors hover:text-gold-700"
         >
           Read More
           <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />

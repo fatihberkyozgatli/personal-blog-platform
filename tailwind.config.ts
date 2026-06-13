@@ -21,6 +21,8 @@ const config: Config = {
           DEFAULT: "#C9A24B",
           400: "#D8B564",
           600: "#A8842F",
+          // Text-safe gold: ~4.7:1 on ivory/parchment (WCAG AA for small text).
+          700: "#7A5E1E",
         },
         persian: "#1F4E79",
         emerald: "#2E5E4E",

@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { Check, TriangleAlert } from "lucide-react";
 import { Button } from "@/components/shared/Button";
 import { subscribe, type FormState } from "@/lib/actions/newsletter";
 
@@ -26,10 +27,19 @@ export function NewsletterForm() {
       </div>
       {state.message && (
         <p
-          role="status"
-          aria-live="polite"
-          className={state.ok ? "mt-2 text-sm text-gold-400" : "mt-2 text-sm text-ivory/80"}
+          role={state.ok ? "status" : "alert"}
+          aria-live={state.ok ? "polite" : "assertive"}
+          className={
+            state.ok
+              ? "mt-2 flex items-center gap-1.5 text-sm text-gold-400"
+              : "mt-2 flex items-center gap-1.5 text-sm text-ivory"
+          }
         >
+          {state.ok ? (
+            <Check className="h-4 w-4" />
+          ) : (
+            <TriangleAlert className="h-4 w-4" />
+          )}
           {state.message}
         </p>
       )}

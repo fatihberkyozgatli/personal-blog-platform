@@ -1,4 +1,4 @@
-import { getPosts } from "@/lib/data/posts";
+import { getLatestPosts } from "@/lib/data/posts";
 
 const base = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
@@ -9,7 +9,7 @@ function escapeXml(s: string) {
 }
 
 export async function GET() {
-  const posts = await getPosts({ limit: 50 });
+  const posts = await getLatestPosts(50);
   const items = posts
     .map(
       (p) => `    <item>

@@ -26,7 +26,7 @@ export function OrnamentRule({ className }: { className?: string }) {
 /** A small caption label with florets on either side (e.g. "Featured Post"). */
 export function FloretLabel({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.2em] text-gold-600">
+    <span className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.2em] text-gold-700">
       <Floret className="h-3 w-3" />
       {children}
       <Floret className="h-3 w-3" />

@@ -1,4 +1,12 @@
-import type { Category, Comment, PostFull } from "./types";
+import type { Category, Comment, PostFull, Tag } from "./types";
+
+export const mockTags: Tag[] = [
+  { id: "t1", name: "Patience", slug: "patience" },
+  { id: "t2", name: "Memory", slug: "memory" },
+  { id: "t3", name: "Stillness", slug: "stillness" },
+  { id: "t4", name: "Empire", slug: "empire" },
+  { id: "t5", name: "Gratitude", slug: "gratitude" },
+];
 
 // Sample content used when Supabase is not configured, so the public site
 // renders out of the box. Mirrors the wireframe (documentation/wireframes.png).
@@ -102,6 +110,11 @@ export const mockPosts: PostFull[] = [
   makePost(8, "Between Dreams and Reality", "between-dreams-and-reality", "reflections", 6, 1020, 90, 26,
     "Exploring the delicate balance between what we dream and what we live."),
 ];
+
+// Give the sample posts a couple of tags each so the filter bar feels real.
+mockPosts.forEach((p, i) => {
+  p.tags = [mockTags[i % mockTags.length], mockTags[(i + 2) % mockTags.length]];
+});
 
 export const mockComments: Comment[] = [
   {

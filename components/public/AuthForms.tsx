@@ -13,8 +13,8 @@ function Notice({ state }: { state: AuthState }) {
   if (!state.message) return null;
   return (
     <p
-      role="status"
-      aria-live="polite"
+      role={state.ok ? "status" : "alert"}
+      aria-live={state.ok ? "polite" : "assertive"}
       className={state.ok ? "text-sm text-emerald" : "text-sm text-clay"}
     >
       {state.message}
@@ -52,7 +52,7 @@ export function LoginForm({ redirectTo }: { redirectTo: string }) {
       </Button>
       <p className="text-center text-sm text-ink-muted">
         New here?{" "}
-        <Link href="/signup" className="font-medium text-maroon hover:text-gold-600">
+        <Link href="/signup" className="font-medium text-maroon hover:text-gold-700">
           Create an account
         </Link>
       </p>
@@ -98,7 +98,7 @@ export function SignupForm({ redirectTo }: { redirectTo: string }) {
       </Button>
       <p className="text-center text-sm text-ink-muted">
         Already have an account?{" "}
-        <Link href="/login" className="font-medium text-maroon hover:text-gold-600">
+        <Link href="/login" className="font-medium text-maroon hover:text-gold-700">
           Sign in
         </Link>
       </p>

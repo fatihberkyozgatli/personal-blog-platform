@@ -68,9 +68,15 @@ export async function toggleLike(postId: string, slug: string): Promise<LikeResu
     .maybeSingle();
 
   if (existing) {
-    await supabase.from("post_likes").delete().eq("post_id", postId).eq("user_id", user.id);
+    const { error } = await supabase
+      .from("post_likes")
+      .delete()
+      .eq("post_id", postId)
+      .eq("user_id", user.id);
+    if (error) console.error("unlike failed:", error.message);
   } else {
-    await supabase.from("post_likes").insert({ post_id: postId, user_id: user.id });
+    const { error } = await supabase.from("post_likes").insert({ post_id: postId, user_id: user.id });
+    if (error) console.error("like failed:", error.message);
   }
 
   const { count } = await supabase
@@ -80,4 +86,14 @@ export async function toggleLike(postId: string, slug: string): Promise<LikeResu
 
   revalidatePath(`/blogs/${slug}`);
   return { liked: !existing, count: count ?? 0 };
+}
+
+/**
+ * Records a single post view. Called once per page load from the client (see
+ * ViewPing), so it never blocks render and isn't re-counted on prefetch.
+ */
+export async function recordView(slug: string): Promise<void> {
+  if (!isSupabaseConfigured()) return;
+  const supabase = await createClient();
+  await supabase.rpc("increment_post_view", { p_slug: slug });
 }

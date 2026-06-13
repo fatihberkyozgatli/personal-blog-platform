@@ -50,7 +50,7 @@ export default async function AdminPostsPage() {
                       className={
                         p.status === "published"
                           ? "rounded-full bg-emerald/10 px-2 py-0.5 text-xs text-emerald"
-                          : "rounded-full bg-gold/15 px-2 py-0.5 text-xs text-gold-600"
+                          : "rounded-full bg-gold/15 px-2 py-0.5 text-xs text-gold-700"
                       }
                     >
                       {p.status}

@@ -16,6 +16,17 @@ const notConfigured: ActionState = {
   ok: false,
   message: "Connect Supabase (set NEXT_PUBLIC_SUPABASE_URL) to manage content.",
 };
+const notAuthorized: ActionState = { ok: false, message: "You are not authorized to do that." };
+
+/**
+ * Defense-in-depth: admin Server Actions verify the caller's role explicitly
+ * rather than relying on RLS alone (Server Actions bypass the /admin middleware
+ * guard, which only protects page navigations).
+ */
+async function ensureAdmin(): Promise<boolean> {
+  const user = await getCurrentUser();
+  return user?.role === "admin";
+}
 
 function slugify(input: string) {
   return input
@@ -52,6 +63,7 @@ const postSchema = z.object({
 
 export async function savePost(_prev: ActionState, formData: FormData): Promise<ActionState> {
   if (!isSupabaseConfigured()) return notConfigured;
+  if (!(await ensureAdmin())) return notAuthorized;
 
   const parsed = postSchema.safeParse({
     id: formData.get("id") || undefined,
@@ -77,6 +89,23 @@ export async function savePost(_prev: ActionState, formData: FormData): Promise<
 
   const supabase = await createClient();
   const slug = parsed.data.slug ? slugify(parsed.data.slug) : slugify(parsed.data.title);
+
+  // Only stamp published_at when a post first becomes published; never reset it
+  // on subsequent edits (which would reorder feeds and change the shown date).
+  let setPublishedAt: string | undefined;
+  if (parsed.data.status === "published") {
+    if (parsed.data.id) {
+      const { data: existing } = await supabase
+        .from("posts")
+        .select("published_at")
+        .eq("id", parsed.data.id)
+        .maybeSingle();
+      if (!existing?.published_at) setPublishedAt = new Date().toISOString();
+    } else {
+      setPublishedAt = new Date().toISOString();
+    }
+  }
+
   const row = {
     title: parsed.data.title,
     slug,
@@ -87,8 +116,7 @@ export async function savePost(_prev: ActionState, formData: FormData): Promise<
     content,
     reading_time: readingTimeFrom(content),
     author_id: user.id,
-    // Publish now if publishing and no date was set yet.
-    ...(parsed.data.status === "published" ? { published_at: new Date().toISOString() } : {}),
+    ...(setPublishedAt ? { published_at: setPublishedAt } : {}),
   };
 
   if (parsed.data.id) {
@@ -105,16 +133,19 @@ export async function savePost(_prev: ActionState, formData: FormData): Promise<
 }
 
 export async function deletePost(formData: FormData): Promise<void> {
-  if (!isSupabaseConfigured()) return;
+  if (!isSupabaseConfigured() || !(await ensureAdmin())) return;
   const id = String(formData.get("id"));
   const supabase = await createClient();
-  await supabase.from("posts").delete().eq("id", id);
+  const { error } = await supabase.from("posts").delete().eq("id", id);
+  if (error) console.error("deletePost failed:", error.message);
   revalidatePath("/admin/posts");
+  revalidatePath("/blogs");
 }
 
 // ── Taxonomy ───────────────────────────────────────────────────────────────
 export async function createCategory(_prev: ActionState, formData: FormData): Promise<ActionState> {
   if (!isSupabaseConfigured()) return notConfigured;
+  if (!(await ensureAdmin())) return notAuthorized;
   const name = String(formData.get("name") ?? "").trim();
   if (!name) return { ok: false, message: "Category name is required." };
   const supabase = await createClient();
@@ -126,6 +157,7 @@ export async function createCategory(_prev: ActionState, formData: FormData): Pr
 
 export async function createTag(_prev: ActionState, formData: FormData): Promise<ActionState> {
   if (!isSupabaseConfigured()) return notConfigured;
+  if (!(await ensureAdmin())) return notAuthorized;
   const name = String(formData.get("name") ?? "").trim();
   if (!name) return { ok: false, message: "Tag name is required." };
   const supabase = await createClient();
@@ -136,9 +168,10 @@ export async function createTag(_prev: ActionState, formData: FormData): Promise
 }
 
 async function deleteFrom(table: string, id: string, path: string) {
-  if (!isSupabaseConfigured()) return;
+  if (!isSupabaseConfigured() || !(await ensureAdmin())) return;
   const supabase = await createClient();
-  await supabase.from(table).delete().eq("id", id);
+  const { error } = await supabase.from(table).delete().eq("id", id);
+  if (error) console.error(`delete from ${table} failed:`, error.message);
   revalidatePath(path);
 }
 
@@ -154,17 +187,25 @@ export async function deleteSubscriber(formData: FormData): Promise<void> {
 
 // ── Moderation & inbox ─────────────────────────────────────────────────────
 export async function approveComment(formData: FormData): Promise<void> {
-  if (!isSupabaseConfigured()) return;
+  if (!isSupabaseConfigured() || !(await ensureAdmin())) return;
   const supabase = await createClient();
-  await supabase.from("comments").update({ approved: true }).eq("id", String(formData.get("id")));
+  const { error } = await supabase
+    .from("comments")
+    .update({ approved: true })
+    .eq("id", String(formData.get("id")));
+  if (error) console.error("approveComment failed:", error.message);
   revalidatePath("/admin/comments");
 }
 export async function deleteComment(formData: FormData): Promise<void> {
   await deleteFrom("comments", String(formData.get("id")), "/admin/comments");
 }
 export async function markMessageRead(formData: FormData): Promise<void> {
-  if (!isSupabaseConfigured()) return;
+  if (!isSupabaseConfigured() || !(await ensureAdmin())) return;
   const supabase = await createClient();
-  await supabase.from("contact_messages").update({ read: true }).eq("id", String(formData.get("id")));
+  const { error } = await supabase
+    .from("contact_messages")
+    .update({ read: true })
+    .eq("id", String(formData.get("id")));
+  if (error) console.error("markMessageRead failed:", error.message);
   revalidatePath("/admin/messages");
 }

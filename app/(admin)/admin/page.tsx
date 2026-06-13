@@ -27,7 +27,7 @@ export default async function AdminDashboard() {
           <h2 className="font-display text-xl text-ink">Recent Posts</h2>
           <Link
             href="/admin/posts"
-            className="inline-flex items-center gap-1 text-sm font-medium text-maroon hover:text-gold-600"
+            className="inline-flex items-center gap-1 text-sm font-medium text-maroon hover:text-gold-700"
           >
             All posts <ArrowRight className="h-4 w-4" />
           </Link>
@@ -49,7 +49,7 @@ export default async function AdminDashboard() {
                   className={
                     p.status === "published"
                       ? "rounded-full bg-emerald/10 px-2 py-0.5 text-emerald"
-                      : "rounded-full bg-gold/15 px-2 py-0.5 text-gold-600"
+                      : "rounded-full bg-gold/15 px-2 py-0.5 text-gold-700"
                   }
                 >
                   {p.status}
