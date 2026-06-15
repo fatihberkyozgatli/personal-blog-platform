@@ -1,0 +1,67 @@
+begin;
+set local role anon;
+do $$
+declare n int; safe_post_id uuid; leaked_content jsonb;
+begin
+  select id into safe_post_id from posts where status = 'published' and published_at <= now() limit 1;
+  assert safe_post_id is not null, 'anon must be able to select safe columns for published posts';
+  begin
+    select content into leaked_content from posts limit 1;
+    raise exception 'anon SELECT posts.content should have been blocked';
+  exception when insufficient_privilege then
+    null;
+  end;
+  select count(*) into n from posts_public;
+  assert n >= 5, format('anon must see published posts via posts_public, saw %s', n);
+  select count(*) into n from posts_public where slug in ('a-draft-not-yet-published','a-post-scheduled-for-the-future');
+  assert n = 0, 'anon must NOT see draft or future posts via posts_public';
+end $$;
+insert into newsletter_subscribers (email) values ('rls-check-anon@example.com');
+do $$
+declare n int;
+begin
+  select count(*) into n from newsletter_subscribers;
+  assert n = 0, format('anon must not read newsletter_subscribers, saw %s', n);
+end $$;
+rollback;
+
+begin;
+set local role authenticated;
+set local request.jwt.claims = '{"sub":"00000000-0000-0000-0000-000000000000","role":"authenticated"}';
+do $$
+declare n int;
+begin
+  select count(*) into n from posts;
+  assert n >= 5, format('reader must see published posts, saw %s', n);
+  select count(*) into n from posts where status = 'draft' or published_at > now();
+  assert n = 0, 'reader must NOT see drafts or future-dated posts';
+end $$;
+do $$
+begin
+  begin
+    insert into posts (title, slug, excerpt, content, status, author_id)
+    values ('hack','hack-slug','x','{}'::jsonb,'published','00000000-0000-0000-0000-000000000000');
+    raise exception 'reader INSERT into posts should have been blocked';
+  exception when insufficient_privilege or check_violation then
+    null;
+  end;
+end $$;
+rollback;
+
+begin;
+set local role authenticated;
+set local request.jwt.claims = '{"sub":"bcce1191-641d-4b28-a1fd-9e10f750ed6e","role":"authenticated"}';
+do $$
+declare n_draft int; n_future int;
+begin
+  select count(*) into n_draft from posts where status = 'draft';
+  assert n_draft >= 1, 'admin must see drafts';
+  select count(*) into n_future from posts where published_at > now();
+  assert n_future >= 1, 'admin must see future-dated posts';
+end $$;
+do $$
+declare n int;
+begin
+  select count(*) into n from newsletter_subscribers;
+end $$;
+rollback;

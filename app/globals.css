@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: light; }
+
+body {
+  background-color: theme("colors.ivory");
+  color: theme("colors.ink.DEFAULT");
+  font-family: theme("fontFamily.sans");
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+h1, h2, h3, h4 { font-family: theme("fontFamily.display"); }

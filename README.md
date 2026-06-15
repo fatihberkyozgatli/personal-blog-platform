@@ -42,7 +42,8 @@ middleware.ts session refresh + /admin guard
 
 ## Getting Started
 
-> The app is not yet scaffolded. These are the intended steps once setup begins.
+> **Stage 1 (Foundation & Database) is complete** — the app is scaffolded and wired to a hosted
+> Supabase project (see `documentation/stages.md` for progress). The steps below set up a fresh clone.
 
 1. **Install dependencies**
    ```bash
@@ -56,14 +57,14 @@ middleware.ts session refresh + /admin guard
 3. **Database**, apply migrations and generate types:
    ```bash
    supabase db push
-   supabase gen types typescript --project-id <id> > types/database.ts
+   supabase gen types typescript --linked > types/database.ts
    ```
 4. **Run**
    ```bash
    npm run dev
    ```
 
-## Scripts (planned)
+## Scripts
 
 | Command          | Purpose |
 |------------------|---------|

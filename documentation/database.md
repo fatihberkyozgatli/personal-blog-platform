@@ -134,7 +134,7 @@ card data publicly, we expose a **view with only the safe columns**:
 
 ```sql
 create view posts_public
-with (security_invoker = false) as
+with (security_invoker = true) as
 select
   p.id, p.title, p.slug, p.cover_image, p.excerpt,
   p.category_id, p.author_id, p.published_at, p.reading_time, p.view_count, p.created_at,
@@ -147,8 +147,9 @@ grant select on posts_public to anon, authenticated;
 ```
 
 - Listings, the landing page, and the **post teaser** read from `posts_public`, never `content`.
-- The full body reads from the base `posts` table, which only authenticated users may select
-  (see policies below). Anonymous requests to `posts` return nothing.
+- The full body reads from the base `posts` table, where anonymous users are granted only the
+  safe public columns and never `content`. Authenticated users may select published full rows
+  (see policies below).
 
 ---
 
@@ -158,7 +159,7 @@ Enable RLS on every table. Summary of who can do what:
 
 | Table                    | anon            | authenticated (reader)                          | admin |
 |--------------------------|-----------------|-------------------------------------------------|-------|
-| `posts`                  | none            | SELECT where `status='published' AND published_at<=now()` | ALL (incl. drafts) |
+| `posts`                  | SELECT safe published columns only, never `content` | SELECT where `status='published' AND published_at<=now()` | ALL (incl. drafts) |
 | `posts_public` (view)    | SELECT          | SELECT                                          | SELECT |
 | `categories`             | SELECT          | SELECT                                          | ALL |
 | `tags`                   | SELECT          | SELECT                                          | ALL |
