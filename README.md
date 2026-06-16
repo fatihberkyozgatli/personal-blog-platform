@@ -24,6 +24,8 @@ a free account**. The owner writes and manages everything through a built-in adm
 | [`documentation/database.md`](documentation/database.md) | Schema, enums, RLS policies, the `posts_public` view, search, seeds |
 | [`documentation/design.md`](documentation/design.md) | Brand palette, typography, component & page layouts |
 | `documentation/wireframes.png` | Landing-page design reference |
+| [`documentation/stages.md`](documentation/stages.md) | Build roadmap and per-stage progress (each stage has a `stageN.md` spec) |
+| [`documentation/consider.md`](documentation/consider.md) | Deferred items to revisit (password reset, profile editing) |
 
 ## Project Structure
 
@@ -42,8 +44,9 @@ middleware.ts session refresh + /admin guard
 
 ## Getting Started
 
-> **Stage 1 (Foundation & Database) is complete** — the app is scaffolded and wired to a hosted
-> Supabase project (see `documentation/stages.md` for progress). The steps below set up a fresh clone.
+> **Stages 1–2 (Foundation, Database, Auth) are complete** — the app is scaffolded, wired to a
+> hosted Supabase project, with email/password auth and the `/admin` guard (see
+> `documentation/stages.md` for progress). The steps below set up a fresh clone.
 
 1. **Install dependencies**
    ```bash

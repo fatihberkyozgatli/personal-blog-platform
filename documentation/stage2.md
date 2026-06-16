@@ -1,5 +1,22 @@
 # Placeholder Name: Stage 2 — Auth & Session
 
+## Status: COMPLETED (2026-06-16)
+
+Email/password auth (signup, login, signout), the email-confirmation callback, login/signup pages,
+and the `/admin` route guard, all on the Stage 1 foundation. The review gate added: a `safeNext`
+open-redirect validator (`lib/utils/redirect.ts`, tested) used by both redirect paths; an exact
+`/admin` prefix match; explicit redirect cookie copying; a maroon focus ring (gold failed the 3:1
+non-text contrast — corrected in `design.md`); 44px touch targets; and form a11y
+(`aria-describedby`/`aria-invalid`, password helper text, required markers, focus-on-error,
+`motion-safe` transitions). `display_name` derives from the email local-part (Stage 1 trigger);
+password reset deferred (`consider.md`).
+
+Verified: typecheck / lint / build clean; 8/8 unit tests. The live auth flow (signup → email
+confirm → session; `/admin` redirects) is an owner test once the dashboard `/auth/callback`
+redirect is configured.
+
+---
+
 > The second build stage from `stages.md`. Goal: real **email/password authentication** via
 > Supabase Auth (email confirmation ON), plus the session plumbing the registration wall and the
 > admin portal depend on. Builds directly on Stage 1 (the `profiles` auto-create trigger, RLS, the

@@ -7,7 +7,7 @@
 > **Naming:** the brand name is not finalized. Use "Placeholder Name" everywhere a name is needed
 > until the client provides the real one.
 
-_Roadmap agreed 2026-06-15. **Stage 1 completed 2026-06-15.** Current stage: **2 — Auth & Session**._
+_Roadmap agreed 2026-06-15. **Stages 1–2 completed.** Current stage: **3 — Public Site & Registration Wall**._
 
 ---
 
@@ -30,7 +30,7 @@ app builds.
 
 ---
 
-## Stage 2 — Auth & Session  (current — see `stage2.md`)
+## Stage 2 — Auth & Session  (completed — see `stage2.md`)
 
 - Signup / login pages (`(auth)` route group)
 - Email/password via Supabase Auth, **email confirmation ON**
@@ -42,7 +42,7 @@ and anonymous visitors.
 
 ---
 
-## Stage 3 — Public Site & Registration Wall
+## Stage 3 — Public Site & Registration Wall  (current)
 
 - Global chrome: header (wordmark, nav, search affordance, Sign Up), footer, ornament
 - Landing, blog listing, categories, about, contact pages (read from `posts_public`)
