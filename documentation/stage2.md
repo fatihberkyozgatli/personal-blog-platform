@@ -47,12 +47,14 @@ Source docs: `architecture.md` §5 (Auth Flow), `database.md` (`profiles`, `is_a
 - **Signup:** form → `signUp` action → `supabase.auth.signUp({ email, password, options: { emailRedirectTo: <origin>/auth/callback } })`. Supabase emails a confirmation link; UI shows "check your email." The Stage 1 `handle_new_user` trigger creates the `profiles` row (`role = 'reader'`, `display_name` derived from the email local-part).
 - **Confirm:** link → `/auth/callback?code=…` → route calls `supabase.auth.exchangeCodeForSession(code)` (sets the session cookie via `@supabase/ssr`) → redirect to the page the user came from (a `next` param), default `/`.
 - **Login:** form → `signIn` action → `supabase.auth.signInWithPassword` → redirect to the `next` page (default `/`). Unconfirmed users get an "email not confirmed" error.
+- `next` redirects must accept only relative paths like `/admin`; reject external URLs and
+  protocol-relative values like `//evil.com`.
 - **Logout:** `signOut` action → `supabase.auth.signOut()` → redirect to `/`.
 - Session refresh: already handled by `middleware.ts` (Stage 1).
 
 ## 5. The `/admin` guard
 In `lib/supabase/middleware.ts`, after `getUser()`:
-- If the path starts with `/admin`:
+- If the path is `/admin` or starts with `/admin/`:
   - no user → redirect `/login?next=<path>`;
   - user present → `supabase.rpc('is_admin')`; if `false` → redirect `/` (or a 403 page).
 - `is_admin()` is `security definer` and uses `auth.uid()`, so it resolves for the current session;

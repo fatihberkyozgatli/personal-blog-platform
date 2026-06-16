@@ -101,7 +101,7 @@ will see.
 
 - Verify contrast for gold-on-ivory and any text on maroon (use the lighter parchment/ivory for
   text on maroon, not pure gold for body copy).
-- Ornament is decorative (`aria-hidden`); focus states visible (gold ring); respect
+- Ornament is decorative (`aria-hidden`); focus states visible (maroon ring; gold fails the 3:1 non-text contrast on ivory); respect
   `prefers-reduced-motion`.
 
 > Schema/RLS: see `database.md`. System architecture and flows: see `architecture.md`.
