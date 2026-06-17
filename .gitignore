@@ -51,3 +51,5 @@ Thumbs.db
 
 # Heavy ornament source sheets (sliced assets live in public/ornaments/lib)
 public/ornaments/_raw/
+
+documentation/*-plan.md

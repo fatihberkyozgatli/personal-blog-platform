@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { fontDisplay, fontSans } from "./fonts";
 import { cn } from "@/lib/utils/cn";
+import { ToastProvider } from "@/components/shared/Toast";
 import "./globals.css";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
@@ -26,7 +27,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={cn(fontDisplay.variable, fontSans.variable)}>
-      <body className="min-h-dvh overflow-x-hidden">{children}</body>
+      <body className="min-h-dvh overflow-x-hidden">
+        <ToastProvider>{children}</ToastProvider>
+      </body>
     </html>
   );
 }

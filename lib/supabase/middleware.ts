@@ -1,53 +1,49 @@
-import { createServerClient } from "@supabase/ssr";
+import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
-import { SUPABASE_ANON_KEY, SUPABASE_URL, isSupabaseConfigured } from "./config";
+import type { Database } from "@/types/database";
+import { env } from "@/lib/env";
 
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
 
-  if (!isSupabaseConfigured()) {
-    return response;
-  }
-
-  const supabase = createServerClient(SUPABASE_URL!, SUPABASE_ANON_KEY!, {
-    cookies: {
-      getAll() {
-        return request.cookies.getAll();
-      },
-      setAll(cookiesToSet: { name: string; value: string; options?: Record<string, unknown> }[]) {
-        cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
-        response = NextResponse.next({ request });
-        cookiesToSet.forEach(({ name, value, options }) =>
-          response.cookies.set(name, value, options),
-        );
+  const supabase = createServerClient<Database>(
+    env.NEXT_PUBLIC_SUPABASE_URL,
+    env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    {
+      cookies: {
+        getAll: () => request.cookies.getAll(),
+        setAll: (cookiesToSet: { name: string; value: string; options: CookieOptions }[]) => {
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
+          response = NextResponse.next({ request });
+          cookiesToSet.forEach(({ name, value, options }) =>
+            response.cookies.set(name, value, options),
+          );
+        },
       },
     },
-  });
+  );
 
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
   const path = request.nextUrl.pathname;
 
-  if (path.startsWith("/admin")) {
+  if (path === "/admin" || path.startsWith("/admin/")) {
     if (!user) {
       const url = request.nextUrl.clone();
       url.pathname = "/login";
-      url.searchParams.set("redirect", path);
-      return NextResponse.redirect(url);
+      url.searchParams.set("next", path);
+      const redirect = NextResponse.redirect(url);
+      response.cookies.getAll().forEach((c) => redirect.cookies.set(c.name, c.value, c));
+      return redirect;
     }
-
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", user.id)
-      .single();
-
-    if (profile?.role !== "admin") {
+    const { data: isAdmin } = await supabase.rpc("is_admin");
+    if (!isAdmin) {
       const url = request.nextUrl.clone();
       url.pathname = "/";
-      return NextResponse.redirect(url);
+      const redirect = NextResponse.redirect(url);
+      response.cookies.getAll().forEach((c) => redirect.cookies.set(c.name, c.value, c));
+      return redirect;
     }
   }
 

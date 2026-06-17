@@ -2,14 +2,13 @@
 
 import { useActionState, useEffect } from "react";
 import Link from "next/link";
-import { signUp, type AuthState } from "../actions";
-import { PasswordInput } from "../password-input";
+import { requestPasswordReset, type AuthState } from "../actions";
 import { FormAlert } from "../form-alert";
 
 const initialState: AuthState = {};
 
-export default function SignupPage() {
-  const [state, formAction, pending] = useActionState(signUp, initialState);
+export default function ForgotPasswordPage() {
+  const [state, formAction, pending] = useActionState(requestPasswordReset, initialState);
 
   useEffect(() => {
     if (state.error) document.getElementById("email")?.focus();
@@ -18,8 +17,10 @@ export default function SignupPage() {
   return (
     <>
       <div className="text-center">
-        <h1 className="font-display text-3xl text-ink">Create Your Account</h1>
-        <p className="mt-3 text-sm text-ink-muted">Free, and it unlocks every reflection.</p>
+        <h1 className="font-display text-3xl text-ink">Reset your password</h1>
+        <p className="mt-3 text-sm text-ink-muted">
+          Enter your email and we&apos;ll send you a reset link.
+        </p>
       </div>
       {state.message ? (
         <p role="status" className="mt-6 rounded border border-emerald/40 bg-ivory p-4 text-center text-emerald">
@@ -45,19 +46,18 @@ export default function SignupPage() {
               className="mt-1 w-full rounded border border-ink-muted/30 bg-ivory px-3 py-3 text-ink focus:border-maroon focus:outline-none focus:ring-2 focus:ring-maroon"
             />
           </div>
-          <PasswordInput autoComplete="new-password" invalid={!!state.error} helperText="At least 8 characters." />
           {state.error && <FormAlert message={state.error} />}
           <button
             type="submit"
             disabled={pending}
             className="w-full cursor-pointer rounded bg-gold px-4 py-3 font-medium text-ink hover:bg-gold/90 motion-safe:transition-colors motion-safe:duration-200 focus:outline-none focus:ring-2 focus:ring-maroon disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {pending ? "Creating..." : "Sign Up"}
+            {pending ? "Sending..." : "Send reset link"}
           </button>
         </form>
       )}
       <p className="mt-4 text-center text-sm text-ink-muted">
-        Have an account?{" "}
+        Remembered it?{" "}
         <Link href="/login" className="text-maroon underline underline-offset-2">
           Sign in
         </Link>

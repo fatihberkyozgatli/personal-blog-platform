@@ -18,16 +18,17 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
   } = await supabase.auth.getUser();
   if (!user) return null;
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("display_name, role")
-    .eq("id", user.id)
-    .single();
+  const [{ data: profile }, { data: admin }] = await Promise.all([
+    supabase.from("profiles").select("display_name").eq("id", user.id).single(),
+    supabase.rpc("is_admin"),
+  ]);
+
+  const role: Role = admin ? "admin" : "reader";
 
   return {
     id: user.id,
     email: user.email ?? null,
     displayName: profile?.display_name ?? user.email?.split("@")[0] ?? "Reader",
-    role: (profile?.role as Role) ?? "reader",
+    role,
   };
 }

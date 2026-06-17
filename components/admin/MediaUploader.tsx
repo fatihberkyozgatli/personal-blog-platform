@@ -25,12 +25,15 @@ export function MediaUploader() {
         upsert: false,
       });
       if (error) throw error;
+      const { data: auth } = await supabase.auth.getUser();
+      if (!auth.user) throw new Error("Not signed in.");
       const { data } = supabase.storage.from("media").getPublicUrl(path);
       await supabase.from("media").insert({
         url: data.publicUrl,
         filename: file.name,
         mime_type: file.type,
         size: file.size,
+        uploaded_by: auth.user.id,
       });
       setStatus("Uploaded.");
       router.refresh();

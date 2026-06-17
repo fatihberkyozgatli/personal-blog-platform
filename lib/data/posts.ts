@@ -1,19 +1,20 @@
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import type { Category, Comment, PostCard, Tag } from "./types";
+import type { Database } from "@/types/database";
 import { mockCategories, mockComments, mockPosts, mockTags } from "./mock";
 
-type Row = Record<string, any>;
+type Row = Database["public"]["Views"]["posts_public"]["Row"];
 
 function mapCard(row: Row, categories: Category[]): PostCard {
   return {
-    id: row.id,
-    title: row.title,
-    slug: row.slug,
+    id: row.id ?? "",
+    title: row.title ?? "",
+    slug: row.slug ?? "",
     coverImage: row.cover_image,
-    excerpt: row.excerpt,
+    excerpt: row.excerpt ?? "",
     category: categories.find((c) => c.id === row.category_id) ?? null,
-    author: row.author_name ? { id: row.author_id, displayName: row.author_name } : null,
+    author: row.author_name ? { id: row.author_id ?? "", displayName: row.author_name } : null,
     publishedAt: row.published_at,
     readingTime: row.reading_time ?? 0,
     viewCount: row.view_count ?? 0,
@@ -193,7 +194,7 @@ export async function getPostTags(postId: string): Promise<Tag[]> {
   }
   const supabase = await createClient();
   const { data } = await supabase.from("post_tags").select("tags(id, name, slug)").eq("post_id", postId);
-  return (data ?? []).map((r: Row) => r.tags).filter(Boolean) as Tag[];
+  return (data ?? []).map((r) => r.tags).filter(Boolean) as Tag[];
 }
 
 export async function getRelatedPosts(post: PostCard, limit = 3): Promise<PostCard[]> {
@@ -227,7 +228,7 @@ export async function getCommentsForPost(postId: string): Promise<Comment[]> {
     .eq("approved", true)
     .order("created_at", { ascending: true });
 
-  const all: Comment[] = (data ?? []).map((c: Row) => ({
+  const all: Comment[] = (data ?? []).map((c) => ({
     id: c.id,
     postId: c.post_id,
     parentId: c.parent_id,

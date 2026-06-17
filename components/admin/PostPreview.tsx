@@ -9,10 +9,11 @@ import type { Category, PostStatus } from "@/lib/data/types";
 
 function readingTimeFrom(content: unknown): number {
   let text = "";
-  const walk = (node: any) => {
-    if (!node) return;
-    if (typeof node.text === "string") text += node.text + " ";
-    if (Array.isArray(node.content)) node.content.forEach(walk);
+  const walk = (node: unknown) => {
+    if (!node || typeof node !== "object") return;
+    const n = node as { text?: unknown; content?: unknown };
+    if (typeof n.text === "string") text += n.text + " ";
+    if (Array.isArray(n.content)) n.content.forEach(walk);
   };
   walk(content);
   const words = text.trim().split(/\s+/).filter(Boolean).length;

@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { getCurrentUser } from "@/lib/auth";
+import type { Database, Json } from "@/types/database";
 
 export interface ActionState {
   ok: boolean;
@@ -34,10 +35,11 @@ function slugify(input: string) {
 
 function readingTimeFrom(content: unknown): number {
   let text = "";
-  const walk = (node: any) => {
-    if (!node) return;
-    if (typeof node.text === "string") text += node.text + " ";
-    if (Array.isArray(node.content)) node.content.forEach(walk);
+  const walk = (node: unknown) => {
+    if (!node || typeof node !== "object") return;
+    const n = node as { text?: unknown; content?: unknown };
+    if (typeof n.text === "string") text += n.text + " ";
+    if (Array.isArray(n.content)) n.content.forEach(walk);
   };
   walk(content);
   const words = text.trim().split(/\s+/).filter(Boolean).length;
@@ -71,7 +73,7 @@ export async function savePost(_prev: ActionState, formData: FormData): Promise<
   });
   if (!parsed.success) return { ok: false, message: parsed.error.issues[0].message };
 
-  let content: unknown;
+  let content: Json;
   try {
     content = JSON.parse(parsed.data.content);
   } catch {
@@ -171,10 +173,10 @@ export async function updateCategoryIcon(id: string, icon: string): Promise<void
   revalidatePath("/categories");
 }
 
-async function deleteFrom(table: string, id: string, path: string) {
+async function deleteFrom(table: keyof Database["public"]["Tables"], id: string, path: string) {
   if (!isSupabaseConfigured() || !(await ensureAdmin())) return;
   const supabase = await createClient();
-  const { error } = await supabase.from(table).delete().eq("id", id);
+  const { error } = await supabase.from(table).delete().eq("id" as never, id);
   if (error) console.error(`delete from ${table} failed:`, error.message);
   revalidatePath(path);
 }

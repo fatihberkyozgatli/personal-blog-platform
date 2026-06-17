@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
+  Eye,
   FileText,
   FolderTree,
   Image as ImageIcon,
@@ -20,6 +21,7 @@ import { cn } from "@/lib/utils/cn";
 import { Floret } from "@/components/shared/Ornament";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { useToast } from "@/components/shared/Toast";
 
 const items = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
@@ -35,6 +37,7 @@ const items = [
 export function AdminSidebar({ name }: { name: string }) {
   const pathname = usePathname();
   const router = useRouter();
+  const { toast } = useToast();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const active = (href: string, exact?: boolean) =>
@@ -42,7 +45,9 @@ export function AdminSidebar({ name }: { name: string }) {
 
   async function signOut() {
     if (isSupabaseConfigured()) await createClient().auth.signOut();
+    toast("You've been signed out.");
     router.push("/");
+    router.refresh();
   }
 
   const nav = (
@@ -74,7 +79,8 @@ export function AdminSidebar({ name }: { name: string }) {
         onClick={() => setMobileOpen(false)}
         className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-ivory/75 hover:bg-ivory/5 hover:text-ivory"
       >
-        View site
+        <Eye className="h-4 w-4" />
+        User View
       </Link>
       <button
         type="button"

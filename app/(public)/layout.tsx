@@ -1,6 +1,7 @@
 import { SiteHeader } from "@/components/public/SiteHeader";
 import { SiteFooter } from "@/components/public/SiteFooter";
 import { BackToTop } from "@/components/shared/BackToTop";
+import { AdminFab } from "@/components/admin/AdminFab";
 import { getCurrentUser } from "@/lib/auth";
 
 export default async function PublicLayout({
@@ -24,6 +25,7 @@ export default async function PublicLayout({
       </main>
       <SiteFooter />
       <BackToTop />
+      {user?.role === "admin" && <AdminFab />}
     </div>
   );
 }

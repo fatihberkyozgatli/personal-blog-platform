@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Search, X } from "lucide-react";
 import type { Category, Tag } from "@/lib/data/types";
 import { Select } from "./Select";
@@ -15,6 +16,7 @@ export function FilterBar({
   current: { q?: string; c?: string; tag?: string; sort?: string };
 }) {
   const router = useRouter();
+  const reduceMotion = useReducedMotion();
   const hasActiveFilters = Boolean(
     current.q || current.c || current.tag || (current.sort && current.sort !== "newest"),
   );
@@ -85,16 +87,23 @@ export function FilterBar({
         ]}
       />
 
-      {hasActiveFilters && (
-        <button
-          type="button"
-          onClick={() => router.push("/blogs")}
-          className="inline-flex items-center justify-center gap-1.5 rounded-md border border-gold/30 px-3 py-2.5 text-sm font-medium text-ink-muted transition-colors hover:border-gold hover:text-maroon sm:shrink-0 cursor-pointer"
-        >
-          <X className="h-4 w-4" />
-          Clear
-        </button>
-      )}
+      <AnimatePresence initial={false}>
+        {hasActiveFilters && (
+          <motion.button
+            key="clear-filters"
+            type="button"
+            onClick={() => router.push("/blogs")}
+            initial={reduceMotion ? { opacity: 0 } : { opacity: 0, x: 28, width: 0 }}
+            animate={reduceMotion ? { opacity: 1 } : { opacity: 1, x: 0, width: "auto" }}
+            exit={reduceMotion ? { opacity: 0 } : { opacity: 0, x: 28, width: 0 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="inline-flex shrink-0 items-center justify-center gap-1.5 overflow-hidden whitespace-nowrap rounded-md border border-gold/30 px-3 py-2.5 text-sm font-medium text-ink-muted transition-colors hover:border-gold hover:text-maroon cursor-pointer"
+          >
+            <X className="h-4 w-4 shrink-0" />
+            Clear
+          </motion.button>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

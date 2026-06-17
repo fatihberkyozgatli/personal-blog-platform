@@ -4,12 +4,13 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { Menu, Search, X } from "lucide-react";
+import { LayoutDashboard, Menu, Search, X } from "lucide-react";
 import { Logo } from "@/components/shared/Logo";
 import { ButtonLink, Button } from "@/components/shared/Button";
 import { cn } from "@/lib/utils/cn";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { useToast } from "@/components/shared/Toast";
 
 const NAV = [
   { href: "/", label: "Home" },
@@ -30,6 +31,7 @@ export function SiteHeader({
   const [searchOpen, setSearchOpen] = useState(false);
   const [term, setTerm] = useState("");
   const reduceMotion = useReducedMotion();
+  const { toast } = useToast();
 
   function submitSearch(e: React.FormEvent) {
     e.preventDefault();
@@ -44,6 +46,7 @@ export function SiteHeader({
     if (isSupabaseConfigured()) {
       await createClient().auth.signOut();
     }
+    toast("You've been signed out.");
     router.refresh();
   }
 
@@ -113,11 +116,6 @@ export function SiteHeader({
 
           {user ? (
             <div className="hidden shrink-0 items-center gap-2 md:flex">
-              {user.role === "admin" && (
-                <ButtonLink href="/admin" variant="ghost" className="shrink-0 whitespace-nowrap">
-                  Dashboard
-                </ButtonLink>
-              )}
               <Button variant="secondary" onClick={signOut} className="shrink-0 whitespace-nowrap">
                 Sign Out
               </Button>
@@ -160,20 +158,23 @@ export function SiteHeader({
                 {item.label}
               </Link>
             ))}
-            <div className="flex gap-2 py-3">
+            <div className="flex flex-col gap-2 py-3">
+              {user?.role === "admin" && (
+                <Link
+                  href="/admin"
+                  onClick={() => setMenuOpen(false)}
+                  className="inline-flex items-center justify-center gap-2 rounded-md border border-gold/40 px-4 py-2.5 text-sm font-medium text-ink transition-colors hover:border-gold hover:bg-gold/10"
+                >
+                  <LayoutDashboard className="h-4 w-4 text-maroon" />
+                  Admin Dashboard
+                </Link>
+              )}
               {user ? (
-                <>
-                  {user.role === "admin" && (
-                    <ButtonLink href="/admin" variant="ghost" className="flex-1">
-                      Dashboard
-                    </ButtonLink>
-                  )}
-                  <Button variant="secondary" onClick={signOut} className="flex-1">
-                    Sign Out
-                  </Button>
-                </>
+                <Button variant="secondary" onClick={signOut} className="w-full">
+                  Sign Out
+                </Button>
               ) : (
-                <ButtonLink href="/signup" variant="secondary" className="flex-1">
+                <ButtonLink href="/signup" variant="secondary" className="w-full">
                   Sign Up
                 </ButtonLink>
               )}

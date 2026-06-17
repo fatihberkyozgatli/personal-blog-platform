@@ -24,6 +24,8 @@ a free account**. The owner writes and manages everything through a built-in adm
 | [`documentation/database.md`](documentation/database.md) | Schema, enums, RLS policies, the `posts_public` view, search, seeds |
 | [`documentation/design.md`](documentation/design.md) | Brand palette, typography, component & page layouts |
 | `documentation/wireframes.png` | Landing-page design reference |
+| [`documentation/stages.md`](documentation/stages.md) | Build roadmap and per-stage progress (each stage has a `stageN.md` spec) |
+| [`documentation/consider.md`](documentation/consider.md) | Deferred items to revisit (profile editing, custom SMTP) |
 
 ## Project Structure
 
@@ -42,7 +44,9 @@ middleware.ts session refresh + /admin guard
 
 ## Getting Started
 
-> The app is not yet scaffolded. These are the intended steps once setup begins.
+> **Stages 1–2 (Foundation, Database, Auth) are complete** — the app is scaffolded, wired to a
+> hosted Supabase project, with email/password auth and the `/admin` guard (see
+> `documentation/stages.md` for progress). The steps below set up a fresh clone.
 
 1. **Install dependencies**
    ```bash
@@ -53,17 +57,29 @@ middleware.ts session refresh + /admin guard
    NEXT_PUBLIC_SUPABASE_URL=...
    NEXT_PUBLIC_SUPABASE_ANON_KEY=...
    ```
-3. **Database**, apply migrations and generate types:
+3. **Database** — link, apply migrations, and generate types with the Supabase CLI **v2** (the
+   hosted database is Postgres 17, which the v1 CLI cannot target):
    ```bash
-   supabase db push
-   supabase gen types typescript --project-id <id> > types/database.ts
+   npx supabase@latest link --project-ref <your-project-ref>
+   npx supabase@latest db push
+   npx supabase@latest gen types typescript --linked > types/database.ts
    ```
-4. **Run**
+4. **Promote the owner to admin** (one time) — sign up through the app, then run in the Supabase
+   SQL editor:
+   ```sql
+   update public.profiles set role = 'admin'
+   where id = (select id from auth.users where email = 'you@example.com');
+   ```
+5. **Run**
    ```bash
    npm run dev
    ```
 
-## Scripts (planned)
+> **Email:** the built-in Supabase mailer is for testing only and tightly rate-limited (repeated
+> signups hit `email rate limit exceeded`). Configure a custom SMTP provider before production —
+> see `documentation/consider.md`.
+
+## Scripts
 
 | Command          | Purpose |
 |------------------|---------|

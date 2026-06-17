@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import type { Category, PostStatus, Tag } from "./types";
-import { mockCategories, mockComments, mockPosts } from "./mock";
+import { mockCategories, mockPosts } from "./mock";
 
 export interface AdminStats {
   posts: number;
@@ -103,7 +103,7 @@ export async function listPosts(): Promise<AdminPostRow[]> {
     .from("posts")
     .select("id, title, slug, status, view_count, published_at, updated_at, categories(name)")
     .order("updated_at", { ascending: false });
-  return (data ?? []).map((r: Record<string, any>) => ({
+  return (data ?? []).map((r) => ({
     id: r.id,
     title: r.title,
     slug: r.slug,
@@ -191,7 +191,7 @@ export async function listPendingComments(): Promise<PendingComment[]> {
     .select("id, body, created_at, profiles(display_name), posts(title)")
     .eq("approved", false)
     .order("created_at", { ascending: false });
-  return (data ?? []).map((r: Record<string, any>) => ({
+  return (data ?? []).map((r) => ({
     id: r.id,
     body: r.body,
     authorName: r.profiles?.display_name ?? "Reader",
@@ -207,7 +207,7 @@ export async function listSubscribers(): Promise<SubscriberRow[]> {
     .from("newsletter_subscribers")
     .select("*")
     .order("created_at", { ascending: false });
-  return (data ?? []).map((r: Record<string, any>) => ({
+  return (data ?? []).map((r) => ({
     id: r.id,
     email: r.email,
     createdAt: r.created_at,
@@ -228,7 +228,7 @@ export async function listMedia(): Promise<MediaItem[]> {
     .from("media")
     .select("id, url, filename, created_at")
     .order("created_at", { ascending: false });
-  return (data ?? []).map((r: Record<string, any>) => ({
+  return (data ?? []).map((r) => ({
     id: r.id,
     url: r.url,
     filename: r.filename,
@@ -243,7 +243,7 @@ export async function listMessages(): Promise<ContactMessageRow[]> {
     .from("contact_messages")
     .select("*")
     .order("created_at", { ascending: false });
-  return (data ?? []).map((r: Record<string, any>) => ({
+  return (data ?? []).map((r) => ({
     id: r.id,
     name: r.name,
     email: r.email,

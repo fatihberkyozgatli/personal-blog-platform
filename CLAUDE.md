@@ -8,7 +8,8 @@ via a built-in admin portal.
 do not invent or write a real name until the client provides one.
 
 Full design docs: `documentation/architecture.md`, `documentation/database.md`,
-`documentation/design.md` (plus `wireframes.png`). Read these before non-trivial work.
+`documentation/design.md`, `documentation/stages.md` (plus `wireframes.png`). Per-stage build specs
+live in `documentation/stageN.md` (`stage1.md`, `stage2.md`). Read these before non-trivial work.
 
 ## Stack
 
@@ -24,7 +25,8 @@ Full design docs: `documentation/architecture.md`, `documentation/database.md`,
 - **Security is in the database (RLS), not the UI.** Never gate content only on the frontend.
   - The post **body (`posts.content`) is gated**: anonymous/public reads go through the
     `posts_public` view (safe columns only, no `content`); the full row is selectable only by
-    authenticated users. Keep it that way; do not expose `content` to anon code paths.
+    authenticated users. At the DB level, anon also has only safe-column grants on published
+    posts and never `posts.content`. Keep it that way; do not expose `content` to anon code paths.
 - **Supabase clients:** `lib/supabase/client.ts` (browser), `server.ts` (RSC + actions),
   `middleware.ts` (session refresh). **Never** put the service-role key in client-reachable code;
   v1 does not need it at all.
@@ -52,6 +54,21 @@ Full design docs: `documentation/architecture.md`, `documentation/database.md`,
 - Do not add any comments
 - Remove any unused file/code when you find one if it is safe to do so!
 
+## Per-stage review gate (before committing)
+
+Before committing **any** stage, run **three review agents in parallel** over that stage's changes,
+then present one combined, compared report:
+
+1. `/code-review` — correctness bugs + reuse/simplification/efficiency.
+2. `/security-review` — security of the pending changes.
+3. `/ui-ux-pro-max:ui-ux-pro-max` — UI/UX review (use the UI/UX skill best suited to the stage;
+   this is the one installed).
+
+Compare and report all findings (overlapping vs unique, grouped by severity). Then **wait for the
+user's explicit command** on what to do about the findings before changing anything or committing.
+
 ## Git commits
 
 - Do NOT add a `Co-Authored-By: Claude ...` trailer to commit messages. The user doesn't want Claude showing up in the repo's contributor list.
+- Do NOT write comments!
+- Do not use emojis, for gods sake.
