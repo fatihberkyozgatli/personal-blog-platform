@@ -8,8 +8,9 @@ open-redirect validator (`lib/utils/redirect.ts`, tested) used by both redirect 
 `/admin` prefix match; explicit redirect cookie copying; a maroon focus ring (gold failed the 3:1
 non-text contrast — corrected in `design.md`); 44px touch targets; and form a11y
 (`aria-describedby`/`aria-invalid`, password helper text, required markers, focus-on-error,
-`motion-safe` transitions). `display_name` derives from the email local-part (Stage 1 trigger);
-password reset deferred (`consider.md`).
+`motion-safe` transitions). `display_name` derives from the email local-part (Stage 1 trigger).
+(Password reset was deferred from Stage 2 and has since been implemented — `/forgot-password` and
+`/reset-password`; see `stages.md`.)
 
 Verified: typecheck / lint / build clean; 8/8 unit tests. The live auth flow (signup → email
 confirm → session; `/admin` redirects) is an owner test once the dashboard `/auth/callback`
@@ -45,7 +46,8 @@ Source docs: `architecture.md` §5 (Auth Flow), `database.md` (`profiles`, `is_a
 - The site header's signed-in/out nav state (Stage 3 chrome).
 - The reading-wall UI on the post page (Stage 3).
 - Admin portal screens (Stage 4) — Stage 2 only adds the route guard.
-- Password reset, OAuth providers, profile/account editing (deferred — see `consider.md`).
+- OAuth providers, profile/account editing (deferred — see `consider.md`). _(Password reset was
+  deferred here but later implemented — see `stages.md`.)_
 
 ## 2. Prerequisites
 - Stage 1 complete (Supabase clients, session-refresh middleware, RLS, `profiles` trigger, `is_admin()`).
@@ -99,9 +101,10 @@ In `lib/supabase/middleware.ts`, after `getUser()`:
 ## 9. Resolved decisions
 1. **Post-login/confirm redirect** — to the page the user came from (a `next` param), default `/`.
    No welcome page; in-app toasts/notifications are layered in separately.
-2. **Sign-out** — add a `signOut` action in Stage 2 (it does not exist yet). A simple control is
-   fine until the Stage 3 header carries it.
-3. **Password reset** — deferred (see `consider.md`).
+2. **Sign-out** — a `signOut` action was added in Stage 2; a simple control until the Stage 3
+   header carries it.
+3. **Password reset** — deferred from Stage 2; later implemented (`/forgot-password`,
+   `/reset-password`).
 4. **Display name** — derived from the email local-part for now; no signup field (see `consider.md`).
 
 ## 10. Done when

@@ -125,6 +125,8 @@ app/
   (auth)/
     login/page.tsx
     signup/page.tsx
+    forgot-password/page.tsx
+    reset-password/page.tsx
   (admin)/
     admin/page.tsx            dashboard (incl. view + like analytics)
     admin/posts/page.tsx      list/manage

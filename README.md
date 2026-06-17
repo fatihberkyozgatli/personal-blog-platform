@@ -32,7 +32,7 @@ a free account**. The owner writes and manages everything through a built-in adm
 ```
 app/
   (public)/   landing, blogs, blogs/[slug], categories, about, contact
-  (auth)/     login, signup
+  (auth)/     login, signup, forgot-password, reset-password
   (admin)/    dashboard + posts, categories, tags, comments, media,
               subscribers, messages
 components/   public/ · admin/ · shared/

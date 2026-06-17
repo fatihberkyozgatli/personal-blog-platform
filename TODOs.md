@@ -24,7 +24,7 @@ Notes on intentional decisions (flagged by reviewers but kept on purpose):
 - [ ] Preview reading-time duplicates `readingTimeFrom` (`components/admin/PostPreview.tsx` vs `lib/actions/admin.ts`) — extract a shared `lib/tiptap/reading-time.ts`.
 - [ ] `getCurrentUser` (`lib/auth.ts`) re-queries the profile role per request; middleware already fetched it. Wrap in `React.cache` for the request.
 - [ ] `getEditablePost` (`lib/data/admin.ts`) uses `.single()` (noisy error on missing id) vs the `.maybeSingle()` convention elsewhere.
-- [ ] Verify `getLatestPosts` / `getFeaturedPost` are still referenced; remove if dead (CLAUDE.md no-unused-code rule).
+- [x] `getLatestPosts` / `getFeaturedPost` confirmed still referenced (landing page) — not dead.
 
 ---
 

@@ -53,8 +53,9 @@ motif (a `✦`-like mark) as seen in the wireframe.
 - **Header:** wordmark + tagline "Thoughts. Stories. Reflections."; centered nav
   (Home, Blogs, Categories, About, Contact) with a gold underline on the active item; search
   icon; gold **Sign Up** button. Thin illuminated gold border framing the page top.
-- **Footer:** maroon panel with arabesque florals; columns for Navigate, Categories, Contact;
-  social icons; copyright line. A decorative Ottoman manuscript fragment sits at the right.
+- **Footer:** maroon panel with arabesque florals; a single Navigate column with social icons and
+  a copyright line (the Categories/Contact columns were intentionally dropped — see `TODOs.md`).
+  A decorative Ottoman manuscript fragment panel sits at the right.
 
 **Landing page (from wireframe)**
 1. **Hero:** ivory panel with an arched, ornamented border (mihrab-like frame) and floral

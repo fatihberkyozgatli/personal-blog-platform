@@ -51,7 +51,7 @@ and anonymous visitors; a user who forgets their password can reset it via email
 
 ---
 
-## Stage 3 — Public Site & Registration Wall  (current)
+## Stage 3 — Public Site & Registration Wall  (UI built — pending reading-wall verification)
 
 - Global chrome: header (wordmark, nav, search affordance, Sign Up), footer, ornament
 - Landing, blog listing, categories, about, contact pages (read from `posts_public`)
@@ -64,7 +64,7 @@ authenticated reader sees the full body; the teaser is present in server-rendere
 
 ---
 
-## Stage 4 — Admin Authoring
+## Stage 4 — Admin Authoring  (UI built — pending end-to-end verification)
 
 - Admin shell + sidebar + dashboard (`(admin)` route group)
 - Post CRUD with the **Tiptap editor** (shared extension set with the renderer)
@@ -77,7 +77,7 @@ site with the correct reading wall behavior.
 
 ---
 
-## Stage 5 — Engagement
+## Stage 5 — Engagement  (UI built — pending verification; see `TODOs.md`)
 
 - Moderated comments (one level of nesting via `parent_id`; new comments `approved = false`)
 - Likes (one per user per post via `post_likes`)
@@ -89,7 +89,7 @@ once per user; full-post views increment the count.
 
 ---
 
-## Stage 6 — Capture, Search & SEO
+## Stage 6 — Capture, Search & SEO  (UI built — pending verification; see `TODOs.md`)
 
 - Newsletter capture (footer form → `newsletter_subscribers`; capture only in v1)
 - Contact form → `contact_messages` (admin Messages screen)
@@ -98,6 +98,34 @@ once per user; full-post views increment the count.
 
 **Done when:** search returns only published posts and never leaks gated bodies; sitemap and RSS
 validate; subscribe and contact submissions persist and surface in the admin.
+
+---
+
+## Next — Verification & Hardening
+
+The feature UI for Stages 3–6 exists and is wired to the real backend, but each area still needs a
+verification pass against the live database + RLS, plus the review backlog in `TODOs.md`.
+
+**Priority order**
+1. **Reading-wall / RLS audit (Stage 3)** — the core security boundary. Confirm anon & readers
+   cannot read `posts.content` (only the `posts` SELECT policy gates it); the teaser is present in
+   the server-rendered HTML; add a regression test asserting anon gets 0 rows from `posts`.
+2. **Admin authoring end-to-end (Stage 4)** — create / edit / publish via Tiptap, media upload,
+   categories & tags — exercised against the real `is_admin()` write policies (types are fixed, but
+   no real write has been exercised yet).
+3. **Engagement (Stage 5)** — comments insert/approve/moderate, likes, view counting; fix the
+   tag-filter no-op and the like read-modify-write race (`TODOs.md` P0/P1).
+4. **Capture / Search / SEO (Stage 6)** — search pagination & count + tag filter, newsletter &
+   contact persistence, sitemap / RSS, per-post OG metadata.
+5. **A11y / contrast & UX hardening** — the P0/P1 frontend items in `TODOs.md` (gold-on-light
+   contrast, keyboard-operable Select, delete confirmation, mobile admin drawer focus trap).
+
+**Production prerequisites**
+- Custom SMTP provider (the built-in mailer is rate-limited) — see `consider.md`.
+- Promote the owner account to `admin` once — see `README.md`.
+- Configure Supabase Auth redirect URLs for the production domain.
+
+The detailed, file-level backlog with priorities lives in `TODOs.md`.
 
 ---
 

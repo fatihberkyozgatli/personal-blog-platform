@@ -59,6 +59,7 @@ Indexes: unique on `slug`; index on `(status, published_at)`; index on `category
 | name        | text     | |
 | slug        | text     | unique |
 | description | text null| |
+| icon        | text null| optional icon key from the curated set in `lib/category-icons` (migration `20260615191000`) |
 
 ### `tags`
 | column | type    | notes |
