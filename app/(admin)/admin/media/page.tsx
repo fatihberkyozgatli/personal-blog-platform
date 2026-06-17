@@ -19,7 +19,7 @@ export default async function AdminMediaPage() {
       ) : (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {media.map((m) => (
-            <MediaCard key={m.id} url={m.url} filename={m.filename} />
+            <MediaCard key={m.id} id={m.id} url={m.url} filename={m.filename} />
           ))}
         </div>
       )}

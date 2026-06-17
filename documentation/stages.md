@@ -112,8 +112,8 @@ verification pass against the live database + RLS, plus the review backlog in `T
    server-rendered HTML and the body is not. (Still nice-to-have: a committed regression test
    asserting anon gets 0 rows from `posts`.)
 2. **Admin authoring (Stage 4)** — write-protection verified (anon/RLS denied) and the `media`
-   storage bucket + policies are now provisioned (public read, admin-only write) with a copy-URL
-   affordance in the media library. **Remaining:** a positive owner test — actually create /
+   storage bucket + policies are now provisioned (public read, admin-only write) with copy-URL and
+   delete affordances in the media library. **Remaining:** a positive owner test — actually create /
    publish a post via Tiptap and upload an image while signed in as admin.
 3. **Engagement (Stage 5)** — comments insert/approve/moderate, likes, view counting; fix the
    tag-filter no-op and the like read-modify-write race (`TODOs.md` P0/P1).

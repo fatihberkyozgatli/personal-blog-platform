@@ -191,6 +191,20 @@ export async function deleteSubscriber(formData: FormData): Promise<void> {
   await deleteFrom("newsletter_subscribers", String(formData.get("id")), "/admin/subscribers");
 }
 
+export async function deleteMedia(id: string): Promise<void> {
+  if (!isSupabaseConfigured() || !(await ensureAdmin())) return;
+  const supabase = await createClient();
+  const { data: row } = await supabase.from("media").select("url").eq("id", id).maybeSingle();
+  const marker = "/media/";
+  const idx = row?.url.indexOf(marker) ?? -1;
+  if (idx !== -1) {
+    await supabase.storage.from("media").remove([row!.url.slice(idx + marker.length)]);
+  }
+  const { error } = await supabase.from("media").delete().eq("id", id);
+  if (error) console.error("deleteMedia failed:", error.message);
+  revalidatePath("/admin/media");
+}
+
 export async function approveComment(formData: FormData): Promise<void> {
   if (!isSupabaseConfigured() || !(await ensureAdmin())) return;
   const supabase = await createClient();

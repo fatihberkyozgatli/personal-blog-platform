@@ -26,10 +26,11 @@ export function CoverArt({
   sizes?: string;
   priority?: boolean;
 }) {
-  if (src) {
+  const validSrc = src && (src.startsWith("/") || /^https?:\/\//.test(src)) ? src : null;
+  if (validSrc) {
     return (
       <div className={cn("relative overflow-hidden", className)}>
-        <Image src={src} alt={alt} fill className="object-cover" sizes={sizes} priority={priority} />
+        <Image src={validSrc} alt={alt} fill className="object-cover" sizes={sizes} priority={priority} />
       </div>
     );
   }
