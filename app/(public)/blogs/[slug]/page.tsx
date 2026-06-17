@@ -229,10 +229,10 @@ function GateCard({ slug, excerpt }: { slug: string; excerpt: string }) {
           This reflection is reserved for members. Create a free account to read every post.
         </p>
         <div className="mt-6 flex justify-center gap-3">
-          <ButtonLink href={`/login?redirect=/blogs/${slug}`} variant="secondary">
+          <ButtonLink href={`/login?next=/blogs/${slug}`} variant="secondary">
             Sign In
           </ButtonLink>
-          <ButtonLink href={`/signup?redirect=/blogs/${slug}`}>
+          <ButtonLink href="/signup">
             Create Account <Floret className="h-3.5 w-3.5 text-ink" />
           </ButtonLink>
         </div>

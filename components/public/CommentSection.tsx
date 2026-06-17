@@ -81,7 +81,7 @@ export function CommentSection({
         </form>
       ) : (
         <p className="mt-5 rounded-lg border border-gold/20 bg-parchment p-4 text-sm text-ink-muted">
-          <Link href={`/login?redirect=/blogs/${slug}`} className="font-medium text-maroon underline">
+          <Link href={`/login?next=/blogs/${slug}`} className="font-medium text-maroon underline">
             Sign in
           </Link>{" "}
           to join the conversation.

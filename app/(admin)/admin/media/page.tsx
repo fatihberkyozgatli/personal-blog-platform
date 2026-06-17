@@ -1,6 +1,6 @@
-import Image from "next/image";
 import { PageHeader, EmptyState } from "@/components/admin/ui";
 import { MediaUploader } from "@/components/admin/MediaUploader";
+import { MediaCard } from "@/components/admin/MediaCard";
 import { listMedia } from "@/lib/data/admin";
 
 export default async function AdminMediaPage() {
@@ -19,14 +19,7 @@ export default async function AdminMediaPage() {
       ) : (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {media.map((m) => (
-            <figure key={m.id} className="overflow-hidden rounded-lg border border-gold/20 bg-parchment">
-              <div className="relative aspect-[4/3]">
-                <Image src={m.url} alt={m.filename} fill className="object-cover" sizes="240px" />
-              </div>
-              <figcaption className="truncate px-3 py-2 text-xs text-ink-muted" title={m.url}>
-                {m.filename}
-              </figcaption>
-            </figure>
+            <MediaCard key={m.id} url={m.url} filename={m.filename} />
           ))}
         </div>
       )}

@@ -26,7 +26,7 @@ export function LikeButton({
     startTransition(async () => {
       const res = await toggleLike(postId, slug);
       if (res.needsAuth) {
-        router.push(`/login?redirect=/blogs/${slug}`);
+        router.push(`/login?next=/blogs/${slug}`);
         return;
       }
       setLiked(res.liked);

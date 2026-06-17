@@ -51,7 +51,7 @@ and anonymous visitors; a user who forgets their password can reset it via email
 
 ---
 
-## Stage 3 — Public Site & Registration Wall  (UI built — pending reading-wall verification)
+## Stage 3 — Public Site & Registration Wall  (UI built; reading-wall RLS verified ✅)
 
 - Global chrome: header (wordmark, nav, search affordance, Sign Up), footer, ornament
 - Landing, blog listing, categories, about, contact pages (read from `posts_public`)
@@ -64,7 +64,7 @@ authenticated reader sees the full body; the teaser is present in server-rendere
 
 ---
 
-## Stage 4 — Admin Authoring  (UI built — pending end-to-end verification)
+## Stage 4 — Admin Authoring  (UI built; write-protection + media storage verified — positive owner test pending)
 
 - Admin shell + sidebar + dashboard (`(admin)` route group)
 - Post CRUD with the **Tiptap editor** (shared extension set with the renderer)
@@ -107,12 +107,14 @@ The feature UI for Stages 3–6 exists and is wired to the real backend, but eac
 verification pass against the live database + RLS, plus the review backlog in `TODOs.md`.
 
 **Priority order**
-1. **Reading-wall / RLS audit (Stage 3)** — the core security boundary. Confirm anon & readers
-   cannot read `posts.content` (only the `posts` SELECT policy gates it); the teaser is present in
-   the server-rendered HTML; add a regression test asserting anon gets 0 rows from `posts`.
-2. **Admin authoring end-to-end (Stage 4)** — create / edit / publish via Tiptap, media upload,
-   categories & tags — exercised against the real `is_admin()` write policies (types are fixed, but
-   no real write has been exercised yet).
+1. ~~**Reading-wall / RLS audit (Stage 3)**~~ — **verified** ✅ (2026-06-17): anon is denied
+   `posts.content` at the DB (401); `posts_public` carries no body; the teaser is in the
+   server-rendered HTML and the body is not. (Still nice-to-have: a committed regression test
+   asserting anon gets 0 rows from `posts`.)
+2. **Admin authoring (Stage 4)** — write-protection verified (anon/RLS denied) and the `media`
+   storage bucket + policies are now provisioned (public read, admin-only write) with a copy-URL
+   affordance in the media library. **Remaining:** a positive owner test — actually create /
+   publish a post via Tiptap and upload an image while signed in as admin.
 3. **Engagement (Stage 5)** — comments insert/approve/moderate, likes, view counting; fix the
    tag-filter no-op and the like read-modify-write race (`TODOs.md` P0/P1).
 4. **Capture / Search / SEO (Stage 6)** — search pagination & count + tag filter, newsletter &
