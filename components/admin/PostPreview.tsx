@@ -5,20 +5,8 @@ import { CoverArt } from "@/components/shared/CoverArt";
 import { OrnamentRule } from "@/components/shared/Ornament";
 import { renderPostHtml } from "@/lib/tiptap/render";
 import { formatDate } from "@/lib/utils/format";
+import { readingTimeFrom } from "@/lib/tiptap/reading-time";
 import type { Category, PostStatus } from "@/lib/data/types";
-
-function readingTimeFrom(content: unknown): number {
-  let text = "";
-  const walk = (node: unknown) => {
-    if (!node || typeof node !== "object") return;
-    const n = node as { text?: unknown; content?: unknown };
-    if (typeof n.text === "string") text += n.text + " ";
-    if (Array.isArray(n.content)) n.content.forEach(walk);
-  };
-  walk(content);
-  const words = text.trim().split(/\s+/).filter(Boolean).length;
-  return Math.max(1, Math.round(words / 200));
-}
 
 function slugSeed(title: string) {
   return title.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-") || "post-preview";

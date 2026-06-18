@@ -7,6 +7,7 @@ import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { getCurrentUser } from "@/lib/auth";
 import { postSchema } from "@/lib/validations/post";
 import { categorySchema } from "@/lib/validations/category";
+import { readingTimeFrom } from "@/lib/tiptap/reading-time";
 import type { Database, Json } from "@/types/database";
 
 export interface ActionState {
@@ -32,19 +33,6 @@ function slugify(input: string) {
     .replace(/[^a-z0-9\s-]/g, "")
     .replace(/\s+/g, "-")
     .replace(/-+/g, "-");
-}
-
-function readingTimeFrom(content: unknown): number {
-  let text = "";
-  const walk = (node: unknown) => {
-    if (!node || typeof node !== "object") return;
-    const n = node as { text?: unknown; content?: unknown };
-    if (typeof n.text === "string") text += n.text + " ";
-    if (Array.isArray(n.content)) n.content.forEach(walk);
-  };
-  walk(content);
-  const words = text.trim().split(/\s+/).filter(Boolean).length;
-  return Math.max(1, Math.round(words / 200));
 }
 
 export async function savePost(_prev: ActionState, formData: FormData): Promise<ActionState> {
