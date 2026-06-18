@@ -12,7 +12,7 @@ non-text contrast — corrected in `design.md`); 44px touch targets; and form a1
 (Password reset was deferred from Stage 2 and has since been implemented — `/forgot-password` and
 `/reset-password`; see `stages.md`.)
 
-Verified: typecheck / lint / build clean; 8/8 unit tests. The live auth flow (signup → email
+Verified: typecheck / lint / build clean; 15/15 unit tests (5 files). The live auth flow (signup → email
 confirm → session; `/admin` redirects) is an owner test once the dashboard `/auth/callback`
 redirect is configured.
 

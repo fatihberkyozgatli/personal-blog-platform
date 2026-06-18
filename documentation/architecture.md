@@ -146,7 +146,7 @@ app/
 middleware.ts                 session refresh + /admin guard
 ```
 
-Supporting code: `components/{public,admin,shared}`, `lib/{supabase,tiptap,utils,validations}`,
+Supporting code: `components/{public,admin,shared}`, `lib/{supabase,tiptap,utils,validations,data,actions}`,
 `types/` (generated DB types), `supabase/migrations/`.
 
 ---

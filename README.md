@@ -36,7 +36,7 @@ app/
   (admin)/    dashboard + posts, categories, tags, comments, media,
               subscribers, messages, about
 components/   public/ · admin/ · shared/
-lib/          supabase/ · tiptap/ · utils/ · validations/
+lib/          supabase/ · tiptap/ · utils/ · validations/ · data/ · actions/
 types/        generated Supabase types
 supabase/     migrations/
 middleware.ts session refresh + /admin guard
@@ -87,6 +87,7 @@ middleware.ts session refresh + /admin guard
 | `npm run build`  | Production build |
 | `npm run lint`   | Lint |
 | `npm run typecheck` | TypeScript check |
+| `npm test`       | Unit tests (Vitest) |
 
 ## Deployment
 

@@ -134,7 +134,7 @@ grant insert, update on site_settings to authenticated;  -- RLS still restricts 
 
 - Zod schema unit tests (`lib/validations/about.test.ts`): valid document passes; malformed
   timeline / missing required fields fail.
-- A test asserting `getAboutContent()` returns the `lib/site.ts` defaults when no row exists.
+- A test asserting `getAboutContent()` returns the `defaultAbout` constant (from `lib/data/about.ts`) when no row exists.
 
 ---
 
