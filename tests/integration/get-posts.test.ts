@@ -19,6 +19,31 @@ beforeEach(() => {
   supabaseConfigured.mockReturnValue(true);
 });
 
+describe("getPosts search branch pagination", () => {
+  it("returns correct slice, total, and totalPages for page 2 of 12 results", async () => {
+    const rows = Array.from({ length: 12 }, (_, i) => ({
+      id: `p${i + 1}`,
+      title: `Post ${i + 1}`,
+      slug: `post-${i + 1}`,
+      cover_image: null,
+      excerpt: "x",
+      category_id: null,
+      author_id: null,
+      author_name: null,
+      published_at: null,
+      reading_time: 0,
+      view_count: 0,
+    }));
+    mock = makeSupabase({ categories: { data: [], error: null } }, { data: rows, error: null });
+    const result = await getPosts({ q: "x", page: 3, perPage: 5 });
+    expect(result.total).toBe(12);
+    expect(result.totalPages).toBe(3);
+    expect(result.items.length).toBe(2);
+    expect(result.items[0].id).toBe("p11");
+    expect(result.items[1].id).toBe("p12");
+  });
+});
+
 describe("getPosts tag filtering (Supabase branch)", () => {
   it("queries tags and post_tags tables when tagSlug is provided", async () => {
     await getPosts({ tagSlug: "faith" });

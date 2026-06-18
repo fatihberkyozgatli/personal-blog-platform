@@ -17,14 +17,17 @@ export function makeQuery(result: Result = { data: null, error: null }) {
   return q;
 }
 
-export function makeSupabase(tableResults: Record<string, Result> = {}) {
+export function makeSupabase(
+  tableResults: Record<string, Result> = {},
+  rpcResult: Result = { data: null, error: null },
+) {
   const calls: { table: string }[] = [];
   const client = {
     from: vi.fn((table: string) => {
       calls.push({ table });
       return makeQuery(tableResults[table] ?? { data: null, error: null });
     }),
-    rpc: vi.fn(async () => ({ data: null, error: null })),
+    rpc: vi.fn(async () => rpcResult),
     auth: {
       signInWithPassword: vi.fn(async () => ({ data: { user: null }, error: null })),
       getUser: vi.fn(async () => ({ data: { user: null }, error: null })),
