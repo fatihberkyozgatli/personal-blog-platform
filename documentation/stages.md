@@ -71,6 +71,10 @@ authenticated reader sees the full body; the teaser is present in server-rendere
 - Categories and tags management
 - Media library backed by Supabase Storage
 - All writes via **Server Actions** + Zod validation (`lib/validations/`), authorized by RLS
+- **About / author content** is now admin-editable via `/admin/about`: name, portrait, bio,
+  intro, "Why I Write", favourite quote, and timeline are stored in `site_settings` and editable
+  through a two-pane form + live preview. Editing About constitutes the positive owner authoring
+  test for this stage (structured form + Tiptap + media + server action + revalidation end-to-end).
 
 **Done when:** the owner writes and publishes a post through the UI and it appears on the public
 site with the correct reading wall behavior.

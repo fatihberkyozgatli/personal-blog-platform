@@ -126,6 +126,18 @@ Indexes: unique on `slug`; index on `(status, published_at)`; index on `category
 | read       | boolean     | default `false` |
 | created_at | timestamptz | default `now()` |
 
+### `site_settings`
+| column     | type        | notes |
+|------------|-------------|-------|
+| key        | text PK     | e.g. `'about'` |
+| value      | jsonb       | document stored as JSONB |
+| updated_at | timestamptz | set by the server action on each write |
+
+Stores singleton site configuration documents. The About/author document is stored under
+`key='about'` and validated against the Zod schema in `lib/validations/about.ts`.
+**No SQL content seed:** `getAboutContent()` in `lib/data/about.ts` falls back to the
+`defaultAbout` constant when the row is missing; the row is created on the admin's first save.
+
 ---
 
 ## 3. The Registration Wall: `posts_public` view
@@ -171,6 +183,7 @@ Enable RLS on every table. Summary of who can do what:
 | `profiles`               | SELECT (display_name, avatar) | SELECT own + public author fields; UPDATE own | ALL |
 | `newsletter_subscribers` | INSERT          | INSERT                                          | SELECT, DELETE |
 | `contact_messages`       | INSERT          | INSERT                                          | SELECT, UPDATE (`read`) |
+| `site_settings`          | SELECT          | SELECT                                          | ALL (via `is_admin()`) |
 
 Helper for admin checks (avoids recursive policy lookups):
 

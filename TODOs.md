@@ -17,6 +17,7 @@ Notes on intentional decisions (flagged by reviewers but kept on purpose):
 ### P1
 - [ ] **Search pagination/count wrong + tag ignored.** `lib/data/posts.ts` search branch uses `search_posts` RPC (`LIMIT 50`); `total` is computed from ≤50 rows so pagination and the "{total} posts" count are wrong for >50 matches, and category is filtered in-memory after the cap. Push category/tag into the query before the limit, or count separately.
 - [ ] **`sanitize-html` + `@tiptap/html` shipped to the client bundle.** `components/admin/PostPreview.tsx` is `"use client"` and imports `lib/tiptap/render.ts`, pulling heavy Node-oriented `sanitize-html` into the browser. Render preview HTML server-side (server action/component) and pass the sanitized string down.
+  - **Note:** the About admin preview (`/admin/about`) avoids this pattern — it uses the Tiptap editor's own `getHTML()` for the live preview and seeds initial HTML server-side, so `sanitize-html` is never shipped to the client on that route.
 - [ ] **Like toggle read-modify-write race.** `lib/actions/engagement.ts` `toggleLike` does SELECT then INSERT/DELETE with no atomicity; double clicks can both insert (unique-violation only `console.error`'d) and desync the UI. Use upsert `on conflict do nothing` for like, check delete row count for unlike, derive `liked` from the post-mutation state.
 - [ ] **Silent error swallowing across data layer.** `lib/data/posts.ts` and `lib/data/admin.ts` destructure only `{data}`/`{count}`, never `error`; RLS rejections/outages render as empty/404 indistinguishable from "no content". Capture + log `error`, surface a distinct error state (or throw to the error boundary).
 
@@ -31,7 +32,8 @@ Notes on intentional decisions (flagged by reviewers but kept on purpose):
 ## Frontend / UI-UX
 
 ### P0
-- [ ] **Gold glyphs/text on parchment fail contrast (~1.9:1).** `text-gold` decorative icons on light surfaces are nearly invisible: gate Lock `app/(public)/blogs/[slug]/page.tsx`, Featured pull-quote `app/(public)/page.tsx`, About quote `app/(public)/about/page.tsx`. Use `gold-700` (~4.7:1) for gold glyphs on ivory/parchment; reserve `gold`/`gold-400` for the maroon panels.
+- [ ] **Gold glyphs/text on parchment fail contrast (~1.9:1).** `text-gold` decorative icons on light surfaces are nearly invisible: gate Lock `app/(public)/blogs/[slug]/page.tsx`, Featured pull-quote `app/(public)/page.tsx`. Use `gold-700` (~4.7:1) for gold glyphs on ivory/parchment; reserve `gold`/`gold-400` for the maroon panels.
+  - [x] **About quote** — resolved: the About page now uses `gold-700` for the pull-quote ornament.
 - [ ] **Custom Select is not keyboard-operable.** `components/public/Select.tsx` — no Arrow/Home/End/Enter/type-ahead, no roving focus/`aria-activedescendant`. Add keyboard handling + focus management (or layer a native `<select>`). It's the primary `/blogs` filter control.
 - [ ] **Destructive delete has no confirmation.** `app/(admin)/admin/posts/page.tsx` (and other admin lists) delete on a single submit. Add a confirm step (at least `confirm()`), ideally an Undo toast.
 - [ ] **Mobile admin drawer is a partial modal.** `components/admin/AdminSidebar.tsx` — no focus trap, no Escape, no body-scroll lock; Tab escapes behind the scrim. Add `role="dialog" aria-modal`, focus the close button on open, trap Tab, Escape to close, lock body scroll.

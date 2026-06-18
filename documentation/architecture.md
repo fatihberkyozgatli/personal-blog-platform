@@ -108,6 +108,10 @@ service-role key at all: RLS plus the user session cover every operation.
   for the Supabase Storage domain so `next/image` can optimize them.
 - **SEO:** `app/sitemap.ts` and an RSS feed (`app/feed.xml/route.ts`) generated from published
   posts; per-post `generateMetadata` (Open Graph using cover image + excerpt).
+- **About / author content:** the About page and the post-page author card are DB-backed and
+  admin-editable. Content is stored in `site_settings` under `key='about'` and managed through
+  `/admin/about`. Public reads are open; writes are admin-only (RLS). The `defaultAbout`
+  constant in `lib/data/about.ts` is the fallback when no row exists.
 
 ---
 
@@ -138,6 +142,7 @@ app/
     admin/media/page.tsx      media library
     admin/subscribers/page.tsx newsletter export
     admin/messages/page.tsx   contact messages
+    admin/about/page.tsx      edit About / author content
 middleware.ts                 session refresh + /admin guard
 ```
 

@@ -34,7 +34,7 @@ app/
   (public)/   landing, blogs, blogs/[slug], categories, about, contact
   (auth)/     login, signup, forgot-password, reset-password
   (admin)/    dashboard + posts, categories, tags, comments, media,
-              subscribers, messages
+              subscribers, messages, about
 components/   public/ · admin/ · shared/
 lib/          supabase/ · tiptap/ · utils/ · validations/
 types/        generated Supabase types
