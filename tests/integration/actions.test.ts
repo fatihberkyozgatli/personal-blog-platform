@@ -61,5 +61,6 @@ describe("updateAbout", () => {
     currentUser.mockResolvedValue({ id: "a1", email: "admin@b.com", displayName: "Admin", role: "admin" });
     const res = await updateAbout({ ok: false, message: "" }, fd({ name: "" }));
     expect(res.ok).toBe(false);
+    expect(mock.calls.some((c) => c.table === "site_settings")).toBe(false);
   });
 });
