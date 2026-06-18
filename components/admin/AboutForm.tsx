@@ -191,13 +191,13 @@ export function AboutForm({
         </Button>
       </div>
 
-      <div className="xl:sticky xl:top-24 xl:self-start">
+      <div>
         <div className="overflow-hidden rounded-xl2 border border-gold/25 bg-ivory shadow-card">
           <div className="border-b border-gold/20 bg-parchment px-4 py-3">
             <h2 className="font-display text-lg text-ink">Live Preview</h2>
             <p className="text-xs text-ink-muted">Updates as you edit, before saving.</p>
           </div>
-          <div className="max-h-[calc(100dvh-10rem)] overflow-y-auto">
+          <div>
             <AboutView
               name={name || "The Author"}
               portraitUrl={portraitUrl || null}
