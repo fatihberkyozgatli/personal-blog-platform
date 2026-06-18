@@ -1,3 +1,5 @@
+process.env.TZ = "UTC";
+
 import { defineConfig } from "vitest/config";
 import { fileURLToPath } from "node:url";
 
