@@ -117,8 +117,8 @@ set local role anon;
 do $$
 begin
   begin
-    insert into storage.objects (bucket_id, name, owner)
-    values ('media', 'rls-check-' || gen_random_uuid()::text, null);
+    insert into storage.objects (bucket_id, name, owner, metadata)
+    values ('media', 'rls-check-' || gen_random_uuid()::text, null, '{}'::jsonb);
     raise exception 'anon INSERT into storage.objects must be blocked';
   exception when insufficient_privilege then
     null;
@@ -132,8 +132,8 @@ set local request.jwt.claims = '{"sub":"00000000-0000-0000-0000-000000000000","r
 do $$
 begin
   begin
-    insert into storage.objects (bucket_id, name, owner)
-    values ('media', 'rls-check-' || gen_random_uuid()::text, '00000000-0000-0000-0000-000000000000'::uuid);
+    insert into storage.objects (bucket_id, name, owner, metadata)
+    values ('media', 'rls-check-' || gen_random_uuid()::text, '00000000-0000-0000-0000-000000000000'::uuid, '{}'::jsonb);
     raise exception 'reader INSERT into storage.objects must be blocked';
   exception when insufficient_privilege then
     null;
@@ -148,7 +148,7 @@ do $$
 declare inserted_name text;
 begin
   inserted_name := 'rls-check-' || gen_random_uuid()::text;
-  insert into storage.objects (bucket_id, name, owner)
-  values ('media', inserted_name, 'bcce1191-641d-4b28-a1fd-9e10f750ed6e'::uuid);
+  insert into storage.objects (bucket_id, name, owner, metadata)
+  values ('media', inserted_name, 'bcce1191-641d-4b28-a1fd-9e10f750ed6e'::uuid, '{}'::jsonb);
 end $$;
 rollback;
