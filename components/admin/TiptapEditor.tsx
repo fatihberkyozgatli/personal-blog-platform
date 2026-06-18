@@ -108,7 +108,7 @@ export function TiptapEditor({
   onChange,
 }: {
   initialContent: unknown;
-  onChange: (json: unknown) => void;
+  onChange: (json: unknown, html: string) => void;
 }) {
   const editor = useEditor({
     immediatelyRender: false,
@@ -122,7 +122,7 @@ export function TiptapEditor({
         class: "prose-editorial min-h-[320px] px-5 py-4 focus:outline-none",
       },
     },
-    onUpdate: ({ editor }) => onChange(editor.getJSON()),
+    onUpdate: ({ editor }) => onChange(editor.getJSON(), editor.getHTML()),
   });
 
   return (
