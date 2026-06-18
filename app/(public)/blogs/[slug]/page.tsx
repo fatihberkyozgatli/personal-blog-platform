@@ -23,7 +23,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { renderPostHtml } from "@/lib/tiptap/render";
 import { formatDate } from "@/lib/utils/format";
-import { author as siteAuthor } from "@/lib/site";
+import { getAboutContent } from "@/lib/data/about";
 
 export async function generateMetadata({
   params,
@@ -58,12 +58,13 @@ export default async function PostPage({
   const sampleMode = !isSupabaseConfigured();
   const canRead = sampleMode || !!user;
 
-  const [engagement, tags, related, content, comments] = await Promise.all([
+  const [engagement, tags, related, content, comments, about] = await Promise.all([
     getPostEngagement(post.id, user?.id),
     getPostTags(post.id),
     getRelatedPosts(post),
     canRead ? getPostContent(slug) : Promise.resolve(null),
     getCommentsForPost(post.id),
+    getAboutContent(),
   ]);
   const bodyHtml = canRead ? renderPostHtml(content) : "";
 
@@ -164,9 +165,9 @@ export default async function PostPage({
 
           <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">
             <AuthorCard
-              name={siteAuthor.name}
-              short={siteAuthor.short}
-              portraitUrl={siteAuthor.portraitUrl}
+              name={about.name}
+              short={about.short}
+              portraitUrl={about.portraitUrl}
             />
 
             <div className="rounded-xl2 border border-gold/20 bg-parchment p-5 shadow-card">
