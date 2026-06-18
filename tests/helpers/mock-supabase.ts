@@ -22,10 +22,13 @@ export function makeSupabase(
   rpcResult: Result = { data: null, error: null },
 ) {
   const calls: { table: string }[] = [];
+  const queries: { table: string; query: ReturnType<typeof makeQuery> }[] = [];
   const client = {
     from: vi.fn((table: string) => {
       calls.push({ table });
-      return makeQuery(tableResults[table] ?? { data: null, error: null });
+      const query = makeQuery(tableResults[table] ?? { data: null, error: null });
+      queries.push({ table, query });
+      return query;
     }),
     rpc: vi.fn(async () => rpcResult),
     auth: {
@@ -33,5 +36,5 @@ export function makeSupabase(
       getUser: vi.fn(async () => ({ data: { user: null }, error: null })),
     },
   };
-  return { client, calls };
+  return { client, calls, queries };
 }

@@ -60,32 +60,28 @@ export async function toggleLike(postId: string, slug: string): Promise<LikeResu
   if (!user) return { liked: false, count: 0, needsAuth: true };
 
   const supabase = await createClient();
-  const { data: existing } = await supabase
+  const { data: deleted, error: delErr } = await supabase
     .from("post_likes")
-    .select("post_id")
+    .delete()
     .eq("post_id", postId)
     .eq("user_id", user.id)
-    .maybeSingle();
-
-  if (existing) {
-    const { error } = await supabase
+    .select("post_id");
+  if (delErr) console.error("unlike failed:", delErr.message);
+  let liked = false;
+  if (!deleted || deleted.length === 0) {
+    const { error: insErr } = await supabase
       .from("post_likes")
-      .delete()
-      .eq("post_id", postId)
-      .eq("user_id", user.id);
-    if (error) console.error("unlike failed:", error.message);
-  } else {
-    const { error } = await supabase.from("post_likes").insert({ post_id: postId, user_id: user.id });
-    if (error) console.error("like failed:", error.message);
+      .upsert({ post_id: postId, user_id: user.id }, { onConflict: "post_id,user_id", ignoreDuplicates: true });
+    if (insErr) console.error("like failed:", insErr.message);
+    liked = true;
   }
-
   const { count } = await supabase
     .from("post_likes")
     .select("*", { count: "exact", head: true })
     .eq("post_id", postId);
 
   revalidatePath(`/blogs/${slug}`);
-  return { liked: !existing, count: count ?? 0 };
+  return { liked, count: count ?? 0 };
 }
 
 export async function recordView(slug: string): Promise<void> {
