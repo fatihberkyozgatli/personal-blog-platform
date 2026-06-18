@@ -52,5 +52,9 @@ export async function getAboutContent(): Promise<AboutContent> {
   }
   if (!data) return defaultAbout;
   const parsed = aboutSchema.safeParse(data.value as Json);
-  return parsed.success ? parsed.data : defaultAbout;
+  if (!parsed.success) {
+    console.error("getAboutContent: stored about content failed validation:", parsed.error.message);
+    return defaultAbout;
+  }
+  return parsed.data;
 }

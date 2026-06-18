@@ -18,7 +18,8 @@ describe("aboutSchema", () => {
   });
 
   it("rejects a missing name", () => {
-    const { name: _omit, ...rest } = valid;
+    const rest: Partial<typeof valid> = { ...valid };
+    delete rest.name;
     expect(aboutSchema.safeParse(rest).success).toBe(false);
   });
 
