@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { getCurrentUser } from "@/lib/auth";
+import { postSchema } from "@/lib/validations/post";
 import type { Database, Json } from "@/types/database";
 
 export interface ActionState {
@@ -46,21 +47,16 @@ function readingTimeFrom(content: unknown): number {
   return Math.max(1, Math.round(words / 200));
 }
 
-const postSchema = z.object({
-  id: z.string().optional(),
-  title: z.string().min(1, "Title is required.").max(200),
-  slug: z.string().max(200).optional(),
-  excerpt: z.string().max(400).optional(),
-  categoryId: z.string().optional(),
-  coverImage: z.string().optional(),
-  status: z.enum(["draft", "published"]),
-  content: z.string().min(2, "The post body is empty."),
-});
-
 export async function savePost(_prev: ActionState, formData: FormData): Promise<ActionState> {
   if (!isSupabaseConfigured()) return notConfigured;
   if (!(await ensureAdmin())) return notAuthorized;
 
+  let content: Json;
+  try {
+    content = JSON.parse(String(formData.get("content") ?? "null"));
+  } catch {
+    return { ok: false, message: "The editor content could not be saved." };
+  }
   const parsed = postSchema.safeParse({
     id: formData.get("id") || undefined,
     title: formData.get("title"),
@@ -69,16 +65,9 @@ export async function savePost(_prev: ActionState, formData: FormData): Promise<
     categoryId: formData.get("categoryId") || undefined,
     coverImage: formData.get("coverImage") || undefined,
     status: formData.get("status"),
-    content: formData.get("content"),
+    content,
   });
   if (!parsed.success) return { ok: false, message: parsed.error.issues[0].message };
-
-  let content: Json;
-  try {
-    content = JSON.parse(parsed.data.content);
-  } catch {
-    return { ok: false, message: "The editor content could not be saved." };
-  }
 
   const user = await getCurrentUser();
   if (!user) return { ok: false, message: "Your session has expired. Please sign in again." };
@@ -107,8 +96,8 @@ export async function savePost(_prev: ActionState, formData: FormData): Promise<
     category_id: parsed.data.categoryId || null,
     cover_image: parsed.data.coverImage || null,
     status: parsed.data.status,
-    content,
-    reading_time: readingTimeFrom(content),
+    content: parsed.data.content as Json,
+    reading_time: readingTimeFrom(parsed.data.content),
     author_id: user.id,
     ...(setPublishedAt ? { published_at: setPublishedAt } : {}),
   };
