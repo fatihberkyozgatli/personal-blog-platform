@@ -65,3 +65,90 @@ begin
   select count(*) into n from newsletter_subscribers;
 end $$;
 rollback;
+
+begin;
+set local role anon;
+insert into contact_messages (name, email, subject, body)
+values ('rls-check', 'rls-check@example.com', 'rls', 'rls test body');
+do $$
+declare n int;
+begin
+  select count(*) into n from contact_messages;
+  assert n = 0, format('anon must not read contact_messages, saw %s', n);
+end $$;
+do $$
+declare n int;
+begin
+  select count(*) into n from site_settings where key = 'about';
+  assert n >= 0, 'anon SELECT on site_settings must not raise';
+end $$;
+rollback;
+
+begin;
+set local role authenticated;
+set local request.jwt.claims = '{"sub":"00000000-0000-0000-0000-000000000000","role":"authenticated"}';
+do $$
+declare n int;
+begin
+  begin
+    update site_settings set value = value where key = 'about';
+    get diagnostics n = row_count;
+    assert n = 0, format('reader must not update site_settings, row_count was %s', n);
+  exception when insufficient_privilege then
+    null;
+  end;
+end $$;
+rollback;
+
+begin;
+set local role authenticated;
+set local request.jwt.claims = '{"sub":"bcce1191-641d-4b28-a1fd-9e10f750ed6e","role":"authenticated"}';
+do $$
+declare n int;
+begin
+  update site_settings set updated_at = now() where key = 'about';
+  get diagnostics n = row_count;
+  assert n >= 0, 'admin update site_settings must not raise insufficient_privilege';
+end $$;
+rollback;
+
+begin;
+set local role anon;
+do $$
+begin
+  begin
+    insert into storage.objects (bucket_id, name, owner)
+    values ('media', 'rls-check-' || gen_random_uuid()::text, null);
+    raise exception 'anon INSERT into storage.objects must be blocked';
+  exception when insufficient_privilege then
+    null;
+  end;
+end $$;
+rollback;
+
+begin;
+set local role authenticated;
+set local request.jwt.claims = '{"sub":"00000000-0000-0000-0000-000000000000","role":"authenticated"}';
+do $$
+begin
+  begin
+    insert into storage.objects (bucket_id, name, owner)
+    values ('media', 'rls-check-' || gen_random_uuid()::text, '00000000-0000-0000-0000-000000000000'::uuid);
+    raise exception 'reader INSERT into storage.objects must be blocked';
+  exception when insufficient_privilege then
+    null;
+  end;
+end $$;
+rollback;
+
+begin;
+set local role authenticated;
+set local request.jwt.claims = '{"sub":"bcce1191-641d-4b28-a1fd-9e10f750ed6e","role":"authenticated"}';
+do $$
+declare inserted_name text;
+begin
+  inserted_name := 'rls-check-' || gen_random_uuid()::text;
+  insert into storage.objects (bucket_id, name, owner)
+  values ('media', inserted_name, 'bcce1191-641d-4b28-a1fd-9e10f750ed6e'::uuid);
+end $$;
+rollback;
