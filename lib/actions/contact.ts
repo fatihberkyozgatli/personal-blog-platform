@@ -1,15 +1,8 @@
 "use server";
 
-import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
-
-const schema = z.object({
-  name: z.string().min(1, "Please tell us your name.").max(120),
-  email: z.string().email("Please enter a valid email address."),
-  subject: z.string().max(160).optional(),
-  body: z.string().min(1, "Please write a message.").max(5000),
-});
+import { contactSchema } from "@/lib/validations/contact";
 
 export interface FormState {
   ok: boolean;
@@ -17,7 +10,7 @@ export interface FormState {
 }
 
 export async function sendMessage(_prev: FormState, formData: FormData): Promise<FormState> {
-  const parsed = schema.safeParse({
+  const parsed = contactSchema.safeParse({
     name: formData.get("name"),
     email: formData.get("email"),
     subject: formData.get("subject") || undefined,

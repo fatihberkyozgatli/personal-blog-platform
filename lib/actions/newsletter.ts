@@ -1,10 +1,8 @@
 "use server";
 
-import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
-
-const schema = z.object({ email: z.string().email("Please enter a valid email address.") });
+import { newsletterSchema } from "@/lib/validations/newsletter";
 
 export interface FormState {
   ok: boolean;
@@ -12,7 +10,7 @@ export interface FormState {
 }
 
 export async function subscribe(_prev: FormState, formData: FormData): Promise<FormState> {
-  const parsed = schema.safeParse({ email: formData.get("email") });
+  const parsed = newsletterSchema.safeParse({ email: formData.get("email") });
   if (!parsed.success) {
     return { ok: false, message: parsed.error.issues[0].message };
   }
