@@ -27,7 +27,9 @@ export function AboutForm({
   const [portraitUrl, setPortraitUrl] = useState(about.portraitUrl ?? "");
   const [quoteText, setQuoteText] = useState(about.favoriteQuote.text);
   const [quoteSource, setQuoteSource] = useState(about.favoriteQuote.source);
-  const [timeline, setTimeline] = useState(about.timeline);
+  const [timeline, setTimeline] = useState(() =>
+    about.timeline.map((row) => ({ ...row, id: crypto.randomUUID() }))
+  );
 
   const [intro, setIntro] = useState<unknown>(about.intro);
   const [bio, setBio] = useState<unknown>(about.bio);
@@ -40,7 +42,7 @@ export function AboutForm({
     setTimeline((rows) => rows.map((r, idx) => (idx === i ? { ...r, [key]: value } : r)));
   }
   function addRow() {
-    setTimeline((rows) => [...rows, { year: "", label: "" }]);
+    setTimeline((rows) => [...rows, { year: "", label: "", id: crypto.randomUUID() }]);
   }
   function removeRow(i: number) {
     setTimeline((rows) => rows.filter((_, idx) => idx !== i));
@@ -61,7 +63,7 @@ export function AboutForm({
         <input type="hidden" name="intro" value={JSON.stringify(intro ?? {})} />
         <input type="hidden" name="bio" value={JSON.stringify(bio ?? {})} />
         <input type="hidden" name="why" value={JSON.stringify(why ?? {})} />
-        <input type="hidden" name="timeline" value={JSON.stringify(timeline)} />
+        <input type="hidden" name="timeline" value={JSON.stringify(timeline.map(({ year, label }) => ({ year, label })))} />
         <input type="hidden" name="portraitUrl" value={portraitUrl} />
 
         <div className="rounded-xl2 border border-gold/20 bg-parchment p-4">
@@ -74,8 +76,9 @@ export function AboutForm({
           </label>
           <textarea id="short" name="short" rows={2} value={short} onChange={(e) => setShort(e.target.value)} className={field} />
 
-          <p className="mb-1 mt-4 block text-sm font-medium text-ink">Portrait</p>
+          <label htmlFor="portraitUrlInput" className="mb-1 mt-4 block text-sm font-medium text-ink">Portrait</label>
           <input
+            id="portraitUrlInput"
             value={portraitUrl}
             onChange={(e) => setPortraitUrl(e.target.value)}
             placeholder="Portrait image URL"
@@ -87,6 +90,7 @@ export function AboutForm({
           {portraitUrl && (
             <button
               type="button"
+              aria-label="Remove portrait image"
               onClick={() => setPortraitUrl("")}
               className="mt-2 text-xs text-clay underline"
             >
@@ -98,6 +102,7 @@ export function AboutForm({
         <div className="rounded-xl2 border border-gold/20 bg-parchment p-4">
           <label className="mb-1 block text-sm font-medium text-ink">Intro</label>
           <TiptapEditor
+            ariaLabel="Intro"
             initialContent={about.intro}
             onChange={(json, html) => {
               setIntro(json);
@@ -109,6 +114,7 @@ export function AboutForm({
         <div className="rounded-xl2 border border-gold/20 bg-parchment p-4">
           <label className="mb-1 block text-sm font-medium text-ink">Bio</label>
           <TiptapEditor
+            ariaLabel="Bio"
             initialContent={about.bio}
             onChange={(json, html) => {
               setBio(json);
@@ -120,6 +126,7 @@ export function AboutForm({
         <div className="rounded-xl2 border border-gold/20 bg-parchment p-4">
           <label className="mb-1 block text-sm font-medium text-ink">Why I Write</label>
           <TiptapEditor
+            ariaLabel="Why I Write"
             initialContent={about.why}
             onChange={(json, html) => {
               setWhy(json);
@@ -145,7 +152,7 @@ export function AboutForm({
           </div>
           <ul className="space-y-3">
             {timeline.map((row, i) => (
-              <li key={i} className="flex flex-wrap items-start gap-2">
+              <li key={row.id} className="flex flex-wrap items-start gap-2">
                 <input
                   aria-label={`Year ${i + 1}`}
                   value={row.year}
@@ -154,20 +161,20 @@ export function AboutForm({
                   className={`${field} w-24`}
                 />
                 <input
-                  aria-label={`Label ${i + 1}`}
+                  aria-label={row.year ? `Label for ${row.year}` : `Label ${i + 1}`}
                   value={row.label}
                   onChange={(e) => setRow(i, "label", e.target.value)}
                   placeholder="What happened"
                   className={`${field} min-w-0 flex-1`}
                 />
                 <div className="flex shrink-0 items-center gap-1">
-                  <button type="button" aria-label="Move up" onClick={() => move(i, -1)} className="grid h-9 w-9 place-items-center rounded-md text-ink-muted hover:bg-gold/10">
+                  <button type="button" aria-label={`Move ${row.year || `entry ${i + 1}`} up`} onClick={() => move(i, -1)} className="grid h-11 w-11 place-items-center rounded-md text-ink-muted hover:bg-gold/10">
                     <ArrowUp className="h-4 w-4" />
                   </button>
-                  <button type="button" aria-label="Move down" onClick={() => move(i, 1)} className="grid h-9 w-9 place-items-center rounded-md text-ink-muted hover:bg-gold/10">
+                  <button type="button" aria-label={`Move ${row.year || `entry ${i + 1}`} down`} onClick={() => move(i, 1)} className="grid h-11 w-11 place-items-center rounded-md text-ink-muted hover:bg-gold/10">
                     <ArrowDown className="h-4 w-4" />
                   </button>
-                  <button type="button" aria-label="Remove entry" onClick={() => removeRow(i)} className="grid h-9 w-9 place-items-center rounded-md text-clay hover:bg-clay/10">
+                  <button type="button" aria-label={`Remove ${row.year || `entry ${i + 1}`}`} onClick={() => removeRow(i)} className="grid h-11 w-11 place-items-center rounded-md text-clay hover:bg-clay/10">
                     <Trash2 className="h-4 w-4" />
                   </button>
                 </div>
@@ -187,7 +194,7 @@ export function AboutForm({
       <div className="xl:sticky xl:top-24 xl:self-start">
         <div className="overflow-hidden rounded-xl2 border border-gold/25 bg-ivory shadow-card">
           <div className="border-b border-gold/20 bg-parchment px-4 py-3">
-            <p className="font-display text-lg text-ink">Live Preview</p>
+            <h2 className="font-display text-lg text-ink">Live Preview</h2>
             <p className="text-xs text-ink-muted">Updates as you edit, before saving.</p>
           </div>
           <div className="max-h-[calc(100dvh-10rem)] overflow-y-auto">

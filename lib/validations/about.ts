@@ -8,7 +8,12 @@ export const timelineEntrySchema = z.object({
 export const aboutSchema = z.object({
   name: z.string().min(1, "Name is required.").max(120),
   short: z.string().max(400),
-  portraitUrl: z.string().url("Portrait must be a valid URL.").max(2048).nullable(),
+  portraitUrl: z
+    .string()
+    .url("Portrait must be a valid URL.")
+    .max(2048)
+    .refine((u) => u.startsWith("https://"), "Portrait URL must use https.")
+    .nullable(),
   intro: z.record(z.unknown()),
   bio: z.record(z.unknown()),
   why: z.record(z.unknown()),

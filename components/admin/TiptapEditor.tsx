@@ -106,9 +106,11 @@ function Toolbar({ editor }: { editor: Editor }) {
 export function TiptapEditor({
   initialContent,
   onChange,
+  ariaLabel,
 }: {
   initialContent: unknown;
   onChange: (json: unknown, html: string) => void;
+  ariaLabel?: string;
 }) {
   const editor = useEditor({
     immediatelyRender: false,
@@ -120,6 +122,7 @@ export function TiptapEditor({
     editorProps: {
       attributes: {
         class: "prose-editorial min-h-[320px] px-5 py-4 focus:outline-none",
+        ...(ariaLabel ? { "aria-label": ariaLabel } : {}),
       },
     },
     onUpdate: ({ editor }) => onChange(editor.getJSON(), editor.getHTML()),

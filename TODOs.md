@@ -6,6 +6,9 @@ Notes on intentional decisions (flagged by reviewers but kept on purpose):
 - Footer dropped the Categories/Contact columns — intentional per design direction.
 - Cormorant Garamond (display) + Inter (body) — intentional per the brief.
 - View-count inflation / rate-limiting — out of scope (no DoS hardening for v1).
+- Preview pane `py-16` padding — intentional; the admin live preview reuses `AboutView` directly so its format exactly matches the live site.
+- Tiptap toolbar buttons are 36px (`h-9 w-9`) — pre-existing size shared with the post editor; should be revisited globally rather than changed only in the About feature.
+- `getAboutContent()` could be wrapped in `React.cache` if a second same-request caller is ever added; currently only one call site, so no duplicate query.
 
 ---
 

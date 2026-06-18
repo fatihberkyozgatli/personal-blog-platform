@@ -32,4 +32,9 @@ describe("aboutSchema", () => {
     const ok = { ...valid, portraitUrl: "https://example.com/p.jpg" };
     expect(aboutSchema.safeParse(ok).success).toBe(true);
   });
+
+  it("rejects an http portrait url", () => {
+    const bad = { ...valid, portraitUrl: "http://example.com/p.jpg" };
+    expect(aboutSchema.safeParse(bad).success).toBe(false);
+  });
 });

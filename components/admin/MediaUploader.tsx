@@ -6,7 +6,7 @@ import { UploadCloud } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
-export function MediaUploader({ onUploaded }: { onUploaded?: (url: string) => void } = {}) {
+export function MediaUploader({ onUploaded }: { onUploaded?: (url: string) => void }) {
   const router = useRouter();
   const [status, setStatus] = useState<string>("");
   const [busy, setBusy] = useState(false);

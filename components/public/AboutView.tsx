@@ -25,11 +25,11 @@ export function AboutView({
   timeline,
 }: AboutViewProps) {
   return (
-    <section className="relative overflow-hidden">
+    <section aria-labelledby="about-heading" className="relative overflow-hidden">
       <Container className="py-16">
         <Reveal className="mx-auto flex max-w-2xl flex-col items-center text-center">
           <Portrait src={portraitUrl} name={name} size={140} />
-          <h1 className="mt-6 font-display text-5xl text-ink">About</h1>
+          <h1 id="about-heading" className="mt-6 font-display text-5xl text-ink">About</h1>
           <p className="mt-2 font-display text-xl text-maroon">{name}</p>
           <Divider className="my-7" />
         </Reveal>
