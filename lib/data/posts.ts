@@ -98,12 +98,35 @@ export async function getPosts(query: PostQuery = {}): Promise<PostPage> {
   const supabase = await createClient();
   const categories = await getCategories();
 
+  let tagPostIds: string[] | null = null;
+  if (query.tagSlug) {
+    const { data: tagRows, error: tagError } = await supabase
+      .from("tags")
+      .select("id")
+      .eq("slug", query.tagSlug)
+      .maybeSingle();
+    if (tagError) console.error("getPosts:", tagError.message);
+    if (!tagRows) {
+      return { items: [], total: 0, page, perPage, totalPages: 1 };
+    }
+    const { data: ptRows, error: ptError } = await supabase
+      .from("post_tags")
+      .select("post_id")
+      .eq("tag_id", tagRows.id);
+    if (ptError) console.error("getPosts:", ptError.message);
+    tagPostIds = (ptRows ?? []).map((r: { post_id: string }) => r.post_id);
+  }
+
   if (query.q) {
-    const { data } = await supabase.rpc("search_posts", { q: query.q });
+    const { data, error } = await supabase.rpc("search_posts", { q: query.q });
+    if (error) console.error("getPosts:", error.message);
     let items = (data ?? []).map((r: Row) => mapCard(r, categories));
     if (query.categorySlug) {
       const cat = categories.find((c) => c.slug === query.categorySlug);
       items = items.filter((p: PostCard) => p.category?.id === cat?.id);
+    }
+    if (tagPostIds !== null) {
+      items = items.filter((p: PostCard) => tagPostIds!.includes(p.id));
     }
     const total = items.length;
     const start = (page - 1) * perPage;
@@ -115,11 +138,15 @@ export async function getPosts(query: PostQuery = {}): Promise<PostPage> {
     const cat = categories.find((c) => c.slug === query.categorySlug);
     if (cat) q = q.eq("category_id", cat.id);
   }
+  if (tagPostIds !== null) {
+    q = q.in("id", tagPostIds);
+  }
   if (sort === "popular") q = q.order("view_count", { ascending: false });
   else q = q.order("published_at", { ascending: sort === "oldest" });
 
   q = q.range((page - 1) * perPage, page * perPage - 1);
-  const { data, count } = await q;
+  const { data, count, error } = await q;
+  if (error) console.error("getPosts:", error.message);
   const total = count ?? 0;
   return {
     items: (data ?? []).map((r: Row) => mapCard(r, categories)),
