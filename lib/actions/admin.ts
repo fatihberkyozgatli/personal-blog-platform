@@ -1,12 +1,12 @@
 "use server";
 
-import { z } from "zod";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { getCurrentUser } from "@/lib/auth";
 import { postSchema } from "@/lib/validations/post";
+import { categorySchema } from "@/lib/validations/category";
 import type { Database, Json } from "@/types/database";
 
 export interface ActionState {
@@ -128,17 +128,19 @@ export async function deletePost(formData: FormData): Promise<void> {
 export async function createCategory(_prev: ActionState, formData: FormData): Promise<ActionState> {
   if (!isSupabaseConfigured()) return notConfigured;
   if (!(await ensureAdmin())) return notAuthorized;
-  const name = String(formData.get("name") ?? "").trim();
-  const icon = String(formData.get("icon") ?? "").trim() || null;
-  if (!name) return { ok: false, message: "Category name is required." };
+  const parsed = categorySchema.safeParse({
+    name: String(formData.get("name") ?? "").trim(),
+    icon: String(formData.get("icon") ?? "").trim() || undefined,
+  });
+  if (!parsed.success) return { ok: false, message: parsed.error.issues[0].message };
   const supabase = await createClient();
   const { error } = await supabase
     .from("categories")
-    .insert({ name, slug: slugify(name), icon });
+    .insert({ name: parsed.data.name, slug: slugify(parsed.data.name), icon: parsed.data.icon ?? null });
   if (error) return { ok: false, message: error.message };
   revalidatePath("/admin/categories");
   revalidatePath("/categories");
-  return { ok: true, message: `Added “${name}”.` };
+  return { ok: true, message: `Added "${parsed.data.name}".` };
 }
 
 export async function createTag(_prev: ActionState, formData: FormData): Promise<ActionState> {
@@ -150,7 +152,7 @@ export async function createTag(_prev: ActionState, formData: FormData): Promise
   const { error } = await supabase.from("tags").insert({ name, slug: slugify(name) });
   if (error) return { ok: false, message: error.message };
   revalidatePath("/admin/tags");
-  return { ok: true, message: `Added “${name}”.` };
+  return { ok: true, message: `Added "${name}".` };
 }
 
 export async function updateCategoryIcon(id: string, icon: string): Promise<void> {
