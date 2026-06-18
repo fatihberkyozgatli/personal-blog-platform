@@ -25,6 +25,10 @@ export function makeSupabase(tableResults: Record<string, Result> = {}) {
       return makeQuery(tableResults[table] ?? { data: null, error: null });
     }),
     rpc: vi.fn(async () => ({ data: null, error: null })),
+    auth: {
+      signInWithPassword: vi.fn(async () => ({ data: { user: null }, error: null })),
+      getUser: vi.fn(async () => ({ data: { user: null }, error: null })),
+    },
   };
   return { client, calls };
 }

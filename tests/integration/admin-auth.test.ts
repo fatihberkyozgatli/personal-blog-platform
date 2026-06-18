@@ -56,18 +56,18 @@ describe("signIn", () => {
   it("returns an error for an invalid email without calling supabase auth", async () => {
     const res = await signIn({}, fd({ email: "not-an-email", password: "validpassword" }));
     expect(res.error).toBeTruthy();
-    expect(mock.calls.length).toBe(0);
+    expect(mock.client.auth.signInWithPassword).not.toHaveBeenCalled();
   });
 
   it("returns an error for a short password without calling supabase auth", async () => {
     const res = await signIn({}, fd({ email: "user@example.com", password: "short" }));
     expect(res.error).toBeTruthy();
-    expect(mock.calls.length).toBe(0);
+    expect(mock.client.auth.signInWithPassword).not.toHaveBeenCalled();
   });
 
   it("returns an error for both invalid email and short password without calling supabase auth", async () => {
     const res = await signIn({}, fd({ email: "bad", password: "bad" }));
     expect(res.error).toBe("Enter a valid email and a password of at least 8 characters.");
-    expect(mock.calls.length).toBe(0);
+    expect(mock.client.auth.signInWithPassword).not.toHaveBeenCalled();
   });
 });
