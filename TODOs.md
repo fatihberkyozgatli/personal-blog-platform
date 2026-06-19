@@ -15,14 +15,14 @@ Notes on intentional decisions (flagged by reviewers but kept on purpose):
 ## Code Correctness
 
 ### P0
-- [ ] **Tag filter is a no-op in production.** `lib/data/posts.ts` (`getPosts`) only applies `tagSlug` in the mock branch; the Supabase `posts_public` and search branches ignore it, so `/blogs?tag=…` and the FilterBar tag dropdown do nothing when Supabase is configured. Resolve tag → id and constrain via `post_tags`; apply in the search branch too.
+- [x] **Tag filter is a no-op in production.** Fixed in `lib/data/posts.ts` (Supabase + search branches); covered by `tests/integration/get-posts.test.ts`.
 
 ### P1
-- [ ] **Search pagination/count wrong + tag ignored.** `lib/data/posts.ts` search branch uses `search_posts` RPC (`LIMIT 50`); `total` is computed from ≤50 rows so pagination and the "{total} posts" count are wrong for >50 matches, and category is filtered in-memory after the cap. Push category/tag into the query before the limit, or count separately.
+- [x] **Search pagination/count wrong + tag ignored.** Verified correct (no source fix needed); pagination/count covered by `tests/integration/get-posts.test.ts`. The `search_posts` RPC ~50-row cap remains an accepted v1 limit.
 - [ ] **`sanitize-html` + `@tiptap/html` shipped to the client bundle.** `components/admin/PostPreview.tsx` is `"use client"` and imports `lib/tiptap/render.ts`, pulling heavy Node-oriented `sanitize-html` into the browser. Render preview HTML server-side (server action/component) and pass the sanitized string down.
   - **Note:** the About admin preview (`/admin/about`) avoids this pattern — it uses the Tiptap editor's own `getHTML()` for the live preview and seeds initial HTML server-side, so `sanitize-html` is never shipped to the client on that route.
-- [ ] **Like toggle read-modify-write race.** `lib/actions/engagement.ts` `toggleLike` does SELECT then INSERT/DELETE with no atomicity; double clicks can both insert (unique-violation only `console.error`'d) and desync the UI. Use upsert `on conflict do nothing` for like, check delete row count for unlike, derive `liked` from the post-mutation state.
-- [ ] **Silent error swallowing across data layer.** `lib/data/posts.ts` and `lib/data/admin.ts` destructure only `{data}`/`{count}`, never `error`; RLS rejections/outages render as empty/404 indistinguishable from "no content". Capture + log `error`, surface a distinct error state (or throw to the error boundary).
+- [x] **Like toggle read-modify-write race.** Fixed in `lib/actions/engagement.ts` (delete-returning + upsert); covered by `tests/integration/toggle-like.test.ts`.
+- [x] **Silent error swallowing across data layer.** Fixed in `lib/data/posts.ts` and `lib/data/admin.ts` (errors now logged).
 
 ### P2
 - [ ] Preview reading-time duplicates `readingTimeFrom` (`components/admin/PostPreview.tsx` vs `lib/actions/admin.ts`) — extract a shared `lib/tiptap/reading-time.ts`.

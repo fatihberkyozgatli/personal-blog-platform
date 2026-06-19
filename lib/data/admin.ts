@@ -70,6 +70,12 @@ export async function getAdminStats(): Promise<AdminStats> {
     supabase.from("posts").select("view_count"),
   ]);
   const [all, pub, pending, subs, msgs, views] = counts;
+  if (all.error) console.error("getAdminStats:", all.error.message);
+  if (pub.error) console.error("getAdminStats:", pub.error.message);
+  if (pending.error) console.error("getAdminStats:", pending.error.message);
+  if (subs.error) console.error("getAdminStats:", subs.error.message);
+  if (msgs.error) console.error("getAdminStats:", msgs.error.message);
+  if (views.error) console.error("getAdminStats:", views.error.message);
   const totalViews = (views.data ?? []).reduce(
     (s: number, r: { view_count: number }) => s + (r.view_count ?? 0),
     0,
@@ -99,10 +105,11 @@ export async function listPosts(): Promise<AdminPostRow[]> {
     }));
   }
   const supabase = await createClient();
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("posts")
     .select("id, title, slug, status, view_count, published_at, updated_at, categories(name)")
     .order("updated_at", { ascending: false });
+  if (error) console.error("listPosts:", error.message);
   return (data ?? []).map((r) => ({
     id: r.id,
     title: r.title,
@@ -144,7 +151,8 @@ export async function getEditablePost(id: string): Promise<EditablePost | null> 
     };
   }
   const supabase = await createClient();
-  const { data } = await supabase.from("posts").select("*").eq("id", id).single();
+  const { data, error } = await supabase.from("posts").select("*").eq("id", id).single();
+  if (error) console.error("getEditablePost:", error.message);
   if (!data) return null;
   return {
     id: data.id,
@@ -162,14 +170,16 @@ export async function getEditablePost(id: string): Promise<EditablePost | null> 
 export async function listCategories(): Promise<Category[]> {
   if (!isSupabaseConfigured()) return mockCategories;
   const supabase = await createClient();
-  const { data } = await supabase.from("categories").select("*").order("name");
+  const { data, error } = await supabase.from("categories").select("*").order("name");
+  if (error) console.error("listCategories:", error.message);
   return (data ?? []) as Category[];
 }
 
 export async function listTags(): Promise<Tag[]> {
   if (!isSupabaseConfigured()) return [];
   const supabase = await createClient();
-  const { data } = await supabase.from("tags").select("*").order("name");
+  const { data, error } = await supabase.from("tags").select("*").order("name");
+  if (error) console.error("listTags:", error.message);
   return (data ?? []) as Tag[];
 }
 
@@ -186,11 +196,12 @@ export async function listPendingComments(): Promise<PendingComment[]> {
     ];
   }
   const supabase = await createClient();
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("comments")
     .select("id, body, created_at, profiles(display_name), posts(title)")
     .eq("approved", false)
     .order("created_at", { ascending: false });
+  if (error) console.error("listPendingComments:", error.message);
   return (data ?? []).map((r) => ({
     id: r.id,
     body: r.body,
@@ -203,10 +214,11 @@ export async function listPendingComments(): Promise<PendingComment[]> {
 export async function listSubscribers(): Promise<SubscriberRow[]> {
   if (!isSupabaseConfigured()) return [];
   const supabase = await createClient();
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("newsletter_subscribers")
     .select("*")
     .order("created_at", { ascending: false });
+  if (error) console.error("listSubscribers:", error.message);
   return (data ?? []).map((r) => ({
     id: r.id,
     email: r.email,
@@ -224,10 +236,11 @@ export interface MediaItem {
 export async function listMedia(): Promise<MediaItem[]> {
   if (!isSupabaseConfigured()) return [];
   const supabase = await createClient();
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("media")
     .select("id, url, filename, created_at")
     .order("created_at", { ascending: false });
+  if (error) console.error("listMedia:", error.message);
   return (data ?? []).map((r) => ({
     id: r.id,
     url: r.url,
@@ -239,10 +252,11 @@ export async function listMedia(): Promise<MediaItem[]> {
 export async function listMessages(): Promise<ContactMessageRow[]> {
   if (!isSupabaseConfigured()) return [];
   const supabase = await createClient();
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("contact_messages")
     .select("*")
     .order("created_at", { ascending: false });
+  if (error) console.error("listMessages:", error.message);
   return (data ?? []).map((r) => ({
     id: r.id,
     name: r.name,
