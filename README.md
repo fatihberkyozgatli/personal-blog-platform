@@ -85,9 +85,20 @@ middleware.ts session refresh + /admin guard
 |------------------|---------|
 | `npm run dev`    | Local dev server |
 | `npm run build`  | Production build |
+| `npm run start`  | Production server |
 | `npm run lint`   | Lint |
 | `npm run typecheck` | TypeScript check |
-| `npm test`       | Unit tests (Vitest) |
+| `npm test`       | Unit tests (Vitest, single run) |
+| `npm run test:watch` | Unit tests (Vitest, watch mode) |
+| `npm run test:rls` | RLS policy tests (requires linked Supabase) |
+| `npm run e2e`    | End-to-end tests (Playwright) |
+| `npm run e2e:ui` | End-to-end tests in UI mode (Playwright) |
+| `npm run verify` | Full local verification: typecheck, lint, unit tests, build. CI-safe. |
+| `npm run verify:full` | Full verification + RLS tests + e2e. Requires linked Supabase, Playwright browsers, running app, and seeded DB. |
+
+**Verify Scripts:**
+- `verify`: Runs typecheck → lint → unit tests → build. Fully deterministic and CI-safe; recommended before commits.
+- `verify:full`: Extends `verify` with `test:rls` (requires `npx supabase@latest link --project-ref <ref>`) and `e2e` (requires `npx playwright install` and a running dev server with seeded test data). Expected to fail if Supabase is not linked or Playwright is not set up — not a sign of broken code.
 
 ## Deployment
 
