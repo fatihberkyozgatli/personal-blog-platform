@@ -18,7 +18,7 @@ Notes on intentional decisions (flagged by reviewers but kept on purpose):
 - [x] **Tag filter is a no-op in production.** Fixed in `lib/data/posts.ts` (Supabase + search branches); covered by `tests/integration/get-posts.test.ts`.
 
 ### P1
-- [x] **Search pagination/count wrong + tag ignored.** Verified correct (no source fix needed); pagination/count covered by `tests/integration/get-posts.test.ts`. The `search_posts` RPC ~50-row cap remains an accepted v1 limit.
+- [x] **Search pagination/count wrong + tag ignored.** Pagination/count verified correct (no cap in the `search_posts` RPC); search now also honors an explicit sort (`lib/data/posts.ts`); covered by `tests/integration/get-posts.test.ts`.
 - [ ] **`sanitize-html` + `@tiptap/html` shipped to the client bundle.** `components/admin/PostPreview.tsx` is `"use client"` and imports `lib/tiptap/render.ts`, pulling heavy Node-oriented `sanitize-html` into the browser. Render preview HTML server-side (server action/component) and pass the sanitized string down.
   - **Note:** the About admin preview (`/admin/about`) avoids this pattern — it uses the Tiptap editor's own `getHTML()` for the live preview and seeds initial HTML server-side, so `sanitize-html` is never shipped to the client on that route.
 - [x] **Like toggle read-modify-write race.** Fixed in `lib/actions/engagement.ts` (delete-returning + upsert); covered by `tests/integration/toggle-like.test.ts`.

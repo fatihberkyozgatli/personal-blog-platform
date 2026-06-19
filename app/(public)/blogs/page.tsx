@@ -52,6 +52,8 @@ export default async function BlogsPage({
           <p className="mt-2 text-sm text-ink-muted">
             {sp.q
               ? "No posts matched your search. Try another phrase."
+              : sp.tag || sp.c
+              ? "No posts found for this filter. Try removing or changing it."
               : "There are no posts in this section yet. Please check back soon."}
           </p>
         </div>

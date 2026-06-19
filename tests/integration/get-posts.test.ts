@@ -44,6 +44,26 @@ describe("getPosts search branch pagination", () => {
   });
 });
 
+describe("getPosts search branch: sort handling", () => {
+  const searchRows = [
+    { id: "p1", title: "Post 1", slug: "post-1", cover_image: null, excerpt: "x", category_id: null, author_id: null, author_name: null, published_at: null, reading_time: 0, view_count: 1 },
+    { id: "p2", title: "Post 2", slug: "post-2", cover_image: null, excerpt: "x", category_id: null, author_id: null, author_name: null, published_at: null, reading_time: 0, view_count: 9 },
+    { id: "p3", title: "Post 3", slug: "post-3", cover_image: null, excerpt: "x", category_id: null, author_id: null, author_name: null, published_at: null, reading_time: 0, view_count: 5 },
+  ];
+
+  it("orders by view_count desc when sort=popular is provided", async () => {
+    mock = makeSupabase({ categories: { data: [], error: null } }, { data: searchRows, error: null });
+    const result = await getPosts({ q: "x", sort: "popular" });
+    expect(result.items.map((p) => p.id)).toEqual(["p2", "p3", "p1"]);
+  });
+
+  it("preserves RPC relevance order when no sort is provided", async () => {
+    mock = makeSupabase({ categories: { data: [], error: null } }, { data: searchRows, error: null });
+    const result = await getPosts({ q: "x" });
+    expect(result.items.map((p) => p.id)).toEqual(["p1", "p2", "p3"]);
+  });
+});
+
 describe("getPosts tag filtering (Supabase branch)", () => {
   it("queries tags and post_tags tables when tagSlug is provided", async () => {
     await getPosts({ tagSlug: "faith" });

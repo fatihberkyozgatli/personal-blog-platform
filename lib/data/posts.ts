@@ -128,6 +128,7 @@ export async function getPosts(query: PostQuery = {}): Promise<PostPage> {
     if (tagPostIds !== null) {
       items = items.filter((p: PostCard) => tagPostIds!.includes(p.id));
     }
+    if (query.sort) items = sortMock(items, query.sort);
     const total = items.length;
     const start = (page - 1) * perPage;
     return { items: items.slice(start, start + perPage), total, page, perPage, totalPages: Math.max(1, Math.ceil(total / perPage)) };
