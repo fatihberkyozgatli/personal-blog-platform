@@ -1,5 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { makeSupabase } from "../helpers/mock-supabase";
+import { setFeaturedPost } from "@/lib/actions/admin";
+
+vi.mock("@/lib/auth", () => ({ getCurrentUser: () => currentUser() }));
+vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
+
+const currentUser = vi.fn(async () => ({ id: "a1", email: "a@b.com", displayName: "A", role: "admin" as const }));
 
 let mock = makeSupabase();
 const supabaseConfigured = vi.fn(() => true);
@@ -51,5 +57,44 @@ describe("getFeaturedPost", () => {
     });
     const post = await getFeaturedPost();
     expect(post?.id).toBe("pop");
+  });
+});
+
+function fd(id: string) {
+  const f = new FormData();
+  f.set("id", id);
+  return f;
+}
+
+describe("setFeaturedPost", () => {
+  beforeEach(() => {
+    currentUser.mockResolvedValue({ id: "a1", email: "a@b.com", displayName: "A", role: "admin" });
+  });
+
+  it("rejects a non-admin (no site_settings write)", async () => {
+    currentUser.mockResolvedValue({ id: "u1", email: "u@b.com", displayName: "U", role: "reader" as never });
+    mock = makeSupabase();
+    await setFeaturedPost(fd("p1"));
+    expect(mock.calls.some((c) => c.table === "site_settings")).toBe(false);
+  });
+
+  it("refuses a non-published post", async () => {
+    mock = makeSupabase({ posts: { data: { status: "draft" } } });
+    await setFeaturedPost(fd("p1"));
+    expect(mock.calls.some((c) => c.table === "site_settings")).toBe(false);
+  });
+
+  it("sets the featured id for a published post", async () => {
+    mock = makeSupabase({
+      posts: { data: { status: "published" } },
+      site_settings: { data: { value: { post_id: null } } },
+    });
+    await setFeaturedPost(fd("p1"));
+    const upsertCalls = mock.queries.filter(
+      (q) => q.table === "site_settings" && (q.query.upsert as ReturnType<typeof vi.fn>).mock.calls.length > 0,
+    );
+    expect(upsertCalls.length).toBeGreaterThan(0);
+    const args = (upsertCalls[0].query.upsert as ReturnType<typeof vi.fn>).mock.calls[0][0];
+    expect(args).toMatchObject({ key: "featured_post", value: { post_id: "p1" } });
   });
 });

@@ -197,6 +197,37 @@ export async function approveComment(formData: FormData): Promise<void> {
 export async function deleteComment(formData: FormData): Promise<void> {
   await deleteFrom("comments", String(formData.get("id")), "/admin/comments");
 }
+
+export async function setFeaturedPost(formData: FormData): Promise<void> {
+  if (!isSupabaseConfigured() || !(await ensureAdmin())) return;
+  const id = String(formData.get("id") ?? "");
+  if (!id) return;
+  const supabase = await createClient();
+
+  const { data: post } = await supabase
+    .from("posts")
+    .select("status")
+    .eq("id", id)
+    .maybeSingle();
+  if (!post || post.status !== "published") return;
+
+  const { data: current } = await supabase
+    .from("site_settings")
+    .select("value")
+    .eq("key", "featured_post")
+    .maybeSingle();
+  const currentId = (current?.value as { post_id?: string | null } | null)?.post_id ?? null;
+  const nextId = currentId === id ? null : id;
+
+  const { error } = await supabase.from("site_settings").upsert(
+    { key: "featured_post", value: { post_id: nextId } as unknown as Json, updated_at: new Date().toISOString() },
+    { onConflict: "key" },
+  );
+  if (error) console.error("setFeaturedPost failed:", error.message);
+
+  revalidatePath("/");
+  revalidatePath("/admin/posts");
+}
 export async function markMessageRead(formData: FormData): Promise<void> {
   if (!isSupabaseConfigured() || !(await ensureAdmin())) return;
   const supabase = await createClient();
