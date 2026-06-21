@@ -163,7 +163,35 @@ export async function getLatestPosts(limit: number): Promise<PostCard[]> {
   return items;
 }
 
+export async function getFeaturedPostId(): Promise<string | null> {
+  if (!isSupabaseConfigured()) return null;
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("site_settings")
+    .select("value")
+    .eq("key", "featured_post")
+    .maybeSingle();
+  if (error) {
+    console.error("getFeaturedPostId:", error.message);
+    return null;
+  }
+  const value = (data?.value ?? null) as { post_id?: string | null } | null;
+  return value?.post_id ?? null;
+}
+
 export async function getFeaturedPost(): Promise<PostCard | null> {
+  const featuredId = await getFeaturedPostId();
+  if (featuredId && isSupabaseConfigured()) {
+    const supabase = await createClient();
+    const categories = await getCategories();
+    const { data, error } = await supabase
+      .from("posts_public")
+      .select("*")
+      .eq("id", featuredId)
+      .maybeSingle();
+    if (error) console.error("getFeaturedPost:", error.message);
+    if (data) return mapCard(data, categories);
+  }
   const { items } = await getPosts({ perPage: 1, sort: "popular" });
   return items[0] ?? null;
 }
