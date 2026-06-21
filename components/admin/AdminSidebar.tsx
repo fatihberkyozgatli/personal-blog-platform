@@ -142,7 +142,7 @@ export function AdminSidebar({ name }: { name: string }) {
         </div>
       )}
 
-      <aside className="hidden w-60 shrink-0 flex-col bg-maroon-800 text-ivory lg:flex">
+      <aside className="hidden w-60 shrink-0 flex-col bg-maroon-800 text-ivory lg:flex lg:sticky lg:top-0 lg:h-dvh lg:self-start lg:overflow-y-auto">
         <div className="flex items-center gap-2 px-5 py-5">
           <Floret className="h-5 w-5 text-gold" />
           <span className="font-display text-xl text-ivory">Admin</span>
