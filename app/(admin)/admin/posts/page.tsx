@@ -1,13 +1,14 @@
 import Link from "next/link";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { Pencil, Plus, Star, Trash2 } from "lucide-react";
 import { PageHeader, Card, EmptyState } from "@/components/admin/ui";
 import { ButtonLink } from "@/components/shared/Button";
 import { listPosts } from "@/lib/data/admin";
-import { deletePost } from "@/lib/actions/admin";
+import { deletePost, setFeaturedPost } from "@/lib/actions/admin";
+import { getFeaturedPostId } from "@/lib/data/posts";
 import { formatDate } from "@/lib/utils/format";
 
 export default async function AdminPostsPage() {
-  const posts = await listPosts();
+  const [posts, featuredId] = await Promise.all([listPosts(), getFeaturedPostId()]);
 
   return (
     <>
@@ -33,6 +34,7 @@ export default async function AdminPostsPage() {
                 <th className="px-5 py-3 font-medium">Status</th>
                 <th className="px-5 py-3 text-right font-medium">Views</th>
                 <th className="px-5 py-3 font-medium">Updated</th>
+                <th className="px-5 py-3 text-center font-medium">Featured</th>
                 <th className="px-5 py-3 text-right font-medium">Actions</th>
               </tr>
             </thead>
@@ -60,6 +62,23 @@ export default async function AdminPostsPage() {
                     {p.viewCount.toLocaleString()}
                   </td>
                   <td className="px-5 py-3 text-ink-muted">{formatDate(p.updatedAt)}</td>
+                  <td className="px-5 py-3 text-center">
+                    {p.status === "published" ? (
+                      <form action={setFeaturedPost} className="inline">
+                        <input type="hidden" name="id" value={p.id} />
+                        <button
+                          type="submit"
+                          aria-label={p.id === featuredId ? `Featured — remove ${p.title} from homepage` : `Feature ${p.title} on homepage`}
+                          aria-pressed={p.id === featuredId}
+                          className="grid h-8 w-8 place-items-center rounded-md text-ink-muted hover:bg-gold/10 hover:text-gold-700 cursor-pointer"
+                        >
+                          <Star className={p.id === featuredId ? "h-4 w-4 fill-current text-gold-700" : "h-4 w-4"} />
+                        </button>
+                      </form>
+                    ) : (
+                      <span className="text-ink-muted">—</span>
+                    )}
+                  </td>
                   <td className="px-5 py-3">
                     <div className="flex items-center justify-end gap-2">
                       <Link
