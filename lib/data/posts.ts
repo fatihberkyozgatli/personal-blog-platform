@@ -176,7 +176,9 @@ export async function getFeaturedPostId(): Promise<string | null> {
     return null;
   }
   const value = (data?.value ?? null) as { post_id?: string | null } | null;
-  return value?.post_id ?? null;
+  const id = value?.post_id ?? null;
+  const isUuid = typeof id === "string" && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+  return isUuid ? id : null;
 }
 
 export async function getFeaturedPost(): Promise<PostCard | null> {

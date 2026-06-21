@@ -69,14 +69,14 @@ export default async function AdminPostsPage() {
                         <button
                           type="submit"
                           aria-label={p.id === featuredId ? `Featured — remove ${p.title} from homepage` : `Feature ${p.title} on homepage`}
-                          aria-pressed={p.id === featuredId}
-                          className="grid h-8 w-8 place-items-center rounded-md text-ink-muted hover:bg-gold/10 hover:text-gold-700 cursor-pointer"
+                          aria-pressed={p.id === featuredId ? "true" : "false"}
+                          className="grid h-8 w-8 place-items-center rounded-md text-ink-muted hover:bg-gold/10 hover:text-gold-700 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-700"
                         >
                           <Star className={p.id === featuredId ? "h-4 w-4 fill-current text-gold-700" : "h-4 w-4"} />
                         </button>
                       </form>
                     ) : (
-                      <span className="text-ink-muted">—</span>
+                      <span aria-hidden="true" className="text-ink-muted">—</span>
                     )}
                   </td>
                   <td className="px-5 py-3">

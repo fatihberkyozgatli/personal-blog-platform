@@ -204,12 +204,12 @@ export async function setFeaturedPost(formData: FormData): Promise<void> {
   if (!id) return;
   const supabase = await createClient();
 
-  const { data: post } = await supabase
-    .from("posts")
-    .select("status")
+  const { data: livePost } = await supabase
+    .from("posts_public")
+    .select("id")
     .eq("id", id)
     .maybeSingle();
-  if (!post || post.status !== "published") return;
+  if (!livePost) return;
 
   const { data: current } = await supabase
     .from("site_settings")

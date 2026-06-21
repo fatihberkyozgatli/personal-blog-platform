@@ -17,6 +17,9 @@ vi.mock("@/lib/supabase/server", () => ({ createClient: async () => mock.client 
 
 import { getFeaturedPostId, getFeaturedPost } from "@/lib/data/posts";
 
+const FEATURED = "11111111-1111-4111-8111-111111111111";
+const POPULAR = "22222222-2222-4222-8222-222222222222";
+
 beforeEach(() => {
   mock = makeSupabase();
   supabaseConfigured.mockReturnValue(true);
@@ -24,8 +27,8 @@ beforeEach(() => {
 
 describe("getFeaturedPostId", () => {
   it("returns the configured post_id", async () => {
-    mock = makeSupabase({ site_settings: { data: { value: { post_id: "p1" } } } });
-    expect(await getFeaturedPostId()).toBe("p1");
+    mock = makeSupabase({ site_settings: { data: { value: { post_id: FEATURED } } } });
+    expect(await getFeaturedPostId()).toBe(FEATURED);
   });
   it("returns null when unset", async () => {
     mock = makeSupabase({ site_settings: { data: null } });
@@ -38,27 +41,27 @@ describe("getFeaturedPostId", () => {
 });
 
 describe("getFeaturedPost", () => {
-  const row = { id: "p1", title: "Featured", slug: "featured", excerpt: "x", author_id: "au1", author_name: "A", category_id: null, cover_image: null, published_at: "2026-01-01", reading_time: 3, view_count: 9 };
+  const row = { id: FEATURED, title: "Featured", slug: "featured", excerpt: "x", author_id: "au1", author_name: "A", category_id: null, cover_image: null, published_at: "2026-01-01", reading_time: 3, view_count: 9 };
 
   it("returns the configured post when it is live", async () => {
     mock = makeSupabase({
-      site_settings: { data: { value: { post_id: "p1" } } },
+      site_settings: { data: { value: { post_id: FEATURED } } },
       categories: { data: [] },
       posts_public: { data: row },
     });
     const post = await getFeaturedPost();
-    expect(post?.id).toBe("p1");
+    expect(post?.id).toBe(FEATURED);
   });
 
   it("falls back to the popular query when nothing is featured", async () => {
-    const popular = { ...row, id: "pop", slug: "pop" };
+    const popular = { ...row, id: POPULAR, slug: "pop" };
     mock = makeSupabase({
       site_settings: { data: { value: { post_id: null } } },
       categories: { data: [] },
       posts_public: { data: [popular], count: 1 },
     });
     const post = await getFeaturedPost();
-    expect(post?.id).toBe("pop");
+    expect(post?.id).toBe(POPULAR);
   });
 });
 
@@ -76,27 +79,41 @@ describe("setFeaturedPost", () => {
   it("rejects a non-admin (no site_settings write)", async () => {
     currentUser.mockResolvedValue({ id: "u1", email: "u@b.com", displayName: "U", role: "reader" as Role });
     mock = makeSupabase();
-    await setFeaturedPost(fd("p1"));
+    await setFeaturedPost(fd(FEATURED));
     expect(mock.calls.some((c) => c.table === "site_settings")).toBe(false);
   });
 
   it("refuses a non-published post", async () => {
-    mock = makeSupabase({ posts: { data: { status: "draft" } } });
-    await setFeaturedPost(fd("p1"));
+    mock = makeSupabase({ posts_public: { data: null } });
+    await setFeaturedPost(fd(FEATURED));
     expect(mock.calls.some((c) => c.table === "site_settings")).toBe(false);
   });
 
   it("sets the featured id for a published post", async () => {
     mock = makeSupabase({
-      posts: { data: { status: "published" } },
+      posts_public: { data: { id: FEATURED } },
       site_settings: { data: { value: { post_id: null } } },
     });
-    await setFeaturedPost(fd("p1"));
+    await setFeaturedPost(fd(FEATURED));
     const upsertCalls = mock.queries.filter(
       (q) => q.table === "site_settings" && (q.query.upsert as ReturnType<typeof vi.fn>).mock.calls.length > 0,
     );
     expect(upsertCalls.length).toBeGreaterThan(0);
     const args = (upsertCalls[0].query.upsert as ReturnType<typeof vi.fn>).mock.calls[0][0];
-    expect(args).toMatchObject({ key: "featured_post", value: { post_id: "p1" } });
+    expect(args).toMatchObject({ key: "featured_post", value: { post_id: FEATURED } });
+  });
+
+  it("toggles off when the same id is re-submitted", async () => {
+    mock = makeSupabase({
+      posts_public: { data: { id: FEATURED } },
+      site_settings: { data: { value: { post_id: FEATURED } } },
+    });
+    await setFeaturedPost(fd(FEATURED));
+    const upsertCalls = mock.queries.filter(
+      (q) => q.table === "site_settings" && (q.query.upsert as ReturnType<typeof vi.fn>).mock.calls.length > 0,
+    );
+    expect(upsertCalls.length).toBeGreaterThan(0);
+    const args = (upsertCalls[0].query.upsert as ReturnType<typeof vi.fn>).mock.calls[0][0];
+    expect(args).toMatchObject({ key: "featured_post", value: { post_id: null } });
   });
 });
