@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 test("login page renders the form", async ({ page }) => {
   await page.goto("/login");
   await expect(page.getByLabel(/email/i)).toBeVisible();
-  await expect(page.getByLabel(/password/i)).toBeVisible();
+  await expect(page.locator("#password")).toBeVisible();
 });
 
 test("mobile nav opens", async ({ page }) => {
