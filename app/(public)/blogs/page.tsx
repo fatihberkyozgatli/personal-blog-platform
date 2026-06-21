@@ -62,7 +62,10 @@ export default async function BlogsPage({
           <p className="mb-6 text-center text-sm text-ink-muted">
             {result.total} {result.total === 1 ? "post" : "posts"}
           </p>
-          <Stagger className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <Stagger
+            key={`${sp.c ?? ""}|${sp.tag ?? ""}|${sort}|${sp.q ?? ""}|${page}`}
+            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+          >
             {result.items.map((p, i) => (
               <StaggerItem key={p.id}>
                 <PostCard post={p} priority={i < 3} />
