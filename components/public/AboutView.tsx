@@ -41,7 +41,7 @@ export function AboutView({
 
         {favoriteQuote.text.trim() && (
           <Reveal delay={0.1} className="mx-auto my-16 max-w-3xl">
-            <ArchFrame piece="arch-11-h.svg" tint="gold" className="px-14 py-16 text-center sm:px-28">
+            <ArchFrame piece="arch-11-h.svg" tint="gold" className="flex min-h-[16rem] flex-col justify-center px-14 py-16 text-center sm:min-h-[20rem] sm:px-28">
               <Quote className="mx-auto mb-3 h-6 w-6 text-gold-700" />
               <p className="mx-auto max-w-lg font-display text-xl italic leading-snug text-ink sm:text-2xl">
                 &ldquo;{favoriteQuote.text}&rdquo;
