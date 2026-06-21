@@ -181,7 +181,7 @@ export async function getFeaturedPostId(): Promise<string | null> {
 
 export async function getFeaturedPost(): Promise<PostCard | null> {
   const featuredId = await getFeaturedPostId();
-  if (featuredId && isSupabaseConfigured()) {
+  if (featuredId) {
     const supabase = await createClient();
     const categories = await getCategories();
     const { data, error } = await supabase

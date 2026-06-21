@@ -1,11 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import type { Role } from "@/lib/data/types";
+import type { CurrentUser } from "@/lib/auth";
 import { makeSupabase } from "../helpers/mock-supabase";
 import { setFeaturedPost } from "@/lib/actions/admin";
 
 vi.mock("@/lib/auth", () => ({ getCurrentUser: () => currentUser() }));
 vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
 
-const currentUser = vi.fn(async () => ({ id: "a1", email: "a@b.com", displayName: "A", role: "admin" as const }));
+const currentUser: ReturnType<typeof vi.fn<() => Promise<CurrentUser>>> = vi.fn(async () => ({ id: "a1", email: "a@b.com", displayName: "A", role: "admin" as Role }));
 
 let mock = makeSupabase();
 const supabaseConfigured = vi.fn(() => true);
@@ -36,7 +38,7 @@ describe("getFeaturedPostId", () => {
 });
 
 describe("getFeaturedPost", () => {
-  const row = { id: "p1", title: "Featured", slug: "featured", excerpt: "x", author_name: "A", category_id: null, cover_image: null, published_at: "2026-01-01", reading_time: 3, view_count: 9 };
+  const row = { id: "p1", title: "Featured", slug: "featured", excerpt: "x", author_id: "au1", author_name: "A", category_id: null, cover_image: null, published_at: "2026-01-01", reading_time: 3, view_count: 9 };
 
   it("returns the configured post when it is live", async () => {
     mock = makeSupabase({
@@ -72,7 +74,7 @@ describe("setFeaturedPost", () => {
   });
 
   it("rejects a non-admin (no site_settings write)", async () => {
-    currentUser.mockResolvedValue({ id: "u1", email: "u@b.com", displayName: "U", role: "reader" as never });
+    currentUser.mockResolvedValue({ id: "u1", email: "u@b.com", displayName: "U", role: "reader" as Role });
     mock = makeSupabase();
     await setFeaturedPost(fd("p1"));
     expect(mock.calls.some((c) => c.table === "site_settings")).toBe(false);
