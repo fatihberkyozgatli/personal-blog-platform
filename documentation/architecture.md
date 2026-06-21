@@ -112,6 +112,9 @@ service-role key at all: RLS plus the user session cover every operation.
   admin-editable. Content is stored in `site_settings` under `key='about'` and managed through
   `/admin/about`. Public reads are open; writes are admin-only (RLS). The `defaultAbout`
   constant in `lib/data/about.ts` is the fallback when no row exists.
+- **Featured post ("The Essay to Begin With"):** the landing-page hero post is admin-selected
+  via `site_settings` (`key='featured_post'`). If no post is pinned, it falls back to the
+  most-popular published post.
 
 ---
 

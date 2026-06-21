@@ -133,10 +133,13 @@ Indexes: unique on `slug`; index on `(status, published_at)`; index on `category
 | value      | jsonb       | document stored as JSONB |
 | updated_at | timestamptz | set by the server action on each write |
 
-Stores singleton site configuration documents. The About/author document is stored under
-`key='about'` and validated against the Zod schema in `lib/validations/about.ts`.
-**No SQL content seed:** `getAboutContent()` in `lib/data/about.ts` falls back to the
-`defaultAbout` constant when the row is missing; the row is created on the admin's first save.
+Stores singleton site configuration documents. Known keys:
+
+- `about` — About/author document, validated against `lib/validations/about.ts`. Falls back to
+  the `defaultAbout` constant when the row is missing; created on the admin's first save.
+- `featured_post` — `{ "post_id": "<uuid>" | null }`. Identifies the admin-pinned landing-page
+  hero. When `post_id` is null or the row is absent, the read path falls back to the
+  most-popular published post.
 
 ---
 
