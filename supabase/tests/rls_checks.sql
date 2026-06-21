@@ -49,20 +49,20 @@ end $$;
 rollback;
 
 begin;
-set local role authenticated;
-set local request.jwt.claims = '{"sub":"bcce1191-641d-4b28-a1fd-9e10f750ed6e","role":"authenticated"}';
 do $$
-declare n_draft int; n_future int;
+declare admin_id uuid; n_draft int; n_future int;
 begin
+  select id into admin_id from profiles where role = 'admin' order by created_at limit 1;
+  assert admin_id is not null, 'no admin profile found; promote the owner to admin first';
+  insert into posts (title, slug, excerpt, content, status, published_at, reading_time, author_id) values
+    ('rls-check draft', 'rls-check-draft-' || gen_random_uuid(), 'x', '{"type":"doc","content":[]}'::jsonb, 'draft', null, 1, admin_id),
+    ('rls-check future', 'rls-check-future-' || gen_random_uuid(), 'x', '{"type":"doc","content":[]}'::jsonb, 'published', now() + interval '30 days', 1, admin_id);
+  perform set_config('role', 'authenticated', true);
+  perform set_config('request.jwt.claims', json_build_object('sub', admin_id, 'role', 'authenticated')::text, true);
   select count(*) into n_draft from posts where status = 'draft';
   assert n_draft >= 1, 'admin must see drafts';
   select count(*) into n_future from posts where published_at > now();
   assert n_future >= 1, 'admin must see future-dated posts';
-end $$;
-do $$
-declare n int;
-begin
-  select count(*) into n from newsletter_subscribers;
 end $$;
 rollback;
 
