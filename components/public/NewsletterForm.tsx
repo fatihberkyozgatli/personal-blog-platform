@@ -12,6 +12,7 @@ export function NewsletterForm() {
 
   return (
     <form action={formAction} className="w-full max-w-md">
+      <input type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
       <div className="flex flex-col gap-2 sm:flex-row">
         <input
           type="email"
@@ -19,7 +20,7 @@ export function NewsletterForm() {
           required
           aria-label="Your email address"
           placeholder="Your email address"
-          className="w-full rounded-md border border-gold/30 bg-ivory px-4 py-3 text-sm text-ink outline-none focus:border-gold"
+          className="w-full rounded-md border border-gold/30 bg-ivory px-4 py-3 text-base text-ink outline-none focus:border-maroon sm:text-sm"
         />
         <Button type="submit" disabled={pending} className="shrink-0">
           {pending ? "Joining…" : "Sign Up"}

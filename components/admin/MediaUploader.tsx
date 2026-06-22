@@ -15,11 +15,29 @@ export function MediaUploader({ onUploaded }: { onUploaded?: (url: string) => vo
   async function onFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
+    const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/webp", "image/gif"];
+    const MAX_BYTES = 5 * 1024 * 1024;
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      setStatus("Unsupported file type. Use PNG, JPG, WebP, or GIF.");
+      return;
+    }
+    if (file.size > MAX_BYTES) {
+      setStatus("That image is too large (5 MB max).");
+      return;
+    }
     setBusy(true);
     setStatus("Uploading…");
     try {
       const supabase = createClient();
-      const path = `${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
+      const ext = file.name.split(".").pop()?.toLowerCase().replace(/[^a-z0-9]/g, "") ?? "";
+      const safeBase =
+        file.name
+          .replace(/\.[^.]+$/, "")
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-+|-+$/g, "")
+          .slice(0, 60) || "image";
+      const path = `${crypto.randomUUID()}-${safeBase}${ext ? `.${ext}` : ""}`;
       const { error } = await supabase.storage.from("media").upload(path, file, {
         cacheControl: "3600",
         upsert: false,

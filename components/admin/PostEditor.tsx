@@ -12,7 +12,7 @@ import type { EditablePost } from "@/lib/data/admin";
 
 const initial: ActionState = { ok: false, message: "" };
 const field =
-  "w-full rounded-md border border-gold/30 bg-parchment px-4 py-2.5 text-sm text-ink outline-none focus:border-gold";
+  "w-full rounded-md border border-gold/30 bg-parchment px-4 py-2.5 text-base text-ink outline-none focus:border-maroon sm:text-sm";
 const layoutTransition: Transition = { type: "spring", stiffness: 230, damping: 32, mass: 0.9 };
 const panelTransition: Transition = { type: "spring", stiffness: 260, damping: 30, mass: 0.85 };
 const instantTransition: Transition = { duration: 0 };
@@ -20,12 +20,15 @@ const instantTransition: Transition = { duration: 0 };
 export function PostEditor({
   post,
   categories,
+  initialHtml,
 }: {
   post?: EditablePost;
   categories: Category[];
+  initialHtml?: string;
 }) {
   const [state, action, pending] = useActionState(savePost, initial);
   const [content, setContent] = useState<unknown>(post?.content ?? null);
+  const [previewHtml, setPreviewHtml] = useState(initialHtml ?? "");
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewSlotOpen, setPreviewSlotOpen] = useState(false);
   const [title, setTitle] = useState(post?.title ?? "");
@@ -95,7 +98,14 @@ export function PostEditor({
 
           <div>
             <label className="mb-1 block text-sm font-medium text-ink">Body</label>
-            <TiptapEditor initialContent={post?.content} onChange={setContent} />
+            <TiptapEditor
+              initialContent={post?.content}
+              ariaLabel="Post body"
+              onChange={(json, html) => {
+                setContent(json);
+                setPreviewHtml(html);
+              }}
+            />
           </div>
         </motion.div>
 
@@ -117,6 +127,7 @@ export function PostEditor({
                 coverImage={coverImage}
                 category={selectedCategory}
                 content={content}
+                html={previewHtml}
                 status={status}
               />
             </motion.section>

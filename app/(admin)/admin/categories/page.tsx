@@ -4,6 +4,7 @@ import { CategoryForm } from "@/components/admin/CategoryForm";
 import { CategoryIconEditor } from "@/components/admin/CategoryIconEditor";
 import { listCategories } from "@/lib/data/admin";
 import { deleteCategory } from "@/lib/actions/admin";
+import { DeleteForm } from "@/components/admin/DeleteForm";
 
 export default async function AdminCategoriesPage() {
   const categories = await listCategories();
@@ -31,16 +32,16 @@ export default async function AdminCategoriesPage() {
                     <p className="text-xs text-ink-muted">/{c.slug}</p>
                   </div>
                 </div>
-                <form action={deleteCategory}>
-                  <input type="hidden" name="id" value={c.id} />
-                  <button
-                    type="submit"
-                    aria-label={`Delete ${c.name}`}
-                    className="grid h-8 w-8 place-items-center rounded-md text-ink-muted hover:bg-clay/10 hover:text-clay cursor-pointer"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </button>
-                </form>
+                <DeleteForm
+                  action={deleteCategory}
+                  id={c.id}
+                  label={`Delete ${c.name}`}
+                  title="Delete this category?"
+                  message={`"${c.name}" will be removed. Posts keep their content but lose this category.`}
+                  className="grid h-8 w-8 place-items-center rounded-md text-ink-muted hover:bg-clay/10 hover:text-clay cursor-pointer"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </DeleteForm>
               </li>
               );
             })}

@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { getCurrentUser } from "@/lib/auth";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
@@ -8,6 +9,10 @@ export default async function AdminLayout({
   children: React.ReactNode;
 }) {
   const user = await getCurrentUser();
+  if (isSupabaseConfigured()) {
+    if (!user) redirect("/login?next=/admin");
+    if (user.role !== "admin") redirect("/");
+  }
 
   const name = user?.displayName ?? "Sample Admin";
 

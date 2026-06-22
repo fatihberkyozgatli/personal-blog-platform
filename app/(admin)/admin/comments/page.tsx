@@ -2,6 +2,7 @@ import { Check, Trash2 } from "lucide-react";
 import { PageHeader, Card, EmptyState } from "@/components/admin/ui";
 import { listPendingComments } from "@/lib/data/admin";
 import { approveComment, deleteComment } from "@/lib/actions/admin";
+import { DeleteForm } from "@/components/admin/DeleteForm";
 import { formatDate } from "@/lib/utils/format";
 
 export default async function AdminCommentsPage() {
@@ -39,16 +40,16 @@ export default async function AdminCommentsPage() {
                     <Check className="h-4 w-4" /> Approve
                   </button>
                 </form>
-                <form action={deleteComment}>
-                  <input type="hidden" name="id" value={c.id} />
-                  <button
-                    type="submit"
-                    aria-label="Delete comment"
-                    className="inline-flex items-center gap-1 rounded-md bg-clay/10 px-3 py-1.5 text-sm text-clay hover:bg-clay/20 cursor-pointer"
-                  >
-                    <Trash2 className="h-4 w-4" /> Delete
-                  </button>
-                </form>
+                <DeleteForm
+                  action={deleteComment}
+                  id={c.id}
+                  label="Delete comment"
+                  title="Delete this comment?"
+                  message="This comment will be permanently removed."
+                  className="inline-flex items-center gap-1 rounded-md bg-clay/10 px-3 py-1.5 text-sm text-clay hover:bg-clay/20 cursor-pointer"
+                >
+                  <Trash2 className="h-4 w-4" /> Delete
+                </DeleteForm>
               </div>
             </Card>
           ))}

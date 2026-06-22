@@ -151,7 +151,7 @@ export async function getEditablePost(id: string): Promise<EditablePost | null> 
     };
   }
   const supabase = await createClient();
-  const { data, error } = await supabase.from("posts").select("*").eq("id", id).single();
+  const { data, error } = await supabase.from("posts").select("*").eq("id", id).maybeSingle();
   if (error) console.error("getEditablePost:", error.message);
   if (!data) return null;
   return {

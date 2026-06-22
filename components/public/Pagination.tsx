@@ -32,7 +32,7 @@ export function Pagination({
         <Link
           href={href(page - 1)}
           aria-label="Previous page"
-          className="grid h-9 w-9 place-items-center rounded-md border border-gold/30 text-ink-muted hover:border-gold hover:text-maroon"
+          className="grid h-11 w-11 place-items-center rounded-md border border-gold/30 text-ink-muted hover:border-gold hover:text-maroon sm:h-9 sm:w-9"
         >
           <ChevronLeft className="h-4 w-4" />
         </Link>
@@ -43,7 +43,7 @@ export function Pagination({
           href={href(p)}
           aria-current={p === page ? "page" : undefined}
           className={cn(
-            "grid h-9 min-w-9 place-items-center rounded-md border px-3 text-sm tabular-nums transition-colors",
+            "grid h-11 min-w-11 place-items-center rounded-md border px-3 text-sm tabular-nums transition-colors sm:h-9 sm:min-w-9",
             p === page
               ? "border-maroon bg-maroon text-ivory"
               : "border-gold/30 text-ink-muted hover:border-gold hover:text-maroon",
@@ -56,7 +56,7 @@ export function Pagination({
         <Link
           href={href(page + 1)}
           aria-label="Next page"
-          className="grid h-9 w-9 place-items-center rounded-md border border-gold/30 text-ink-muted hover:border-gold hover:text-maroon"
+          className="grid h-11 w-11 place-items-center rounded-md border border-gold/30 text-ink-muted hover:border-gold hover:text-maroon sm:h-9 sm:w-9"
         >
           <ChevronRight className="h-4 w-4" />
         </Link>

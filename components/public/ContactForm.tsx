@@ -1,19 +1,21 @@
 "use client";
 
 import { useActionState } from "react";
+import { Check, TriangleAlert } from "lucide-react";
 import { Button } from "@/components/shared/Button";
 import { sendMessage, type FormState } from "@/lib/actions/contact";
 
 const initial: FormState = { ok: false, message: "" };
 
 const fieldClass =
-  "w-full rounded-md border border-gold/30 bg-parchment px-4 py-2.5 text-sm text-ink outline-none focus:border-gold";
+  "w-full rounded-md border border-gold/30 bg-parchment px-4 py-2.5 text-base text-ink outline-none focus:border-maroon sm:text-sm";
 
 export function ContactForm() {
   const [state, formAction, pending] = useActionState(sendMessage, initial);
 
   return (
     <form action={formAction} className="space-y-4">
+      <input type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <label htmlFor="name" className="mb-1 block text-sm font-medium text-ink">
@@ -52,8 +54,13 @@ export function ContactForm() {
         <p
           role={state.ok ? "status" : "alert"}
           aria-live={state.ok ? "polite" : "assertive"}
-          className={state.ok ? "text-sm text-emerald" : "text-sm text-clay"}
+          className={
+            state.ok
+              ? "flex items-center gap-1.5 text-sm text-emerald"
+              : "flex items-center gap-1.5 text-sm text-clay"
+          }
         >
+          {state.ok ? <Check className="h-4 w-4" /> : <TriangleAlert className="h-4 w-4" />}
           {state.message}
         </p>
       )}

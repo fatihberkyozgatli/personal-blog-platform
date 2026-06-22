@@ -3,6 +3,7 @@ import { PageHeader, Card, EmptyState } from "@/components/admin/ui";
 import { AddItemForm } from "@/components/admin/AddItemForm";
 import { listTags } from "@/lib/data/admin";
 import { createTag, deleteTag } from "@/lib/actions/admin";
+import { DeleteForm } from "@/components/admin/DeleteForm";
 
 export default async function AdminTagsPage() {
   const tags = await listTags();
@@ -26,16 +27,16 @@ export default async function AdminTagsPage() {
                 className="inline-flex items-center gap-2 rounded-full border border-gold/30 bg-ivory px-3 py-1 text-sm text-ink"
               >
                 {t.name}
-                <form action={deleteTag}>
-                  <input type="hidden" name="id" value={t.id} />
-                  <button
-                    type="submit"
-                    aria-label={`Delete ${t.name}`}
-                    className="text-ink-muted hover:text-clay cursor-pointer"
-                  >
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </button>
-                </form>
+                <DeleteForm
+                  action={deleteTag}
+                  id={t.id}
+                  label={`Delete ${t.name}`}
+                  title="Delete this tag?"
+                  message={`"${t.name}" will be removed from all posts.`}
+                  className="text-ink-muted hover:text-clay cursor-pointer"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                </DeleteForm>
               </li>
             ))}
           </ul>

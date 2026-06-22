@@ -62,7 +62,7 @@ export function CommentSection({
             required
             rows={4}
             placeholder="Share a thought…"
-            className="w-full rounded-md border border-gold/30 bg-parchment px-4 py-3 text-sm text-ink outline-none focus:border-gold"
+            className="w-full rounded-md border border-gold/30 bg-parchment px-4 py-3 text-base text-ink outline-none focus:border-maroon sm:text-sm"
           />
           {state.message && (
             <p

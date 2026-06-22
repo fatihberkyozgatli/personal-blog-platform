@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { PageHeader } from "@/components/admin/ui";
 import { PostEditor } from "@/components/admin/PostEditor";
 import { getEditablePost, listCategories } from "@/lib/data/admin";
+import { renderPostHtml } from "@/lib/tiptap/render";
 
 export default async function EditPostPage({
   params,
@@ -15,7 +16,7 @@ export default async function EditPostPage({
   return (
     <>
       <PageHeader title="Edit Post" description={post.title} />
-      <PostEditor post={post} categories={categories} />
+      <PostEditor post={post} categories={categories} initialHtml={renderPostHtml(post.content)} />
     </>
   );
 }

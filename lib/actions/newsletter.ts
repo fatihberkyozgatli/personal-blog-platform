@@ -10,6 +10,10 @@ export interface FormState {
 }
 
 export async function subscribe(_prev: FormState, formData: FormData): Promise<FormState> {
+  if (formData.get("company")) {
+    return { ok: true, message: "Thank you for joining the journey." };
+  }
+
   const parsed = newsletterSchema.safeParse({ email: formData.get("email") });
   if (!parsed.success) {
     return { ok: false, message: parsed.error.issues[0].message };

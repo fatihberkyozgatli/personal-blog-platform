@@ -2,6 +2,7 @@ import { Trash2 } from "lucide-react";
 import { PageHeader, Card, EmptyState } from "@/components/admin/ui";
 import { listSubscribers } from "@/lib/data/admin";
 import { deleteSubscriber } from "@/lib/actions/admin";
+import { DeleteForm } from "@/components/admin/DeleteForm";
 import { formatDate } from "@/lib/utils/format";
 
 export default async function AdminSubscribersPage() {
@@ -32,16 +33,16 @@ export default async function AdminSubscribersPage() {
                   <td className="px-5 py-3 text-ink">{s.email}</td>
                   <td className="px-5 py-3 text-ink-muted">{formatDate(s.createdAt)}</td>
                   <td className="px-5 py-3 text-right">
-                    <form action={deleteSubscriber}>
-                      <input type="hidden" name="id" value={s.id} />
-                      <button
-                        type="submit"
-                        aria-label={`Remove ${s.email}`}
-                        className="grid h-8 w-8 place-items-center rounded-md text-ink-muted hover:bg-clay/10 hover:text-clay cursor-pointer"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                    </form>
+                    <DeleteForm
+                      action={deleteSubscriber}
+                      id={s.id}
+                      label={`Remove ${s.email}`}
+                      title="Remove this subscriber?"
+                      message={`${s.email} will be removed from the newsletter list.`}
+                      className="grid h-8 w-8 place-items-center rounded-md text-ink-muted hover:bg-clay/10 hover:text-clay cursor-pointer"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </DeleteForm>
                   </td>
                 </tr>
               ))}

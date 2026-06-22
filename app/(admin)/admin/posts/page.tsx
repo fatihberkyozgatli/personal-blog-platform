@@ -4,6 +4,7 @@ import { PageHeader, Card, EmptyState } from "@/components/admin/ui";
 import { ButtonLink } from "@/components/shared/Button";
 import { listPosts } from "@/lib/data/admin";
 import { deletePost, setFeaturedPost } from "@/lib/actions/admin";
+import { DeleteForm } from "@/components/admin/DeleteForm";
 import { getFeaturedPostId } from "@/lib/data/posts";
 import { formatDate } from "@/lib/utils/format";
 
@@ -88,16 +89,16 @@ export default async function AdminPostsPage() {
                       >
                         <Pencil className="h-4 w-4" />
                       </Link>
-                      <form action={deletePost}>
-                        <input type="hidden" name="id" value={p.id} />
-                        <button
-                          type="submit"
-                          aria-label={`Delete ${p.title}`}
-                          className="grid h-8 w-8 place-items-center rounded-md text-ink-muted hover:bg-clay/10 hover:text-clay cursor-pointer"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      </form>
+                      <DeleteForm
+                        action={deletePost}
+                        id={p.id}
+                        label={`Delete ${p.title}`}
+                        title="Delete this post?"
+                        message={`"${p.title}" will be permanently deleted. This cannot be undone.`}
+                        className="grid h-8 w-8 place-items-center rounded-md text-ink-muted hover:bg-clay/10 hover:text-clay cursor-pointer"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </DeleteForm>
                     </div>
                   </td>
                 </tr>

@@ -10,6 +10,10 @@ export interface FormState {
 }
 
 export async function sendMessage(_prev: FormState, formData: FormData): Promise<FormState> {
+  if (formData.get("company")) {
+    return { ok: true, message: "Your message has been sent. Thank you for reaching out." };
+  }
+
   const parsed = contactSchema.safeParse({
     name: formData.get("name"),
     email: formData.get("email"),

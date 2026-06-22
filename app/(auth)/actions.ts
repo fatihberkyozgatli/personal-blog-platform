@@ -35,7 +35,7 @@ export async function signUp(_prev: AuthState, formData: FormData): Promise<Auth
   }
 
   const supabase = await createClient();
-  const origin = (await headers()).get("origin") ?? "";
+  const origin = process.env.NEXT_PUBLIC_SITE_URL ?? (await headers()).get("origin") ?? "";
   const { data, error } = await supabase.auth.signUp({
     email: parsed.data.email,
     password: parsed.data.password,
@@ -58,7 +58,7 @@ export async function requestPasswordReset(_prev: AuthState, formData: FormData)
   }
 
   const supabase = await createClient();
-  const origin = (await headers()).get("origin") ?? "";
+  const origin = process.env.NEXT_PUBLIC_SITE_URL ?? (await headers()).get("origin") ?? "";
   const { error } = await supabase.auth.resetPasswordForEmail(parsed.data.email, {
     redirectTo: `${origin}/auth/callback?next=/reset-password`,
   });

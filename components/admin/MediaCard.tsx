@@ -5,9 +5,11 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Check, Copy, Trash2 } from "lucide-react";
 import { deleteMedia } from "@/lib/actions/admin";
+import { ConfirmModal } from "./ConfirmModal";
 
 export function MediaCard({ id, url, filename }: { id: string; url: string; filename: string }) {
   const [copied, setCopied] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const [pending, startTransition] = useTransition();
   const router = useRouter();
 
@@ -21,8 +23,8 @@ export function MediaCard({ id, url, filename }: { id: string; url: string; file
     }
   }
 
-  function onDelete() {
-    if (!confirm("Delete this image? This cannot be undone.")) return;
+  function runDelete() {
+    setConfirmOpen(false);
     startTransition(async () => {
       await deleteMedia(id);
       router.refresh();
@@ -50,7 +52,7 @@ export function MediaCard({ id, url, filename }: { id: string; url: string; file
           </button>
           <button
             type="button"
-            onClick={onDelete}
+            onClick={() => setConfirmOpen(true)}
             disabled={pending}
             aria-label={`Delete ${filename}`}
             className="inline-flex shrink-0 items-center justify-center rounded-md border border-clay/30 px-2 py-1 text-clay transition-colors hover:border-clay hover:bg-clay/10 disabled:opacity-50 cursor-pointer"
@@ -59,6 +61,13 @@ export function MediaCard({ id, url, filename }: { id: string; url: string; file
           </button>
         </div>
       </figcaption>
+      <ConfirmModal
+        open={confirmOpen}
+        title="Delete this image?"
+        message={`"${filename}" will be permanently removed.`}
+        onCancel={() => setConfirmOpen(false)}
+        onConfirm={runDelete}
+      />
     </figure>
   );
 }

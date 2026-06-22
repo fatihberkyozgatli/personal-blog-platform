@@ -37,7 +37,8 @@ function slugify(input: string) {
 
 export async function savePost(_prev: ActionState, formData: FormData): Promise<ActionState> {
   if (!isSupabaseConfigured()) return notConfigured;
-  if (!(await ensureAdmin())) return notAuthorized;
+  const user = await getCurrentUser();
+  if (user?.role !== "admin") return notAuthorized;
 
   let content: Json;
   try {
@@ -51,14 +52,11 @@ export async function savePost(_prev: ActionState, formData: FormData): Promise<
     slug: formData.get("slug") || undefined,
     excerpt: formData.get("excerpt") || undefined,
     categoryId: formData.get("categoryId") || undefined,
-    coverImage: formData.get("coverImage") || undefined,
+    coverImage: String(formData.get("coverImage") ?? "").trim() || undefined,
     status: formData.get("status"),
     content,
   });
   if (!parsed.success) return { ok: false, message: parsed.error.issues[0].message };
-
-  const user = await getCurrentUser();
-  if (!user) return { ok: false, message: "Your session has expired. Please sign in again." };
 
   const supabase = await createClient();
   const slug = parsed.data.slug ? slugify(parsed.data.slug) : slugify(parsed.data.title);
@@ -100,6 +98,7 @@ export async function savePost(_prev: ActionState, formData: FormData): Promise<
 
   revalidatePath("/admin/posts");
   revalidatePath("/blogs");
+  revalidatePath("/blogs/[slug]", "page");
   redirect("/admin/posts");
 }
 
@@ -111,6 +110,7 @@ export async function deletePost(formData: FormData): Promise<void> {
   if (error) console.error("deletePost failed:", error.message);
   revalidatePath("/admin/posts");
   revalidatePath("/blogs");
+  revalidatePath("/blogs/[slug]", "page");
 }
 
 export async function createCategory(_prev: ActionState, formData: FormData): Promise<ActionState> {

@@ -77,8 +77,15 @@ function Toolbar({ editor }: { editor: Editor }) {
         onClick={() => {
           const url = window.prompt("Link URL");
           if (url === null) return;
-          if (url === "") editor.chain().focus().unsetLink().run();
-          else editor.chain().focus().setLink({ href: url }).run();
+          if (url === "") {
+            editor.chain().focus().unsetLink().run();
+            return;
+          }
+          if (!/^(https?:\/\/|mailto:)/i.test(url)) {
+            window.alert("Links must start with http://, https://, or mailto:");
+            return;
+          }
+          editor.chain().focus().setLink({ href: url }).run();
         }}
       >
         <LinkIcon className="h-4 w-4" />
@@ -87,7 +94,12 @@ function Toolbar({ editor }: { editor: Editor }) {
         label="Insert image"
         onClick={() => {
           const url = window.prompt("Image URL");
-          if (url) editor.chain().focus().setImage({ src: url }).run();
+          if (!url) return;
+          if (!/^https?:\/\//i.test(url)) {
+            window.alert("Image URL must start with http:// or https://");
+            return;
+          }
+          editor.chain().focus().setImage({ src: url }).run();
         }}
       >
         <ImageIcon className="h-4 w-4" />

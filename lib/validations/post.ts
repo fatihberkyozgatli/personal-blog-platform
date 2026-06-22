@@ -6,7 +6,11 @@ export const postSchema = z.object({
   slug: z.string().max(200).optional(),
   excerpt: z.string().max(400).optional(),
   categoryId: z.string().optional(),
-  coverImage: z.string().optional(),
+  coverImage: z
+    .string()
+    .url("Cover image must be a valid URL.")
+    .refine((u) => u.startsWith("https://"), "Cover image must use https.")
+    .optional(),
   status: z.enum(["draft", "published"]),
   content: z
     .object({ type: z.literal("doc"), content: z.array(z.unknown()) })

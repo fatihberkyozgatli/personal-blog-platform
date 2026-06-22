@@ -222,7 +222,7 @@ function GateCard({ slug, excerpt }: { slug: string; excerpt: string }) {
       </div>
 
       <div className="mt-8 rounded-xl2 border border-gold/30 bg-parchment p-8 text-center shadow-card">
-        <span className="mx-auto grid h-12 w-12 place-items-center rounded-full border border-gold/40 text-gold">
+        <span className="mx-auto grid h-12 w-12 place-items-center rounded-full border border-gold/40 text-gold-700">
           <Lock className="h-5 w-5" />
         </span>
         <h2 className="mt-4 font-display text-2xl text-ink">Sign in to keep reading</h2>

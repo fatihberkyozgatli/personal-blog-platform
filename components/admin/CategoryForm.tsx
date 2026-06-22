@@ -25,7 +25,7 @@ export function CategoryForm() {
           name="name"
           required
           placeholder="e.g. Poetry"
-          className="w-full rounded-md border border-gold/30 bg-parchment px-4 py-2.5 text-sm text-ink outline-none focus:border-gold"
+          className="w-full rounded-md border border-gold/30 bg-parchment px-4 py-2.5 text-base text-ink outline-none focus:border-maroon sm:text-sm"
         />
       </div>
 

@@ -10,6 +10,7 @@ describe("safeNext", () => {
     expect(safeNext("https://evil.com")).toBe("/");
     expect(safeNext("//evil.com")).toBe("/");
     expect(safeNext("/\\evil.com")).toBe("/");
+    expect(safeNext("/@evil.com")).toBe("/");
   });
   it("allows local paths", () => {
     expect(safeNext("/admin")).toBe("/admin");

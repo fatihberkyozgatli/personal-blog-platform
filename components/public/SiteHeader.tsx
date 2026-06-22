@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
@@ -32,6 +32,15 @@ export function SiteHeader({
   const [term, setTerm] = useState("");
   const reduceMotion = useReducedMotion();
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (!searchOpen) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setSearchOpen(false);
+    }
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [searchOpen]);
 
   function submitSearch(e: React.FormEvent) {
     e.preventDefault();
@@ -85,6 +94,8 @@ export function SiteHeader({
             {searchOpen && (
               <motion.form
                 key="desktop-search"
+                id="site-search-desktop"
+                role="search"
                 onSubmit={submitSearch}
                 initial={reduceMotion ? false : { width: 0, opacity: 0 }}
                 animate={{ width: 240, opacity: 1 }}
@@ -94,10 +105,11 @@ export function SiteHeader({
               >
                 <input
                   autoFocus
+                  type="search"
                   value={term}
                   onChange={(e) => setTerm(e.target.value)}
                   placeholder="Search posts..."
-                  className="w-60 rounded-md border border-gold/30 bg-parchment px-3 py-2 text-sm text-ink outline-none focus:border-gold"
+                  className="w-60 rounded-md border border-gold/30 bg-parchment px-3 py-2 text-base text-ink outline-none focus:border-maroon sm:text-sm"
                   aria-label="Search posts"
                 />
               </motion.form>
@@ -109,6 +121,7 @@ export function SiteHeader({
             onClick={() => setSearchOpen((v) => !v)}
             aria-label="Search"
             aria-expanded={searchOpen}
+            aria-controls="site-search-desktop"
             className="hidden h-10 w-10 place-items-center rounded-md text-ink transition-colors hover:bg-gold/10 md:grid cursor-pointer"
           >
             {searchOpen ? <X className="h-5 w-5" /> : <Search className="h-5 w-5" />}
@@ -132,7 +145,24 @@ export function SiteHeader({
 
           <button
             type="button"
-            onClick={() => setMenuOpen((v) => !v)}
+            onClick={() => {
+              setSearchOpen((v) => !v);
+              setMenuOpen(false);
+            }}
+            aria-label="Search"
+            aria-expanded={searchOpen}
+            aria-controls="site-search-mobile"
+            className="grid h-10 w-10 place-items-center rounded-md text-ink transition-colors hover:bg-gold/10 md:hidden cursor-pointer"
+          >
+            {searchOpen ? <X className="h-5 w-5" /> : <Search className="h-5 w-5" />}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setMenuOpen((v) => !v);
+              setSearchOpen(false);
+            }}
             aria-label="Menu"
             aria-expanded={menuOpen}
             className="grid h-10 w-10 place-items-center rounded-md text-ink transition-colors hover:bg-gold/10 md:hidden cursor-pointer"
@@ -141,6 +171,25 @@ export function SiteHeader({
           </button>
         </div>
       </div>
+
+      {searchOpen && (
+        <form
+          id="site-search-mobile"
+          role="search"
+          onSubmit={submitSearch}
+          className="border-t border-gold/20 bg-parchment px-4 py-3 md:hidden"
+        >
+          <input
+            autoFocus
+            type="search"
+            value={term}
+            onChange={(e) => setTerm(e.target.value)}
+            placeholder="Search posts..."
+            aria-label="Search posts"
+            className="w-full rounded-md border border-gold/30 bg-ivory px-3 py-2.5 text-base text-ink outline-none focus:border-maroon"
+          />
+        </form>
+      )}
 
       {menuOpen && (
         <nav className="border-t border-gold/20 bg-parchment md:hidden" aria-label="Mobile">

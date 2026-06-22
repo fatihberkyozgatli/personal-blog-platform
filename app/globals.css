@@ -23,7 +23,7 @@
       url("/ornaments/lib/pattern-faint.png"),
       radial-gradient(rgba(110, 20, 35, 0.02) 1px, transparent 1px);
     background-size: 360px 360px, 22px 22px;
-    background-attachment: fixed, scroll;
+    background-attachment: scroll, scroll;
   }
 
   h1, h2, h3, h4, h5 {
@@ -37,7 +37,7 @@
   }
 
   :focus-visible {
-    outline: 2px solid var(--gold);
+    outline: 2px solid var(--maroon);
     outline-offset: 2px;
     border-radius: 2px;
   }

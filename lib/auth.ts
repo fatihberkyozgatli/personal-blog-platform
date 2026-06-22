@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import type { Role } from "@/lib/data/types";
@@ -9,7 +10,7 @@ export interface CurrentUser {
   role: Role;
 }
 
-export async function getCurrentUser(): Promise<CurrentUser | null> {
+export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
   if (!isSupabaseConfigured()) return null;
 
   const supabase = await createClient();
@@ -31,4 +32,4 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
     displayName: profile?.display_name ?? user.email?.split("@")[0] ?? "Reader",
     role,
   };
-}
+});

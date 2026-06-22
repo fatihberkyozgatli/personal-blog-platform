@@ -48,7 +48,7 @@ export default async function LandingPage() {
 
           <Reveal delay={0.12} className="relative min-w-0 rounded-xl2 bg-maroon p-6 shadow-panel sm:p-8">
             <div className="mb-5 flex items-center justify-between">
-              <h2 className="font-display text-2xl text-ivory">Latest Posts</h2>
+              <h2 className="font-display text-2xl text-ivory">Recent Posts</h2>
               <Link
                 href="/blogs"
                 className="inline-flex items-center gap-1 text-xs font-medium text-gold-400 transition-colors hover:text-ivory"
@@ -101,7 +101,7 @@ export default async function LandingPage() {
                   {featured.title}
                 </h2>
                 <div className="mt-6 flex gap-3 border-l-2 border-gold pl-5">
-                  <Quote className="h-6 w-6 shrink-0 text-gold" />
+                  <Quote className="h-6 w-6 shrink-0 text-gold-700" />
                   <p className="font-display text-xl italic leading-relaxed text-ink-muted">
                     {featured.excerpt}
                   </p>

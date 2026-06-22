@@ -3,7 +3,6 @@
 import { CalendarDays, Clock, Eye } from "lucide-react";
 import { CoverArt } from "@/components/shared/CoverArt";
 import { OrnamentRule } from "@/components/shared/Ornament";
-import { renderPostHtml } from "@/lib/tiptap/render";
 import { formatDate } from "@/lib/utils/format";
 import { readingTimeFrom } from "@/lib/tiptap/reading-time";
 import type { Category, PostStatus } from "@/lib/data/types";
@@ -18,6 +17,7 @@ export function PostPreview({
   coverImage,
   category,
   content,
+  html,
   status,
 }: {
   title: string;
@@ -25,10 +25,10 @@ export function PostPreview({
   coverImage: string;
   category: Category | null;
   content: unknown;
+  html: string;
   status: PostStatus;
 }) {
   const displayTitle = title.trim() || "Untitled Reflection";
-  const html = renderPostHtml(content);
   const hasBody = html.trim().length > 0;
   const date = new Date().toISOString();
 

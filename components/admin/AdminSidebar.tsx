@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -23,6 +23,7 @@ import { Floret } from "@/components/shared/Ornament";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { useToast } from "@/components/shared/Toast";
+import { lockBodyScroll } from "@/lib/utils/scroll-lock";
 
 const items = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
@@ -41,6 +42,42 @@ export function AdminSidebar({ name }: { name: string }) {
   const router = useRouter();
   const { toast } = useToast();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const drawerRef = useRef<HTMLElement>(null);
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const unlock = lockBodyScroll();
+    const trigger = triggerRef.current;
+    closeBtnRef.current?.focus();
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setMobileOpen(false);
+        return;
+      }
+      if (e.key !== "Tab") return;
+      const focusables = drawerRef.current?.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), input, [tabindex]:not([tabindex="-1"])',
+      );
+      if (!focusables || focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      unlock();
+      trigger?.focus();
+    };
+  }, [mobileOpen]);
 
   const active = (href: string, exact?: boolean) =>
     exact ? pathname === href : pathname.startsWith(href);
@@ -103,6 +140,7 @@ export function AdminSidebar({ name }: { name: string }) {
           <span className="font-display text-xl text-ivory">Admin</span>
         </div>
         <button
+          ref={triggerRef}
           type="button"
           onClick={() => setMobileOpen(true)}
           aria-label="Open admin navigation"
@@ -121,13 +159,20 @@ export function AdminSidebar({ name }: { name: string }) {
             className="absolute inset-0 bg-ink/45 cursor-default"
             onClick={() => setMobileOpen(false)}
           />
-          <aside className="relative flex h-full w-72 max-w-[85vw] flex-col bg-maroon-800 text-ivory shadow-panel">
+          <aside
+            ref={drawerRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Admin navigation"
+            className="relative flex h-full w-72 max-w-[85vw] flex-col bg-maroon-800 text-ivory shadow-panel"
+          >
             <div className="flex items-center justify-between px-5 py-5">
               <div className="flex items-center gap-2">
                 <Floret className="h-5 w-5 text-gold" />
                 <span className="font-display text-xl text-ivory">Admin</span>
               </div>
               <button
+                ref={closeBtnRef}
                 type="button"
                 onClick={() => setMobileOpen(false)}
                 aria-label="Close admin navigation"

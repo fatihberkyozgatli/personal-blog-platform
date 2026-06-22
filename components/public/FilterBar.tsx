@@ -30,11 +30,13 @@ export function FilterBar({
     if (merged.sort && merged.sort !== "newest") params.set("sort", merged.sort);
 
     router.push(`/blogs${params.toString() ? `?${params}` : ""}`);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   return (
     <div className="mb-10 flex flex-col gap-3 rounded-xl2 border border-gold/20 bg-parchment p-3 sm:flex-row sm:items-center">
       <form
+        role="search"
         onSubmit={(e) => {
           e.preventDefault();
           const v = new FormData(e.currentTarget).get("q");
@@ -49,7 +51,7 @@ export function FilterBar({
           defaultValue={current.q ?? ""}
           placeholder="Search posts…"
           aria-label="Search posts"
-          className="w-full rounded-md border border-gold/30 bg-ivory py-2.5 pl-9 pr-3 text-sm text-ink outline-none focus:border-gold"
+          className="w-full rounded-md border border-gold/30 bg-ivory py-2.5 pl-9 pr-3 text-base text-ink outline-none focus:border-maroon sm:text-sm"
         />
       </form>
 
@@ -92,7 +94,10 @@ export function FilterBar({
           <motion.button
             key="clear-filters"
             type="button"
-            onClick={() => router.push("/blogs")}
+            onClick={() => {
+              router.push("/blogs");
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
             initial={reduceMotion ? { opacity: 0 } : { opacity: 0, x: 28, width: 0 }}
             animate={reduceMotion ? { opacity: 1 } : { opacity: 1, x: 0, width: "auto" }}
             exit={reduceMotion ? { opacity: 0 } : { opacity: 0, x: 28, width: 0 }}
