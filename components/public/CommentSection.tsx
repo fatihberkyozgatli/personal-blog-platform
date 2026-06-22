@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/shared/Button";
 import { addComment, type CommentState } from "@/lib/actions/engagement";
@@ -42,6 +42,7 @@ export function CommentSection({
   canComment: boolean;
 }) {
   const [state, formAction, pending] = useActionState(addComment, initial);
+  const [startedAt] = useState(() => Date.now());
 
   return (
     <section className="mt-14">
@@ -51,6 +52,8 @@ export function CommentSection({
 
       {canComment ? (
         <form action={formAction} className="mt-5">
+          <input type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
+          <input type="hidden" name="startedAt" value={startedAt} />
           <input type="hidden" name="postId" value={postId} />
           <input type="hidden" name="slug" value={slug} />
           <label htmlFor="body" className="sr-only">

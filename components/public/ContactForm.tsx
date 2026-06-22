@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { Check, TriangleAlert } from "lucide-react";
 import { Button } from "@/components/shared/Button";
 import { sendMessage, type FormState } from "@/lib/actions/contact";
@@ -12,10 +12,12 @@ const fieldClass =
 
 export function ContactForm() {
   const [state, formAction, pending] = useActionState(sendMessage, initial);
+  const [startedAt] = useState(() => Date.now());
 
   return (
     <form action={formAction} className="space-y-4">
       <input type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
+      <input type="hidden" name="startedAt" value={startedAt} />
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <label htmlFor="name" className="mb-1 block text-sm font-medium text-ink">

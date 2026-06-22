@@ -7,6 +7,7 @@ import { MediaUploader } from "./MediaUploader";
 import { Button } from "@/components/shared/Button";
 import { AboutView } from "@/components/public/AboutView";
 import { updateAbout } from "@/lib/actions/about";
+import { sanitizePreviewHtml } from "@/lib/tiptap/preview-sanitize";
 import type { ActionState } from "@/lib/actions/admin";
 import type { AboutContent } from "@/lib/validations/about";
 
@@ -34,9 +35,9 @@ export function AboutForm({
   const [intro, setIntro] = useState<unknown>(about.intro);
   const [bio, setBio] = useState<unknown>(about.bio);
   const [why, setWhy] = useState<unknown>(about.why);
-  const [introHtml, setIntroHtml] = useState(initialHtml.intro);
-  const [bioHtml, setBioHtml] = useState(initialHtml.bio);
-  const [whyHtml, setWhyHtml] = useState(initialHtml.why);
+  const [introHtml, setIntroHtml] = useState(() => sanitizePreviewHtml(initialHtml.intro));
+  const [bioHtml, setBioHtml] = useState(() => sanitizePreviewHtml(initialHtml.bio));
+  const [whyHtml, setWhyHtml] = useState(() => sanitizePreviewHtml(initialHtml.why));
 
   function setRow(i: number, key: "year" | "label", value: string) {
     setTimeline((rows) => rows.map((r, idx) => (idx === i ? { ...r, [key]: value } : r)));
@@ -106,7 +107,7 @@ export function AboutForm({
             initialContent={about.intro}
             onChange={(json, html) => {
               setIntro(json);
-              setIntroHtml(html);
+              setIntroHtml(sanitizePreviewHtml(html));
             }}
           />
         </div>
@@ -118,7 +119,7 @@ export function AboutForm({
             initialContent={about.bio}
             onChange={(json, html) => {
               setBio(json);
-              setBioHtml(html);
+              setBioHtml(sanitizePreviewHtml(html));
             }}
           />
         </div>
@@ -130,7 +131,7 @@ export function AboutForm({
             initialContent={about.why}
             onChange={(json, html) => {
               setWhy(json);
-              setWhyHtml(html);
+              setWhyHtml(sanitizePreviewHtml(html));
             }}
           />
         </div>

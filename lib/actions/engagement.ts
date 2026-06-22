@@ -2,9 +2,11 @@
 
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { getCurrentUser } from "@/lib/auth";
+import { isLikelyBot } from "@/lib/utils/spam-guard";
 
 export interface CommentState {
   ok: boolean;
@@ -22,6 +24,10 @@ export async function addComment(
   _prev: CommentState,
   formData: FormData,
 ): Promise<CommentState> {
+  if (isLikelyBot(formData)) {
+    return { ok: true, message: "Thank you. Your comment will appear once it has been approved." };
+  }
+
   const user = await getCurrentUser();
   if (!user) return { ok: false, message: "Please sign in to join the conversation." };
 
@@ -86,6 +92,20 @@ export async function toggleLike(postId: string, slug: string): Promise<LikeResu
 
 export async function recordView(slug: string): Promise<void> {
   if (!isSupabaseConfigured()) return;
+  const safeSlug = slug.replace(/[^a-z0-9_-]/gi, "_").slice(0, 80);
+  const cookieName = `viewed_${safeSlug}`;
+  const store = await cookies();
+  if (store.get(cookieName)) return;
+
   const supabase = await createClient();
-  await supabase.rpc("increment_post_view", { p_slug: slug });
+  const { error } = await supabase.rpc("increment_post_view", { p_slug: slug });
+  if (!error) {
+    store.set(cookieName, "1", {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 60 * 60 * 6,
+      path: "/",
+    });
+  }
 }

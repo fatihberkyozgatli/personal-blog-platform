@@ -3,12 +3,11 @@ import { fontDisplay, fontSans } from "./fonts";
 import { cn } from "@/lib/utils/cn";
 import { ToastProvider } from "@/components/shared/Toast";
 import { SITE_NAME } from "@/lib/site";
+import { SITE_URL } from "@/lib/site-url";
 import "./globals.css";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: `${SITE_NAME} — Thoughts. Stories. Reflections.`,
     template: `%s — ${SITE_NAME}`,
@@ -18,6 +17,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: SITE_NAME,
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: SITE_NAME }],
   },
   alternates: {
     types: { "application/rss+xml": "/feed.xml" },

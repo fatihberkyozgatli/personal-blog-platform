@@ -7,6 +7,7 @@ import { TiptapEditor } from "./TiptapEditor";
 import { PostPreview } from "./PostPreview";
 import { Button } from "@/components/shared/Button";
 import { savePost, type ActionState } from "@/lib/actions/admin";
+import { sanitizePreviewHtml } from "@/lib/tiptap/preview-sanitize";
 import type { Category, PostStatus } from "@/lib/data/types";
 import type { EditablePost } from "@/lib/data/admin";
 
@@ -28,7 +29,7 @@ export function PostEditor({
 }) {
   const [state, action, pending] = useActionState(savePost, initial);
   const [content, setContent] = useState<unknown>(post?.content ?? null);
-  const [previewHtml, setPreviewHtml] = useState(initialHtml ?? "");
+  const [previewHtml, setPreviewHtml] = useState(() => sanitizePreviewHtml(initialHtml ?? ""));
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewSlotOpen, setPreviewSlotOpen] = useState(false);
   const [title, setTitle] = useState(post?.title ?? "");
@@ -103,7 +104,7 @@ export function PostEditor({
               ariaLabel="Post body"
               onChange={(json, html) => {
                 setContent(json);
-                setPreviewHtml(html);
+                setPreviewHtml(sanitizePreviewHtml(html));
               }}
             />
           </div>

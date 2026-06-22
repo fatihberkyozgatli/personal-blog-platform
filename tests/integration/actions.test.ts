@@ -35,6 +35,11 @@ describe("sendMessage", () => {
     expect(res.ok).toBe(true);
     expect(mock.calls.some((c) => c.table === "contact_messages")).toBe(true);
   });
+  it("silently ignores honeypot contact submissions without touching the DB", async () => {
+    const res = await sendMessage({ ok: false, message: "" }, fd({ company: "bot", name: "Ada", email: "a@b.com", body: "Hi" }));
+    expect(res.ok).toBe(true);
+    expect(mock.calls.length).toBe(0);
+  });
   it("rejects an invalid email without touching the DB", async () => {
     const res = await sendMessage({ ok: false, message: "" }, fd({ name: "Ada", email: "nope", body: "Hi" }));
     expect(res.ok).toBe(false);
@@ -43,6 +48,12 @@ describe("sendMessage", () => {
 });
 
 describe("subscribe", () => {
+  it("silently ignores honeypot newsletter submissions without touching the DB", async () => {
+    const res = await subscribe({ ok: false, message: "" }, fd({ company: "bot", email: "a@b.com" }));
+    expect(res.ok).toBe(true);
+    expect(mock.calls.length).toBe(0);
+  });
+
   it("treats a duplicate email (23505) as success", async () => {
     mock = makeSupabase({ newsletter_subscribers: { error: { code: "23505" } } });
     const res = await subscribe({ ok: false, message: "" }, fd({ email: "a@b.com" }));

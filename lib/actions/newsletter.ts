@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { newsletterSchema } from "@/lib/validations/newsletter";
+import { isLikelyBot } from "@/lib/utils/spam-guard";
 
 export interface FormState {
   ok: boolean;
@@ -10,7 +11,7 @@ export interface FormState {
 }
 
 export async function subscribe(_prev: FormState, formData: FormData): Promise<FormState> {
-  if (formData.get("company")) {
+  if (isLikelyBot(formData)) {
     return { ok: true, message: "Thank you for joining the journey." };
   }
 

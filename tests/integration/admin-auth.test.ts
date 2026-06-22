@@ -11,6 +11,7 @@ let mock = makeSupabase();
 vi.mock("@/lib/supabase/config", () => ({ isSupabaseConfigured: () => supabaseConfigured() }));
 vi.mock("@/lib/supabase/server", () => ({ createClient: async () => mock.client }));
 vi.mock("@/lib/auth", () => ({ getCurrentUser: () => currentUser() }));
+vi.mock("@/lib/site-url", () => ({ SITE_URL: "http://localhost:3000" }));
 vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
 vi.mock("next/navigation", () => ({ redirect: vi.fn() }));
 vi.mock("next/headers", () => ({ headers: vi.fn(async () => ({ get: vi.fn(() => null) })) }));

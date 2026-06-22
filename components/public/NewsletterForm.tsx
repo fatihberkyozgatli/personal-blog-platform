@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { Check, TriangleAlert } from "lucide-react";
 import { Button } from "@/components/shared/Button";
 import { subscribe, type FormState } from "@/lib/actions/newsletter";
@@ -9,10 +9,12 @@ const initial: FormState = { ok: false, message: "" };
 
 export function NewsletterForm() {
   const [state, formAction, pending] = useActionState(subscribe, initial);
+  const [startedAt] = useState(() => Date.now());
 
   return (
     <form action={formAction} className="w-full max-w-md">
       <input type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
+      <input type="hidden" name="startedAt" value={startedAt} />
       <div className="flex flex-col gap-2 sm:flex-row">
         <input
           type="email"
