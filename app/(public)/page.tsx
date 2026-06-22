@@ -126,7 +126,7 @@ export default async function LandingPage() {
         </section>
       )}
 
-      <section className="border-y border-gold/10 bg-ivory/80 py-14 backdrop-blur-[1px]">
+      <section className="py-14">
         <Container>
           <Reveal className="mb-8 text-center">
             <h2 className="font-display text-3xl text-ink">
