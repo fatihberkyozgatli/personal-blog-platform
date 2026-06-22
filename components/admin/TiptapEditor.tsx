@@ -47,7 +47,7 @@ function ToolbarButton({
 
 function Toolbar({ editor }: { editor: Editor }) {
   return (
-    <div className="flex flex-wrap items-center gap-1 border-b border-gold/20 bg-ivory px-2 py-1.5">
+    <div className="flex min-w-0 flex-wrap items-center gap-1 border-b border-gold/20 bg-ivory px-2 py-1.5">
       <ToolbarButton label="Bold" active={editor.isActive("bold")} onClick={() => editor.chain().focus().toggleBold().run()}>
         <Bold className="h-4 w-4" />
       </ToolbarButton>
@@ -141,7 +141,7 @@ export function TiptapEditor({
   });
 
   return (
-    <div className="overflow-hidden rounded-xl2 border border-gold/30 bg-parchment">
+    <div className="min-w-0 overflow-hidden rounded-xl2 border border-gold/30 bg-parchment">
       {editor && <Toolbar editor={editor} />}
       <EditorContent editor={editor} />
     </div>

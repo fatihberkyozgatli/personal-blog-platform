@@ -75,7 +75,7 @@ export function PostEditor({
               type="button"
               variant={previewOpen ? "secondary" : "ghost"}
               onClick={togglePreview}
-              className="shrink-0"
+              className="hidden shrink-0 xl:inline-flex"
             >
               {previewOpen ? <X className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               {previewOpen ? "Close" : "Preview"}
@@ -118,7 +118,7 @@ export function PostEditor({
               animate={{ opacity: 1, x: 0, scale: 1 }}
               exit={reduceMotion ? { opacity: 0 } : { opacity: 0, x: 72, scale: 0.985 }}
               transition={reduceMotion ? instantTransition : panelTransition}
-              className="min-w-0 overflow-hidden xl:max-h-[calc(100dvh-8rem)] xl:overflow-y-auto"
+              className="hidden min-w-0 overflow-hidden xl:block xl:max-h-[calc(100dvh-8rem)] xl:overflow-y-auto"
               style={{ transformOrigin: "right center" }}
             >
               <PostPreview

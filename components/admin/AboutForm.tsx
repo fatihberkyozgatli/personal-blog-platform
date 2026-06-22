@@ -58,15 +58,15 @@ export function AboutForm({
   }
 
   return (
-    <form action={action} className="grid gap-8 xl:grid-cols-2">
-      <div className="space-y-6">
+    <form action={action} className="grid min-w-0 gap-8 xl:grid-cols-2">
+      <div className="min-w-0 space-y-6">
         <input type="hidden" name="intro" value={JSON.stringify(intro ?? {})} />
         <input type="hidden" name="bio" value={JSON.stringify(bio ?? {})} />
         <input type="hidden" name="why" value={JSON.stringify(why ?? {})} />
         <input type="hidden" name="timeline" value={JSON.stringify(timeline.map(({ year, label }) => ({ year, label })))} />
         <input type="hidden" name="portraitUrl" value={portraitUrl} />
 
-        <div className="rounded-xl2 border border-gold/20 bg-parchment p-4">
+        <div className="min-w-0 rounded-xl2 border border-gold/20 bg-parchment p-4">
           <h2 className="mb-3 font-display text-lg text-ink">Author</h2>
           <label htmlFor="name" className="mb-1 block text-sm font-medium text-ink">Name</label>
           <input id="name" name="name" required value={name} onChange={(e) => setName(e.target.value)} className={field} />
@@ -99,7 +99,7 @@ export function AboutForm({
           )}
         </div>
 
-        <div className="rounded-xl2 border border-gold/20 bg-parchment p-4">
+        <div className="min-w-0 rounded-xl2 border border-gold/20 bg-parchment p-4">
           <label className="mb-1 block text-sm font-medium text-ink">Intro</label>
           <TiptapEditor
             ariaLabel="Intro"
@@ -111,7 +111,7 @@ export function AboutForm({
           />
         </div>
 
-        <div className="rounded-xl2 border border-gold/20 bg-parchment p-4">
+        <div className="min-w-0 rounded-xl2 border border-gold/20 bg-parchment p-4">
           <label className="mb-1 block text-sm font-medium text-ink">Bio</label>
           <TiptapEditor
             ariaLabel="Bio"
@@ -123,7 +123,7 @@ export function AboutForm({
           />
         </div>
 
-        <div className="rounded-xl2 border border-gold/20 bg-parchment p-4">
+        <div className="min-w-0 rounded-xl2 border border-gold/20 bg-parchment p-4">
           <label className="mb-1 block text-sm font-medium text-ink">Why I Write</label>
           <TiptapEditor
             ariaLabel="Why I Write"
@@ -135,7 +135,7 @@ export function AboutForm({
           />
         </div>
 
-        <div className="rounded-xl2 border border-gold/20 bg-parchment p-4">
+        <div className="min-w-0 rounded-xl2 border border-gold/20 bg-parchment p-4">
           <h2 className="mb-3 font-display text-lg text-ink">Favourite Quote</h2>
           <label htmlFor="quoteText" className="mb-1 block text-sm font-medium text-ink">Quote</label>
           <textarea id="quoteText" name="quoteText" rows={2} value={quoteText} onChange={(e) => setQuoteText(e.target.value)} className={field} />
@@ -143,7 +143,7 @@ export function AboutForm({
           <input id="quoteSource" name="quoteSource" value={quoteSource} onChange={(e) => setQuoteSource(e.target.value)} className={field} />
         </div>
 
-        <div className="rounded-xl2 border border-gold/20 bg-parchment p-4">
+        <div className="min-w-0 rounded-xl2 border border-gold/20 bg-parchment p-4">
           <div className="mb-3 flex items-center justify-between">
             <h2 className="font-display text-lg text-ink">Timeline</h2>
             <Button type="button" variant="ghost" onClick={addRow}>
@@ -152,22 +152,22 @@ export function AboutForm({
           </div>
           <ul className="space-y-3">
             {timeline.map((row, i) => (
-              <li key={row.id} className="flex flex-wrap items-start gap-2">
+              <li key={row.id} className="grid min-w-0 grid-cols-[6rem_1fr] gap-2 sm:flex sm:flex-wrap sm:items-start">
                 <input
                   aria-label={`Year ${i + 1}`}
                   value={row.year}
                   onChange={(e) => setRow(i, "year", e.target.value)}
                   placeholder="Year"
-                  className={`${field} w-24`}
+                  className={`${field} w-full sm:w-24`}
                 />
                 <input
                   aria-label={row.year ? `Label for ${row.year}` : `Label ${i + 1}`}
                   value={row.label}
                   onChange={(e) => setRow(i, "label", e.target.value)}
                   placeholder="What happened"
-                  className={`${field} min-w-0 flex-1`}
+                  className={`${field} col-span-2 min-w-0 sm:col-span-1 sm:flex-1`}
                 />
-                <div className="flex shrink-0 items-center gap-1">
+                <div className="col-span-2 flex shrink-0 items-center gap-1 sm:col-span-1">
                   <button type="button" aria-label={`Move ${row.year || `entry ${i + 1}`} up`} onClick={() => move(i, -1)} className="grid h-11 w-11 place-items-center rounded-md text-ink-muted hover:bg-gold/10">
                     <ArrowUp className="h-4 w-4" />
                   </button>
@@ -191,7 +191,7 @@ export function AboutForm({
         </Button>
       </div>
 
-      <div>
+      <div className="hidden xl:block">
         <div className="overflow-hidden rounded-xl2 border border-gold/25 bg-ivory shadow-card">
           <div className="border-b border-gold/20 bg-parchment px-4 py-3">
             <h2 className="font-display text-lg text-ink">Live Preview</h2>
