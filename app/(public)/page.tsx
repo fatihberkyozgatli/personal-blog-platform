@@ -126,7 +126,7 @@ export default async function LandingPage() {
         </section>
       )}
 
-      <section className="py-14">
+      <section className="border-y border-gold/10 bg-ivory/80 py-14 backdrop-blur-[1px]">
         <Container>
           <Reveal className="mb-8 text-center">
             <h2 className="font-display text-3xl text-ink">
@@ -146,7 +146,7 @@ export default async function LandingPage() {
       </section>
 
       {latest.length > 0 && (
-        <section className="py-14">
+        <section className="bg-parchment/75 py-14 backdrop-blur-[1px]">
           <Container>
             <div className="mb-8 flex items-end justify-between">
               <h2 className="font-display text-3xl text-ink">Latest Posts</h2>

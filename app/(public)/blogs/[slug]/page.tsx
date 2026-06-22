@@ -115,7 +115,7 @@ export default async function PostPage({
 
       <Container className="pb-16">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_300px]">
-          <div className="min-w-0">
+          <div className="min-w-0 rounded-xl2 border border-gold/20 bg-parchment/90 p-5 shadow-card backdrop-blur-[1px] sm:p-8 lg:p-10">
             {canRead ? (
               <>
                 {sampleMode && (
@@ -218,7 +218,7 @@ function GateCard({ slug, excerpt }: { slug: string; excerpt: string }) {
             <div key={i} className="h-3 rounded bg-ink/10" style={{ width: `${w}%`, opacity: 0.55 - i * 0.12 }} />
           ))}
         </div>
-        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-ivory to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-parchment to-transparent" />
       </div>
 
       <div className="mt-8 rounded-xl2 border border-gold/30 bg-parchment p-8 text-center shadow-card">
