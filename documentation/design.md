@@ -1,11 +1,8 @@
-# Placeholder Name: Design System
+# Pages from the Red Diary: Design System
 
 > The visual language is **Ottoman/Persian editorial**: warm ivory parchment, deep oxblood
 > panels, muted gold, Persian blue, illuminated-manuscript borders and arabesque floral ornament.
 > Calm, contemplative, literary. Reference wireframe: `documentation/wireframes.png`.
-
-> **Naming:** the brand name is not finalized. Use "Placeholder Name" everywhere a name is needed
-> until the client provides the real one.
 
 ---
 

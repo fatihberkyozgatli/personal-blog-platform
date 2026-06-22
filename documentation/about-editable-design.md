@@ -1,4 +1,4 @@
-# Placeholder Name: Admin-Editable About / Author Content
+# Pages from the Red Diary: Admin-Editable About / Author Content
 
 > Design spec. Agreed 2026-06-17. Part of Stage 4 (Admin Authoring). Makes the currently
 > hardcoded About page content (and the post-page author card) editable from the admin portal,

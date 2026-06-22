@@ -1,12 +1,9 @@
-# Placeholder Name: Architecture
+# Pages from the Red Diary: Architecture
 
 > A personal reflections blog (faith, history, literature, society, personal growth) with an
 > Ottoman/Persian editorial aesthetic. Public marketing and listing pages are open to everyone;
 > **reading the full body of a post requires a free account** (a registration wall). The site
 > owner manages everything through a custom admin portal.
-
-> **Naming:** "Placeholder Name" is a temporary working title. The client has not provided the
-> real brand name yet, so no name should be written anywhere until they do.
 
 ---
 

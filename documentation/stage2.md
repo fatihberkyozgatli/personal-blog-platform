@@ -1,4 +1,4 @@
-# Placeholder Name: Stage 2 — Auth & Session
+# Pages from the Red Diary: Stage 2 — Auth & Session
 
 ## Status: COMPLETED (2026-06-16)
 
@@ -12,7 +12,7 @@ non-text contrast — corrected in `design.md`); 44px touch targets; and form a1
 (Password reset was deferred from Stage 2 and has since been implemented — `/forgot-password` and
 `/reset-password`; see `stages.md`.)
 
-Verified: typecheck / lint / build clean; 15/15 unit tests (5 files). The live auth flow (signup → email
+Verified: typecheck / lint / build clean; the test suite green (`npm test`). The live auth flow (signup → email
 confirm → session; `/admin` redirects) is an owner test once the dashboard `/auth/callback`
 redirect is configured.
 
@@ -22,8 +22,6 @@ redirect is configured.
 > Supabase Auth (email confirmation ON), plus the session plumbing the registration wall and the
 > admin portal depend on. Builds directly on Stage 1 (the `profiles` auto-create trigger, RLS, the
 > `is_admin()` function, and the session-refresh middleware already exist).
-
-> **Naming:** use "Placeholder Name" until the client provides the real name.
 
 Source docs: `architecture.md` §5 (Auth Flow), `database.md` (`profiles`, `is_admin`),
 `design.md` (form styling), `stage1.md` (clients, middleware, RLS).

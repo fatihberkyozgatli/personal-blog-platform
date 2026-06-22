@@ -1,4 +1,4 @@
-# Placeholder Name: Stage 1 — Foundation & Database
+# Pages from the Red Diary: Stage 1 — Foundation & Database
 
 ## Status: COMPLETED (2026-06-15)
 
@@ -47,7 +47,7 @@ wall is enforced with column-level grants plus RLS:
 
 ## Verification
 
-- `build` / `typecheck` / `lint` / `test` (15/15 across 5 files) all green.
+- `build` / `typecheck` / `lint` / `test` all green (the test suite has since grown well beyond Stage 1; run `npm test`).
 - Migrations applied to the hosted project; `types/database.ts` generated from the live schema.
 - `rls_checks.sql` run against the live DB: `anon` cannot read `posts.content`
   (column-level `insufficient_privilege`); `anon`/`reader` cannot see drafts or future-dated posts;

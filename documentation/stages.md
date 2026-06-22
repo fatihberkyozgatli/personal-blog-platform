@@ -1,11 +1,8 @@
-# Placeholder Name: Build Stages
+# Pages from the Red Diary: Build Stages
 
 > The full v1 (see `architecture.md` §8) is delivered as **ordered sub-projects**, not one big
 > push. Each stage gets its own spec → implementation plan → build → review cycle. Stages are
 > sequenced by dependency: every stage builds on the ones above it.
-
-> **Naming:** the brand name is not finalized. Use "Placeholder Name" everywhere a name is needed
-> until the client provides the real one.
 
 _Roadmap agreed 2026-06-15. **Stages 1–2 completed** (foundation, database, auth). The front-end UI
 for the public site, admin portal, and engagement was built in parallel and merged onto the Stage
@@ -81,7 +78,7 @@ site with the correct reading wall behavior.
 
 ---
 
-## Stage 5 — Engagement  (UI built — pending verification; see `TODOs.md`)
+## Stage 5 — Engagement  (UI built; known bugs fixed + covered by tests — live owner test pending)
 
 - Moderated comments (one level of nesting via `parent_id`; new comments `approved = false`)
 - Likes (one per user per post via `post_likes`)
@@ -93,7 +90,7 @@ once per user; full-post views increment the count.
 
 ---
 
-## Stage 6 — Capture, Search & SEO  (UI built — pending verification; see `TODOs.md`)
+## Stage 6 — Capture, Search & SEO  (UI built; search pagination/sort fixed + tested — live verification pending)
 
 - Newsletter capture (footer form → `newsletter_subscribers`; capture only in v1)
 - Contact form → `contact_messages` (admin Messages screen)
@@ -110,6 +107,11 @@ validate; subscribe and contact submissions persist and surface in the admin.
 The feature UI for Stages 3–6 exists and is wired to the real backend, but each area still needs a
 verification pass against the live database + RLS, plus the review backlog in `TODOs.md`.
 
+A four-layer test suite now exists: unit + integration (Vitest, `npm test`), DB/RLS checks
+(`supabase/tests/rls_checks.sql` via `npm run test:rls`, owner-run), and Playwright anon/public e2e
+(`npm run e2e`). The landing "featured post" ("The Essay to Begin With") is now admin-selectable
+(`/admin/posts` star → `site_settings`, falling back to most-popular).
+
 **Priority order**
 1. ~~**Reading-wall / RLS audit (Stage 3)**~~ — **verified** ✅ (2026-06-17): anon is denied
    `posts.content` at the DB (401); `posts_public` carries no body; the teaser is in the
@@ -119,12 +121,15 @@ verification pass against the live database + RLS, plus the review backlog in `T
    storage bucket + policies are now provisioned (public read, admin-only write) with copy-URL and
    delete affordances in the media library. **Remaining:** a positive owner test — actually create /
    publish a post via Tiptap and upload an image while signed in as admin.
-3. **Engagement (Stage 5)** — comments insert/approve/moderate, likes, view counting; fix the
-   tag-filter no-op and the like read-modify-write race (`TODOs.md` P0/P1).
-4. **Capture / Search / SEO (Stage 6)** — search pagination & count + tag filter, newsletter &
-   contact persistence, sitemap / RSS, per-post OG metadata.
-5. **A11y / contrast & UX hardening** — the P0/P1 frontend items in `TODOs.md` (gold-on-light
-   contrast, keyboard-operable Select, delete confirmation, mobile admin drawer focus trap).
+3. **Engagement (Stage 5)** — the tag-filter no-op and the like read-modify-write race are **fixed
+   and covered by tests**; remaining is the live owner walkthrough (comment → approve → render, like
+   toggle, view-count increment).
+4. **Capture / Search / SEO (Stage 6)** — search pagination/count + tag filter + explicit sort are
+   **fixed and tested**; remaining is newsletter & contact live persistence, sitemap / RSS, per-post
+   OG metadata.
+5. **A11y / contrast & UX hardening** — the P0/P1 frontend items plus the 2026-06-21 handoff-review
+   findings in `TODOs.md` (gold/focus contrast, keyboard-operable Select, delete confirmation,
+   mobile admin drawer focus trap).
 
 **Production prerequisites**
 - Custom SMTP provider (the built-in mailer is rate-limited) — see `consider.md`.

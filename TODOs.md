@@ -64,3 +64,35 @@ The registration wall, admin authorization, XSS sanitization (both the public re
 - [ ] **View-count inflation.** `increment_post_view` is `security definer`, granted to `anon`, and `recordView` (`lib/actions/engagement.ts`) takes an arbitrary slug — anyone can script `+1`s. Integrity-only; accept or add session-keyed dedup.
 - [ ] **Uploaded filename used verbatim in the storage key.** `components/admin/MediaUploader.tsx` only normalizes whitespace; sanitize to a safe basename or use a UUID. Admin-only, no traversal outside the bucket.
 - [ ] **Brittleness note:** `getPostContent` relies solely on the `posts` SELECT policy staying `to authenticated`. Keep it; consider a regression test asserting anon gets 0 rows from `posts`.
+
+---
+
+## Handoff Review (2026-06-21)
+
+Whole-codebase code / security / UI-UX gate before client handoff. The reading wall, admin gating, and "no service-role key" were re-confirmed sound. New items only (findings already listed above are not repeated):
+
+### Code
+- [ ] **Stale public post page after edit/delete.** `savePost`/`deletePost` (`lib/actions/admin.ts`) revalidate `/admin/posts` + `/blogs` but not `/blogs/[slug]`, so an edited/deleted post serves stale content to visitors. Add `revalidatePath("/blogs/[slug]", "page")`.
+
+### Security (Low/Medium — no Critical/High)
+- [ ] **Host-header in `emailRedirectTo`.** `signUp`/`requestPasswordReset` (`app/(auth)/actions.ts`) build the redirect from the request `Origin` header. Largely mitigated by the Supabase redirect-URL allowlist; for defense-in-depth use `NEXT_PUBLIC_SITE_URL`.
+- [ ] **No rate-limiting on public writes** (contact / newsletter / comment / `recordView`) — spam risk; needs edge middleware (Vercel/Upstash) or Turnstile.
+- [ ] **`coverImage` not validated** — `postSchema.coverImage` accepts any string; mirror `aboutSchema.portraitUrl` (`.url()` + https).
+- [ ] **Media MIME not validated server-side** — `MediaUploader` trusts client `file.type`; the bucket is public → SVG-with-script risk. Add a server check + bucket MIME/size limits.
+- [ ] **`lib/data/admin.ts` reads lack an `ensureAdmin()` guard** — rely on middleware + RLS only; add for defense-in-depth.
+- [ ] **No security headers** in `next.config.mjs` (X-Frame-Options, X-Content-Type-Options, Referrer-Policy; CSP later).
+- [ ] **`safeNext` does not block `/@`** (`lib/utils/redirect.ts`) — edge-case open redirect on some proxies.
+
+### UI / UX (a11y)
+- [ ] **Primary button hover contrast fails** (`components/shared/Button.tsx` — `gold-600` + ivory ≈ 3.05:1). Keep `text-ink` on hover or use maroon.
+- [ ] **Global focus outline fails 3:1** (`app/globals.css` — gold on ivory ≈ 2.1:1). Use maroon/persian.
+- [ ] **Input focus border fails 3:1** — all `focus:border-gold` inputs; use `focus:ring-maroon` like the auth forms.
+- [ ] **No mobile header search** — `components/public/SiteHeader.tsx` search is desktop-only (`md:`+).
+- [ ] **PostEditor "Body" label not associated** — pass `ariaLabel="Post body"` to `TiptapEditor`.
+- [ ] **`window.prompt` / `window.confirm`** for Tiptap link/image + media delete (`TiptapEditor`, `MediaCard`) — unthemed system dialogs; replace with inline UI / modal.
+- [ ] Admin dashboard: 7 stat cards orphan in a 4-col grid (`app/(admin)/admin/page.tsx`).
+- [ ] Form error state is color-only (`text-clay`) — add an icon beside the message.
+
+### Client-handoff content (needs the client's input)
+- [x] **Brand name** set to **"Pages from the Red Diary"** (client-confirmed 2026-06-21) — hardcoded in `lib/site.ts` (`SITE_NAME`); flows to the header wordmark (`Logo`), footer copyright, `layout` metadata, and RSS feed.
+- [ ] **Contact page** shows placeholder `hello@placeholder.com` / "New York, USA" (`app/(public)/contact/page.tsx`) — real values or remove. (Footer social links already noted under Frontend P2.)

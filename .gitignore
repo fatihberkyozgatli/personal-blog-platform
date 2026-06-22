@@ -55,3 +55,7 @@ Thumbs.db
 public/ornaments/_raw/
 
 documentation/*-plan.md
+documentation/pre-deployment.md
+
+# brand-name preview screenshots (throwaway)
+/brand-preview

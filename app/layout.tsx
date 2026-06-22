@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { fontDisplay, fontSans } from "./fonts";
 import { cn } from "@/lib/utils/cn";
 import { ToastProvider } from "@/components/shared/Toast";
+import { SITE_NAME } from "@/lib/site";
 import "./globals.css";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
@@ -9,14 +10,14 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Placeholder Name — Thoughts. Stories. Reflections.",
-    template: "%s — Placeholder Name",
+    default: `${SITE_NAME} — Thoughts. Stories. Reflections.`,
+    template: `%s — ${SITE_NAME}`,
   },
   description:
     "A space for personal reflections on life, faith, history, and everything in between.",
   openGraph: {
     type: "website",
-    siteName: "Placeholder Name",
+    siteName: SITE_NAME,
   },
 };
 

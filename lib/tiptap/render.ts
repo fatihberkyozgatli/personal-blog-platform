@@ -4,7 +4,7 @@ import { contentExtensions } from "./extensions";
 
 const SANITIZE_OPTIONS: sanitizeHtml.IOptions = {
   allowedTags: [
-    "p", "br", "strong", "em", "s", "u", "blockquote", "h2", "h3", "h4",
+    "p", "br", "strong", "em", "s", "u", "blockquote", "h2", "h3",
     "ul", "ol", "li", "a", "img", "hr", "code", "pre", "span",
   ],
   allowedAttributes: {

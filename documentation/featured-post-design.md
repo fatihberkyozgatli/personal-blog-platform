@@ -1,4 +1,4 @@
-# Placeholder Name: Admin-Selected Featured Post
+# Pages from the Red Diary: Admin-Selected Featured Post
 
 > Design spec. Agreed 2026-06-21. Lets the owner choose which published post appears in the
 > landing page's "The Essay to Begin With" section, instead of the current "most popular" heuristic.

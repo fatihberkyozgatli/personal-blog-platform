@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils/cn";
+import { SITE_NAME } from "@/lib/site";
 
 export function Logo({
   className,
@@ -27,7 +28,7 @@ export function Logo({
             tone === "light" ? "text-ivory" : "text-ink",
           )}
         >
-          Placeholder Name
+          {SITE_NAME}
         </span>
         {showTagline && (
           <span

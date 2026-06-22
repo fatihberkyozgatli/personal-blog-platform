@@ -5,6 +5,7 @@ import { Floret } from "@/components/shared/Ornament";
 import { ManuscriptPanel } from "@/components/shared/ornaments";
 import { PatternBg, FloralAccent } from "@/components/shared/ornament-kit";
 import { NewsletterForm } from "./NewsletterForm";
+import { SITE_NAME } from "@/lib/site";
 
 const NAV_LINKS: [string, string][] = [
   ["Home", "/"],
@@ -99,7 +100,7 @@ export function SiteFooter() {
         <div className="border-t border-ivory/10">
           <div className="mx-auto flex w-full max-w-6xl items-center justify-center gap-3 px-5 py-5 text-xs text-ivory/60 sm:px-8">
             <Floret className="h-3 w-3 text-gold/70" />
-            <span>© {new Date().getFullYear()} Placeholder Name. All rights reserved.</span>
+            <span>© {new Date().getFullYear()} {SITE_NAME}. All rights reserved.</span>
             <Floret className="h-3 w-3 text-gold/70" />
           </div>
         </div>

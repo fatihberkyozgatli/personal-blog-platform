@@ -1,4 +1,4 @@
-# Placeholder Name: Database
+# Pages from the Red Diary: Database
 
 Postgres on Supabase. **Security lives here**, not in the frontend: Row Level Security (RLS) is
 enabled on every table, and the registration wall is enforced via a column-limited view.

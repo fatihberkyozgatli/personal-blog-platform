@@ -1,7 +1,4 @@
-# Placeholder Name
-
-> "Placeholder Name" is a temporary working title. The client has not provided the real brand
-> name yet, so no name is written anywhere in the codebase until they do.
+# Pages from the Red Diary
 
 A personal reflections blog: thoughts on faith, history, literature, society, and personal
 growth, with an Ottoman/Persian editorial aesthetic. The public site (landing, post listings,
@@ -38,7 +35,9 @@ app/
 components/   public/ · admin/ · shared/
 lib/          supabase/ · tiptap/ · utils/ · validations/ · data/ · actions/
 types/        generated Supabase types
-supabase/     migrations/
+supabase/     migrations/ · tests/ (RLS checks)
+tests/        helpers/ · integration/ (Vitest)
+e2e/          Playwright specs (anon/public flows)
 middleware.ts session refresh + /admin guard
 ```
 
@@ -56,6 +55,7 @@ middleware.ts session refresh + /admin guard
    ```
    NEXT_PUBLIC_SUPABASE_URL=...
    NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+   NEXT_PUBLIC_SITE_URL=http://localhost:3000   # canonical URL: sitemap, RSS, OG, auth redirects
    ```
 3. **Database** — link, apply migrations, and generate types with the Supabase CLI **v2** (the
    hosted database is Postgres 17, which the v1 CLI cannot target):

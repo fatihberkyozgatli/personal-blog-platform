@@ -1,4 +1,4 @@
-# Placeholder Name: Testing & Stage 5/6 Hardening
+# Pages from the Red Diary: Testing & Stage 5/6 Hardening
 
 > Design spec. Agreed 2026-06-18. Builds a four-layer test suite (unit, integration, DB/RLS, E2E),
 > fixes the known Stage 5/6 correctness bugs, and verifies the project docs — then runs the
@@ -37,7 +37,7 @@ report; merge to `main` only on the owner's explicit command.
   server client is lazily imported OR the module is `vi.mock`ed (see Phase 2). The `@/` vitest
   alias is path-scoped (`^@/`) — keep it that way.
 - Security lives in the DB (RLS); the RLS layer (Phase 3) is the most load-bearing test layer.
-- Brand name stays "Placeholder Name".
+- Brand name: "Pages from the Red Diary" (centralized in `lib/site.ts`).
 
 ---
 

@@ -1,11 +1,11 @@
-# Placeholder Name: Claude Guide
+# Pages from the Red Diary: Claude Guide
 
 Personal reflections blog (Ottoman/Persian editorial aesthetic). Public pages are open to all;
 **reading a full post body requires a free account** (registration wall). Owner manages content
 via a built-in admin portal.
 
-**Naming:** the brand name is not finalized. Use "Placeholder Name" wherever a name is needed;
-do not invent or write a real name until the client provides one.
+**Naming:** the brand is **Pages from the Red Diary** (client-confirmed 2026-06-21). It is
+centralized in `lib/site.ts` (`SITE_NAME`) — import from there; never hardcode the string.
 
 Full design docs: `documentation/architecture.md`, `documentation/database.md`,
 `documentation/design.md`, `documentation/stages.md` (plus `wireframes.png`). Per-stage build specs

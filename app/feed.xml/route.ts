@@ -1,4 +1,5 @@
 import { getLatestPosts } from "@/lib/data/posts";
+import { SITE_NAME } from "@/lib/site";
 
 const base = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
@@ -25,7 +26,7 @@ export async function GET() {
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
   <channel>
-    <title>Placeholder Name</title>
+    <title>${escapeXml(SITE_NAME)}</title>
     <link>${base}</link>
     <description>Thoughts. Stories. Reflections.</description>
 ${items}
