@@ -30,13 +30,11 @@ export default async function LandingPage() {
             <div className="relative mx-auto max-w-md text-center">
               <Floret className="mx-auto mb-6 h-5 w-5" />
               <h1 className="text-balance break-words font-display text-[2rem] leading-[1.1] text-ink sm:text-5xl lg:text-6xl">
-                Thoughts from the <span className="text-maroon">Heart</span>, Stories from the{" "}
-                <span className="text-maroon">Soul</span>.
+                Notes left between <span className="text-maroon">Istanbul</span> and elsewhere.
               </h1>
               <Divider className="my-7" />
               <p className="text-[0.95rem] leading-relaxed text-ink-muted">
-                A space for personal reflections on life, faith, history, and everything in
-                between. Welcome to my journey of thought and discovery.
+                Reflections on faith, books, memory, and the quiet places that shape a life.
               </p>
               <div className="mt-8 flex justify-center">
                 <ButtonLink href="/blogs">
