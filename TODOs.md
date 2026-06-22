@@ -20,6 +20,8 @@ Current source of truth for remaining work. Open items stay at the top; complete
 
 Not required for launch hardening. These are post-handoff visual/editorial upgrades to make the site feel more like a distinctive literary publication and less like a conventional blog.
 
+Methodology: treat each refinement as a separate visual exploration rather than a direct merge into the product. For each item, create one or more short-lived `design/...` branches from the current `main`, implement only that option, capture local screenshots for client review, and push the branch as a reference. Do not merge or stack these experiments until a direction is chosen; keeping each option isolated makes comparison, rollback, and final selection straightforward.
+
 ### Phase A
 - [ ] **Issue: Pattern overload.** The wallpaper pattern appears globally, so the eye gets fewer quiet surfaces to rest on.
   - **Fix:** Remove the global body wallpaper. Use pattern only in selected editorial moments, such as the homepage hero, footer, or one feature band per page. Keep normal reading/content sections plain ivory or parchment. If pattern is used, reduce opacity by 40-60% from the current level.
