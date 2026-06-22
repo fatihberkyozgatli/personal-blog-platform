@@ -146,7 +146,7 @@ export default async function LandingPage() {
       </section>
 
       {latest.length > 0 && (
-        <section className="bg-parchment/75 py-14 backdrop-blur-[1px]">
+        <section className="py-14">
           <Container>
             <div className="mb-8 flex items-end justify-between">
               <h2 className="font-display text-3xl text-ink">Latest Posts</h2>
