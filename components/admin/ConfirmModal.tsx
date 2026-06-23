@@ -20,15 +20,16 @@ export function ConfirmModal({
   onCancel: () => void;
 }) {
   const cardRef = useRef<HTMLDivElement>(null);
-  const confirmRef = useRef<HTMLButtonElement>(null);
+  const cancelBtnRef = useRef<HTMLButtonElement>(null);
   const cancelRef = useRef(onCancel);
   cancelRef.current = onCancel;
   const titleId = useId();
+  const descId = useId();
 
   useEffect(() => {
     if (!open) return;
     const unlock = lockBodyScroll();
-    confirmRef.current?.focus();
+    cancelBtnRef.current?.focus();
     function onKey(e: KeyboardEvent) {
       if (e.key === "Escape") {
         cancelRef.current();
@@ -70,14 +71,18 @@ export function ConfirmModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
+        aria-describedby={descId}
         className="relative w-full max-w-sm rounded-xl2 border border-gold/30 bg-ivory p-6 shadow-panel"
       >
         <h2 id={titleId} className="font-display text-xl text-ink">
           {title}
         </h2>
-        <p className="mt-2 text-sm text-ink-muted">{message}</p>
+        <p id={descId} className="mt-2 text-sm text-ink-muted">
+          {message}
+        </p>
         <div className="mt-6 flex justify-end gap-3">
           <button
+            ref={cancelBtnRef}
             type="button"
             onClick={onCancel}
             className="rounded-md border border-gold/40 px-4 py-2 text-sm font-medium text-ink transition-colors hover:border-gold hover:bg-gold/10 cursor-pointer"
@@ -85,7 +90,6 @@ export function ConfirmModal({
             Cancel
           </button>
           <button
-            ref={confirmRef}
             type="button"
             onClick={onConfirm}
             className="rounded-md bg-maroon px-4 py-2 text-sm font-medium text-ivory transition-colors hover:bg-maroon-700 cursor-pointer"

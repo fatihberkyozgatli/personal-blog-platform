@@ -7,7 +7,7 @@ import { formatDate } from "@/lib/utils/format";
 export function PostCard({ post, priority }: { post: PostCardType; priority?: boolean }) {
   return (
     <article className="group flex flex-col overflow-hidden rounded-xl2 border border-gold/20 bg-parchment shadow-card transition-shadow duration-300 hover:shadow-panel">
-      <Link href={`/blogs/${post.slug}`} className="block">
+      <Link href={`/blogs/${post.slug}`} className="block" aria-hidden="true" tabIndex={-1}>
         <CoverArt
           src={post.coverImage}
           alt={post.title}
@@ -39,6 +39,8 @@ export function PostCard({ post, priority }: { post: PostCardType; priority?: bo
         <p className="line-clamp-3 text-sm leading-relaxed text-ink-muted">{post.excerpt}</p>
         <Link
           href={`/blogs/${post.slug}`}
+          aria-hidden="true"
+          tabIndex={-1}
           className="mt-auto inline-flex items-center gap-1 pt-2 text-sm font-medium text-maroon transition-colors hover:text-gold-700"
         >
           Read More
@@ -69,7 +71,7 @@ export function PostRailItem({ post }: { post: PostCardType }) {
           </span>
         )}
         <h3 className="font-display text-lg leading-snug text-ivory">{post.title}</h3>
-        <span className="text-xs text-ivory/60">{formatDate(post.publishedAt)}</span>
+        <span className="text-xs text-ivory/70">{formatDate(post.publishedAt)}</span>
       </div>
     </Link>
   );

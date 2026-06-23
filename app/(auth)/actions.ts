@@ -19,7 +19,12 @@ export async function signIn(_prev: AuthState, formData: FormData): Promise<Auth
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword(parsed.data);
   if (error) {
-    return { error: error.message };
+    const unconfirmed = /not confirmed/i.test(error.message);
+    return {
+      error: unconfirmed
+        ? "Please confirm your email before signing in."
+        : "Invalid email or password.",
+    };
   }
 
   return { ok: true };
@@ -42,7 +47,7 @@ export async function signUp(_prev: AuthState, formData: FormData): Promise<Auth
     options: { emailRedirectTo: `${origin}/auth/callback` },
   });
   if (error) {
-    return { error: error.message };
+    return { error: "Could not create your account. Please try again." };
   }
   if (data.user && data.user.identities && data.user.identities.length === 0) {
     return { error: "An account with this email already exists. Try signing in instead." };
@@ -63,7 +68,7 @@ export async function requestPasswordReset(_prev: AuthState, formData: FormData)
     redirectTo: `${origin}/auth/callback?next=/reset-password`,
   });
   if (error) {
-    return { error: error.message };
+    return { error: "Could not send the reset email. Please try again." };
   }
 
   return { message: "If an account exists for that email, a reset link is on its way." };
@@ -78,7 +83,7 @@ export async function updatePassword(_prev: AuthState, formData: FormData): Prom
   const supabase = await createClient();
   const { error } = await supabase.auth.updateUser({ password: parsed.data.password });
   if (error) {
-    return { error: error.message };
+    return { error: "Could not update your password. Please try again." };
   }
 
   redirect("/");

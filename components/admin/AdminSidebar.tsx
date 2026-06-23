@@ -96,6 +96,7 @@ export function AdminSidebar({ name }: { name: string }) {
           key={href}
           href={href}
           onClick={() => setMobileOpen(false)}
+          aria-current={active(href, exact) ? "page" : undefined}
           className={cn(
             "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
             active(href, exact)

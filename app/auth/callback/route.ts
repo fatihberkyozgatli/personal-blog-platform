@@ -2,9 +2,10 @@ import { NextResponse, type NextRequest } from "next/server";
 import type { EmailOtpType } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
 import { safeNext } from "@/lib/utils/redirect";
+import { SITE_URL } from "@/lib/site-url";
 
 export async function GET(request: NextRequest) {
-  const { searchParams, origin } = new URL(request.url);
+  const { searchParams } = new URL(request.url);
   const code = searchParams.get("code");
   const tokenHash = searchParams.get("token_hash");
   const type = searchParams.get("type") as EmailOtpType | null;
@@ -14,18 +15,18 @@ export async function GET(request: NextRequest) {
 
   if (tokenHash && type) {
     const { error } = await supabase.auth.verifyOtp({ type, token_hash: tokenHash });
-    if (!error) return NextResponse.redirect(`${origin}${next}`);
+    if (!error) return NextResponse.redirect(`${SITE_URL}${next}`);
     console.error("auth callback verifyOtp failed:", error.message);
-    return NextResponse.redirect(`${origin}/login?error=auth`);
+    return NextResponse.redirect(`${SITE_URL}/login?error=auth`);
   }
 
   if (code) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) return NextResponse.redirect(`${origin}${next}`);
+    if (!error) return NextResponse.redirect(`${SITE_URL}${next}`);
     console.error("auth callback exchangeCodeForSession failed:", error.message);
-    return NextResponse.redirect(`${origin}/login?error=auth`);
+    return NextResponse.redirect(`${SITE_URL}/login?error=auth`);
   }
 
   console.error("auth callback: missing code and token_hash");
-  return NextResponse.redirect(`${origin}/login?error=auth`);
+  return NextResponse.redirect(`${SITE_URL}/login?error=auth`);
 }

@@ -8,6 +8,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { postSchema } from "@/lib/validations/post";
 import { categorySchema } from "@/lib/validations/category";
 import { readingTimeFrom } from "@/lib/tiptap/reading-time";
+import { categoryIconNames } from "@/lib/category-icons";
 import type { Database, Json } from "@/types/database";
 
 export interface ActionState {
@@ -111,6 +112,7 @@ export async function deletePost(formData: FormData): Promise<void> {
   revalidatePath("/admin/posts");
   revalidatePath("/blogs");
   revalidatePath("/blogs/[slug]", "page");
+  revalidatePath("/");
 }
 
 export async function createCategory(_prev: ActionState, formData: FormData): Promise<ActionState> {
@@ -135,7 +137,7 @@ export async function createTag(_prev: ActionState, formData: FormData): Promise
   if (!isSupabaseConfigured()) return notConfigured;
   if (!(await ensureAdmin())) return notAuthorized;
   const name = String(formData.get("name") ?? "").trim();
-  if (!name) return { ok: false, message: "Tag name is required." };
+  if (!name || name.length > 120) return { ok: false, message: "Tag name must be 1–120 characters." };
   const supabase = await createClient();
   const { error } = await supabase.from("tags").insert({ name, slug: slugify(name) });
   if (error) return { ok: false, message: error.message };
@@ -145,6 +147,7 @@ export async function createTag(_prev: ActionState, formData: FormData): Promise
 
 export async function updateCategoryIcon(id: string, icon: string): Promise<void> {
   if (!isSupabaseConfigured() || !(await ensureAdmin())) return;
+  if (!categoryIconNames.includes(icon)) return;
   const supabase = await createClient();
   const { error } = await supabase.from("categories").update({ icon }).eq("id", id);
   if (error) console.error("updateCategoryIcon failed:", error.message);
@@ -152,19 +155,19 @@ export async function updateCategoryIcon(id: string, icon: string): Promise<void
   revalidatePath("/categories");
 }
 
-async function deleteFrom(table: keyof Database["public"]["Tables"], id: string, path: string) {
+async function deleteFrom(table: keyof Database["public"]["Tables"], id: string, ...paths: string[]) {
   if (!isSupabaseConfigured() || !(await ensureAdmin())) return;
   const supabase = await createClient();
   const { error } = await supabase.from(table).delete().eq("id" as never, id);
   if (error) console.error(`delete from ${table} failed:`, error.message);
-  revalidatePath(path);
+  paths.forEach((path) => revalidatePath(path));
 }
 
 export async function deleteCategory(formData: FormData): Promise<void> {
-  await deleteFrom("categories", String(formData.get("id")), "/admin/categories");
+  await deleteFrom("categories", String(formData.get("id")), "/admin/categories", "/categories", "/blogs", "/");
 }
 export async function deleteTag(formData: FormData): Promise<void> {
-  await deleteFrom("tags", String(formData.get("id")), "/admin/tags");
+  await deleteFrom("tags", String(formData.get("id")), "/admin/tags", "/blogs", "/");
 }
 export async function deleteSubscriber(formData: FormData): Promise<void> {
   await deleteFrom("newsletter_subscribers", String(formData.get("id")), "/admin/subscribers");

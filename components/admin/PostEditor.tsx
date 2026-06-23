@@ -28,7 +28,7 @@ export function PostEditor({
   initialHtml?: string;
 }) {
   const [state, action, pending] = useActionState(savePost, initial);
-  const [content, setContent] = useState<unknown>(post?.content ?? null);
+  const [content, setContent] = useState<unknown>(post?.content ?? { type: "doc", content: [] });
   const [previewHtml, setPreviewHtml] = useState(() => sanitizePreviewHtml(initialHtml ?? ""));
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewSlotOpen, setPreviewSlotOpen] = useState(false);
@@ -65,7 +65,7 @@ export function PostEditor({
           style={{ transformOrigin: "left center" }}
         >
           {post && <input type="hidden" name="id" value={post.id} />}
-          <input type="hidden" name="content" value={JSON.stringify(content ?? {})} />
+          <input type="hidden" name="content" value={JSON.stringify(content)} />
 
           <div className="flex items-center justify-between gap-3">
             <div>
@@ -212,7 +212,11 @@ export function PostEditor({
           />
         </div>
 
-        {state.message && <p className="text-sm text-clay">{state.message}</p>}
+        {state.message && (
+          <p role="alert" className="text-sm text-clay">
+            {state.message}
+          </p>
+        )}
 
         <Button type="submit" disabled={pending} className="w-full">
           {pending ? "Saving…" : post ? "Update Post" : "Create Post"}

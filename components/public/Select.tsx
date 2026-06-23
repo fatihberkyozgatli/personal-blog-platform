@@ -133,6 +133,7 @@ export function Select({
         <ul
           id={listId}
           role="listbox"
+          aria-label={ariaLabel}
           className="absolute z-30 mt-1 max-h-72 w-full min-w-44 overflow-auto rounded-md border border-gold/30 bg-ivory py-1 shadow-panel"
         >
           {options.map((o, i) => {

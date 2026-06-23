@@ -20,7 +20,7 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
   if (!user) return null;
 
   const [{ data: profile }, { data: admin }] = await Promise.all([
-    supabase.from("profiles").select("display_name").eq("id", user.id).single(),
+    supabase.from("profiles").select("display_name").eq("id", user.id).maybeSingle(),
     supabase.rpc("is_admin"),
   ]);
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils/cn";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { useToast } from "@/components/shared/Toast";
+import { lockBodyScroll } from "@/lib/utils/scroll-lock";
 
 const NAV = [
   { href: "/", label: "Home" },
@@ -32,6 +33,8 @@ export function SiteHeader({
   const [term, setTerm] = useState("");
   const reduceMotion = useReducedMotion();
   const { toast } = useToast();
+  const menuRef = useRef<HTMLElement>(null);
+  const menuTriggerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (!searchOpen) return;
@@ -41,6 +44,39 @@ export function SiteHeader({
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, [searchOpen]);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const unlock = lockBodyScroll();
+    const trigger = menuTriggerRef.current;
+    menuRef.current?.querySelector<HTMLElement>("a[href], button")?.focus();
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setMenuOpen(false);
+        return;
+      }
+      if (e.key !== "Tab") return;
+      const focusables = menuRef.current?.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), input, [tabindex]:not([tabindex="-1"])',
+      );
+      if (!focusables || focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      unlock();
+      trigger?.focus();
+    };
+  }, [menuOpen]);
 
   function submitSearch(e: React.FormEvent) {
     e.preventDefault();
@@ -158,6 +194,7 @@ export function SiteHeader({
           </button>
 
           <button
+            ref={menuTriggerRef}
             type="button"
             onClick={() => {
               setMenuOpen((v) => !v);
@@ -165,6 +202,7 @@ export function SiteHeader({
             }}
             aria-label="Menu"
             aria-expanded={menuOpen}
+            aria-controls="site-mobile-menu"
             className="grid h-10 w-10 place-items-center rounded-md text-ink transition-colors hover:bg-gold/10 md:hidden cursor-pointer"
           >
             {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -192,7 +230,14 @@ export function SiteHeader({
       )}
 
       {menuOpen && (
-        <nav className="border-t border-gold/20 bg-parchment md:hidden" aria-label="Mobile">
+        <nav
+          ref={menuRef}
+          id="site-mobile-menu"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Site navigation"
+          className="border-t border-gold/20 bg-parchment md:hidden"
+        >
           <div className="mx-auto flex w-full max-w-6xl flex-col px-5 py-2 sm:px-8">
             {NAV.map((item) => (
               <Link
