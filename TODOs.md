@@ -5,7 +5,7 @@ Current source of truth for remaining work. Open items stay at the top; complete
 ## Open
 
 ### Client Content / Handoff
-- [ ] **Final content entry.** Client still needs to enter final copy/details in the admin dashboard before launch where applicable.
+- [ ] **Final content entry.** Client still needs to enter final copy/details in the admin dashboard before launch where applicable. (Most made editable)
 
 ### Deferred UI / Polish
 - [ ] **Small touch targets.** Some admin controls / pagination controls are still below the ideal 44px mobile target.
@@ -25,10 +25,6 @@ Methodology: treat each refinement as a separate visual exploration rather than 
 - [ ] **Issue: Homepage hero copy is beautiful but generic.** "Thoughts from the Heart, Stories from the Soul" could belong to many personal blogs.
   - **Fix:** Replace it with copy only this site could say, tied to faith, literature, memory, place, and becoming. Prefer concrete, personal phrasing over abstract inspirational language. Keep the headline short enough to preserve the current hero composition.
 
-### Phase B
-- [ ] **Issue: Article pages are functional but not memorable.** The current flow is title, large image, text, comments; it works, but it reads closer to a polished blog template than a literary journal.
-  - **Fix:** Rework the article layout around an editorial essay rhythm: compact date/category line, expressive title, excerpt as subtitle, narrower reading column, essay body, manuscript-style pull quote treatment, related entries, and a subtle gold reading-progress line if it stays restrained. Avoid ornament stacking: within a viewport, use at most one hero element, one ornament, and one accent color.
-
 ---
 
 ## Completed
@@ -38,6 +34,8 @@ Methodology: treat each refinement as a separate visual exploration rather than 
 - [x] **Author card direction selected and merged.** Client chose Author Card Option A; the module now supports editable role, location, currently reading, and currently writing fields from the About admin page.
 - [x] **Contact page details are admin-editable.** Public contact email/location and social links are now powered by `site_settings.contact` and managed from `/admin/contact`.
 - [x] **Footer social links are admin-powered.** Footer social icons now use contact settings; dead `href="#"` links and Twitter were removed.
+- [x] **Article page direction selected and merged.** Client chose Article Option D with the quieter Option C image frame; post pages now use the Red Diary longform layout, Diary Index sidebar, and From the Diary Archive related section.
+- [x] **Author card preview added to admin.** About admin now shows a focused Author Card preview alongside the full About page preview.
 
 ### Code Correctness
 - [x] **Tag filter is a no-op in production.** Fixed in `lib/data/posts.ts` (Supabase + search branches); covered by `tests/integration/get-posts.test.ts`.

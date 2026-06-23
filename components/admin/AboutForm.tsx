@@ -6,6 +6,7 @@ import { TiptapEditor } from "./TiptapEditor";
 import { MediaUploader } from "./MediaUploader";
 import { Button } from "@/components/shared/Button";
 import { AboutView } from "@/components/public/AboutView";
+import { AuthorCard } from "@/components/shared/Portrait";
 import { updateAbout } from "@/lib/actions/about";
 import { sanitizePreviewHtml } from "@/lib/tiptap/preview-sanitize";
 import type { ActionState } from "@/lib/actions/admin";
@@ -217,6 +218,24 @@ export function AboutForm({
       </div>
 
       <div className="hidden xl:block">
+        <div className="mb-6 overflow-hidden rounded-xl2 border border-gold/25 bg-ivory shadow-card">
+          <div className="border-b border-gold/20 bg-parchment px-4 py-3">
+            <h2 className="font-display text-lg text-ink">Author Card Preview</h2>
+            <p className="text-xs text-ink-muted">Shown on public post pages.</p>
+          </div>
+          <div className="p-4">
+            <AuthorCard
+              name={name || "The Author"}
+              short={short}
+              portraitUrl={portraitUrl || null}
+              role={role}
+              location={location}
+              reading={currentlyReading}
+              writing={currentlyWriting}
+            />
+          </div>
+        </div>
+
         <div className="overflow-hidden rounded-xl2 border border-gold/25 bg-ivory shadow-card">
           <div className="border-b border-gold/20 bg-parchment px-4 py-3">
             <h2 className="font-display text-lg text-ink">Live Preview</h2>

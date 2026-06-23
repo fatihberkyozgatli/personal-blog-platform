@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CalendarDays, Clock, Eye, Lock } from "lucide-react";
+import { Clock, Eye, Lock } from "lucide-react";
 import { Container } from "@/components/shared/Container";
 import { Floret, OrnamentRule } from "@/components/shared/Ornament";
 import { CoverArt } from "@/components/shared/CoverArt";
@@ -72,23 +72,34 @@ export default async function PostPage({
     <article>
       <ViewPing slug={slug} />
 
-      <Container className="py-10">
+      <Container className="py-10 sm:py-14">
         <div className="mx-auto max-w-3xl text-center">
-          <Link href="/blogs" className="text-xs text-ink-muted hover:text-maroon">
-            Blogs
+          <Link
+            href="/blogs"
+            className="font-display text-2xl uppercase tracking-[0.24em] text-maroon transition-colors hover:text-gold-700"
+          >
+            The Red Diary
           </Link>
-          {post.category && (
-            <span className="ml-2 text-xs font-semibold uppercase tracking-[0.2em] text-gold-700">
-              · {post.category.name}
-            </span>
-          )}
-          <h1 className="mt-3 font-display text-4xl leading-tight text-ink sm:text-5xl">
+          <div className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-xs uppercase tracking-[0.18em] text-ink-muted">
+            <span>essays</span>
+            <span className="text-gold-700">/</span>
+            {post.category ? (
+              <span className="font-semibold text-gold-700">{post.category.name}</span>
+            ) : (
+              <span>archive</span>
+            )}
+          </div>
+
+          <p className="mt-10 text-xs font-semibold uppercase tracking-[0.22em] text-gold-700">
+            {formatDate(post.publishedAt)}
+          </p>
+          <h1 className="mx-auto mt-4 max-w-3xl font-display text-4xl leading-[1.02] text-ink sm:text-6xl">
             {post.title}
           </h1>
-          <div className="mt-5 flex flex-wrap items-center justify-center gap-4 text-xs text-ink-muted">
-            <span className="inline-flex items-center gap-1">
-              <CalendarDays className="h-3.5 w-3.5" /> {formatDate(post.publishedAt)}
-            </span>
+          <p className="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-ink-muted">
+            {post.excerpt}
+          </p>
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-4 text-xs text-ink-muted">
             <span className="inline-flex items-center gap-1">
               <Clock className="h-3.5 w-3.5" /> {post.readingTime} min read
             </span>
@@ -96,26 +107,26 @@ export default async function PostPage({
               <Eye className="h-3.5 w-3.5" /> {post.viewCount.toLocaleString()} views
             </span>
           </div>
-          <div className="my-7">
+          <div className="my-8">
             <OrnamentRule />
           </div>
         </div>
 
-        <div className="mx-auto max-w-4xl">
+        <div className="mx-auto max-w-3xl rounded-xl2 border border-gold/20 bg-parchment/75 p-2 shadow-card backdrop-blur-[1px]">
           <CoverArt
             src={post.coverImage}
             alt={post.title}
             seed={post.slug}
             priority
-            sizes="(max-width: 1024px) 100vw, 896px"
-            className="aspect-[16/9] w-full rounded-xl2 shadow-card"
+            sizes="(max-width: 1024px) 100vw, 768px"
+            className="aspect-[16/9] w-full rounded-lg"
           />
         </div>
       </Container>
 
       <Container className="pb-16">
-        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_300px]">
-          <div className="min-w-0 rounded-xl2 border border-gold/20 bg-parchment/90 p-5 shadow-card backdrop-blur-[1px] sm:p-8 lg:p-10">
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_260px]">
+          <div className="min-w-0 rounded-xl2 border border-gold/20 bg-ivory/90 p-5 shadow-card backdrop-blur-[1px] sm:p-8 lg:p-12">
             {canRead ? (
               <>
                 {sampleMode && (
@@ -124,7 +135,10 @@ export default async function PostPage({
                     production the body is gated — visitors see the excerpt, then sign in to read on.
                   </p>
                 )}
-                <div className="prose-editorial max-w-none" dangerouslySetInnerHTML={{ __html: bodyHtml }} />
+                <div className="mb-8 text-center text-gold-700">
+                  <Floret className="mx-auto h-4 w-4" />
+                </div>
+                <div className="prose-editorial mx-auto max-w-2xl" dangerouslySetInnerHTML={{ __html: bodyHtml }} />
 
                 {tags.length > 0 && (
                   <div className="mt-10 flex flex-wrap items-center gap-2">
@@ -164,6 +178,32 @@ export default async function PostPage({
           </div>
 
           <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">
+            <div className="rounded-xl2 border border-gold/20 bg-parchment p-5 shadow-card">
+              <h2 className="font-display text-lg text-ink">Diary Index</h2>
+              <dl className="mt-4 space-y-3 text-sm">
+                {post.category && (
+                  <div>
+                    <dt className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-gold-700">
+                      Section
+                    </dt>
+                    <dd className="mt-1 text-ink">{post.category.name}</dd>
+                  </div>
+                )}
+                <div>
+                  <dt className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-gold-700">
+                    Date
+                  </dt>
+                  <dd className="mt-1 text-ink">{formatDate(post.publishedAt)}</dd>
+                </div>
+                <div>
+                  <dt className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-gold-700">
+                    Time
+                  </dt>
+                  <dd className="mt-1 text-ink">{post.readingTime} min read</dd>
+                </div>
+              </dl>
+            </div>
+
             <AuthorCard
               name={about.name}
               short={about.short}
@@ -181,7 +221,7 @@ export default async function PostPage({
 
             {related.length > 0 && (
               <div className="rounded-xl2 border border-gold/20 bg-parchment p-5 shadow-card">
-                <h3 className="mb-4 font-display text-lg text-ink">Related Posts</h3>
+                <h3 className="mb-4 font-display text-lg text-ink">From the Diary Archive</h3>
                 <ul className="space-y-4">
                   {related.map((r) => (
                     <li key={r.id}>
