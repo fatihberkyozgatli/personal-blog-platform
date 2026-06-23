@@ -64,6 +64,7 @@ Methodology: treat each refinement as a separate visual exploration rather than 
 ### Frontend / Accessibility
 - [x] Gold glyphs/text on light surfaces changed to higher-contrast `gold-700` where needed.
 - [x] Custom `Select` now supports keyboard navigation, typeahead, and truncation.
+- [x] Admin image uploads now support polished single-file drag-and-drop with click fallback, validation, and status feedback.
 - [x] Destructive admin deletes now use themed confirmation modals.
 - [x] Mobile admin drawer now behaves like a modal: dialog role, focus trap, Escape, scroll lock, focus return.
 - [x] iOS input zoom fixed by using mobile `text-base` on form inputs.
