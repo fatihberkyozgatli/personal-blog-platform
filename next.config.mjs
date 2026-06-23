@@ -9,7 +9,11 @@ const supabaseHost = (() => {
 })();
 
 const securityHeaders = [
-  { key: "X-Frame-Options", value: "DENY" },
+  {
+    key: "Content-Security-Policy",
+    value:
+      "frame-ancestors 'self' https://fatihberkyozgatli.com https://www.fatihberkyozgatli.com http://localhost:3000",
+  },
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
