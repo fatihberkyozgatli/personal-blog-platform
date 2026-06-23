@@ -5,7 +5,7 @@ Current source of truth for remaining work. Open items stay at the top; complete
 ## Open
 
 ### Client Content / Handoff
-- [ ] **Final content entry.** Client still needs to enter final copy/details in the admin dashboard before launch where applicable. (Most made editable)
+- [ ] **Final content entry.** Client still needs to enter final copy/details in the admin dashboard before launch where applicable; About/author-card and contact/footer details are now editable.
 
 ### Deferred UI / Polish
 - [ ] **Small touch targets.** Some admin controls / pagination controls are still below the ideal 44px mobile target.

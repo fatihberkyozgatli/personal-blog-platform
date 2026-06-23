@@ -50,9 +50,10 @@ motif (a `✦`-like mark) as seen in the wireframe.
 - **Header:** wordmark + tagline "Thoughts. Stories. Reflections."; centered nav
   (Home, Blogs, Categories, About, Contact) with a gold underline on the active item; search
   icon; gold **Sign Up** button. Thin illuminated gold border framing the page top.
-- **Footer:** maroon panel with arabesque florals; a single Navigate column with social icons and
-  a copyright line (the Categories/Contact columns were intentionally dropped — see `TODOs.md`).
-  A decorative Ottoman manuscript fragment panel sits at the right.
+- **Footer:** maroon panel with arabesque florals; a single Navigate column with admin-powered
+  social icons (Instagram, YouTube, Email; no Twitter) and a copyright line. The Categories/Contact
+  columns were intentionally dropped — see `TODOs.md`. A decorative Ottoman manuscript fragment
+  panel sits at the right.
 
 **Landing page (from wireframe)**
 1. **Hero:** ivory panel with an arched, ornamented border (mihrab-like frame) and floral
@@ -71,11 +72,11 @@ motif (a `✦`-like mark) as seen in the wireframe.
   serif title, muted metadata with a small calendar/clock glyph.
 
 **Post detail**
-- Centered editorial column (about 680px). Cover image, title, meta row, then either the full
-  body (authenticated) or a **teaser plus a gold "Sign in to keep reading" gate card**
-  (anonymous). A **like button** and the **view count** sit near the title/meta for signed-in
-  readers. Body styles (`prose`) themed to the palette: maroon links, gold blockquote rule,
-  serif headings.
+- Selected direction: **Red Diary longform**. The masthead-style opening uses "The Red Diary",
+  date, expressive title, excerpt, reading time/view count, and a restrained gold ornament. The
+  cover image uses the quieter framed treatment (rounded parchment frame, not an arch). The body
+  sits in a narrow, readable column inside a protected ivory/parchment reading panel. Desktop adds
+  a `Diary Index` sidebar and related entries are labeled `From the Diary Archive`.
 
 **Buttons**
 - Primary: gold fill, ink text, slight letter-spacing. Secondary: maroon outline/fill.
@@ -91,7 +92,9 @@ motif (a `✦`-like mark) as seen in the wireframe.
 The admin reuses the palette but calmer and denser: ivory background, maroon sidebar, gold active
 state, parchment cards/tables. The dashboard surfaces per-post view counts and like counts. The
 Tiptap editor surface mirrors the public `prose` styles so the author sees roughly what readers
-will see.
+will see. `/admin/about` includes both the full About live preview and a focused post-page author
+card preview. `/admin/contact` manages public contact details and footer social links. Image upload
+areas support click-to-upload and single-file drag-and-drop.
 
 ---
 

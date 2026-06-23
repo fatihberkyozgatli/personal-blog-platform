@@ -31,7 +31,7 @@ app/
   (public)/   landing, blogs, blogs/[slug], categories, about, contact
   (auth)/     login, signup, forgot-password, reset-password
   (admin)/    dashboard + posts, categories, tags, comments, media,
-              subscribers, messages, about
+              subscribers, messages, about, contact
 components/   public/ · admin/ · shared/
 lib/          supabase/ · tiptap/ · utils/ · validations/ · data/ · actions/
 types/        generated Supabase types
@@ -43,9 +43,10 @@ middleware.ts session refresh + /admin guard
 
 ## Getting Started
 
-> **Stages 1–2 (Foundation, Database, Auth) are complete** — the app is scaffolded, wired to a
-> hosted Supabase project, with email/password auth and the `/admin` guard (see
-> `documentation/stages.md` for progress). The steps below set up a fresh clone.
+> **Stages 1–6 are implemented and launch-hardened** — the app is scaffolded, wired to hosted
+> Supabase, protected by email/password auth and the `/admin` guard, and includes public pages,
+> admin authoring, engagement, capture/search/SEO, and client-selected editorial refinements.
+> The steps below set up a fresh clone.
 
 1. **Install dependencies**
    ```bash
@@ -104,3 +105,12 @@ middleware.ts session refresh + /admin guard
 
 Deployed on **Vercel**, linked to this repo. Set the Supabase environment variables in the
 Vercel project. Supabase migrations are managed via the Supabase CLI.
+
+## Current Admin-Editable Content
+
+- `/admin/about`: About page content and post-page author card fields (`role`, `location`,
+  currently reading, currently writing) with live About preview and focused author-card preview.
+- `/admin/contact`: public contact email/location plus Instagram and YouTube links. The footer
+  social icons use the same settings; Twitter is intentionally not part of v1.
+- `/admin/media`: image uploads support click-to-upload and single-file drag-and-drop, with
+  validation and status feedback.

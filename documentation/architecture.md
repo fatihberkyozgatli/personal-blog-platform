@@ -99,16 +99,21 @@ service-role key at all: RLS plus the user session cover every operation.
   `newsletter_subscribers`. No sending in v1; the owner can export the list. An ESP can be added
   later without schema changes.
 - **Contact (v1):** the contact form inserts into `contact_messages`, visible in the admin
-  **Messages** screen. (Optional email notification can be layered in later.)
-- **Media library:** images upload to **Supabase Storage**; rows tracked in `media`. The Tiptap
-  editor and the cover-image picker both draw from here. Configure `next.config` `remotePatterns`
-  for the Supabase Storage domain so `next/image` can optimize them.
+  **Messages** screen. Public contact email/location and social links are stored in
+  `site_settings` under `key='contact'` and managed through `/admin/contact`. Twitter is
+  intentionally omitted from v1. Optional email notification can be layered in later.
+- **Media library:** images upload to **Supabase Storage**; rows tracked in `media`. The admin
+  uploader supports click-to-upload and single-file drag-and-drop with validation/status feedback.
+  Configure `next.config` `remotePatterns` for the Supabase Storage domain so `next/image` can
+  optimize them.
 - **SEO:** `app/sitemap.ts` and an RSS feed (`app/feed.xml/route.ts`) generated from published
   posts; per-post `generateMetadata` (Open Graph using cover image + excerpt).
 - **About / author content:** the About page and the post-page author card are DB-backed and
   admin-editable. Content is stored in `site_settings` under `key='about'` and managed through
-  `/admin/about`. Public reads are open; writes are admin-only (RLS). The `defaultAbout`
-  constant in `lib/data/about.ts` is the fallback when no row exists.
+  `/admin/about`. The author card includes editable role, location, currently reading, and
+  currently writing fields, plus a focused author-card preview in the admin. Public reads are open;
+  writes are admin-only (RLS). The `defaultAbout` constant in `lib/data/about.ts` is the fallback
+  when no row exists.
 - **Featured post ("The Essay to Begin With"):** the landing-page hero post is admin-selected
   via `site_settings` (`key='featured_post'`). If no post is pinned, it falls back to the
   most-popular published post.
@@ -143,6 +148,7 @@ app/
     admin/subscribers/page.tsx newsletter export
     admin/messages/page.tsx   contact messages
     admin/about/page.tsx      edit About / author content
+    admin/contact/page.tsx    edit public contact details + social links
 middleware.ts                 session refresh + /admin guard
 ```
 
@@ -154,17 +160,18 @@ Supporting code: `components/{public,admin,shared}`, `lib/{supabase,tiptap,utils
 ## 8. v1 Scope Checklist
 
 **In v1**
-- [ ] Public landing, listing, category, about, contact pages
-- [ ] Registration wall on full post bodies (DB-enforced)
-- [ ] Email/password auth with confirmation; admin role
-- [ ] Admin: post CRUD with Tiptap, categories, tags, media library
-- [ ] Moderated comments (nested one level)
-- [ ] Reactions/likes on posts
-- [ ] View analytics (per-post view counts in admin)
-- [ ] Full-text search
-- [ ] Newsletter email capture
-- [ ] Contact form → admin messages
-- [ ] Sitemap + RSS + per-post OG metadata
+- [x] Public landing, listing, category, about, contact pages
+- [x] Registration wall on full post bodies (DB-enforced)
+- [x] Email/password auth with confirmation; admin role
+- [x] Admin: post CRUD with Tiptap, categories, tags, media library
+- [x] Admin-editable About/author card and contact settings
+- [x] Moderated comments (nested one level)
+- [x] Reactions/likes on posts
+- [x] View analytics (per-post view counts in admin)
+- [x] Full-text search
+- [x] Newsletter email capture
+- [x] Contact form → admin messages
+- [x] Sitemap + RSS + per-post OG metadata
 
 **Deferred (v2+)**
 - ESP integration and sending newsletters

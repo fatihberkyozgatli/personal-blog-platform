@@ -8,9 +8,10 @@
 
 ## 1. Goal & Scope
 
-The About page and the author card on the single-post page currently render from a hardcoded
-`author` object in `lib/site.ts`. The owner cannot change their name, portrait, bio, favourite
-quote, "Why I Write" text, or timeline without a code change and deploy.
+Before this feature, the About page and the author card on the single-post page rendered from
+hardcoded author content. The owner could not change their name, portrait, bio, favourite quote,
+"Why I Write" text, or timeline without a code change and deploy. `lib/site.ts` remains in the app
+for global brand constants such as `SITE_NAME`; author content now lives in `site_settings`.
 
 **Goal:** move all of that content into the database and let the admin edit it through the admin
 portal, reusing the existing format/layout/ornaments verbatim. Security stays in the DB (RLS):
@@ -18,6 +19,7 @@ public reads, admin-only writes.
 
 **In scope (full coverage, agreed):**
 - `name`, `short` (author-card blurb), `portraitUrl`
+- author-card metadata: `role`, `location`, `currentlyReading`, `currentlyWriting`
 - `intro`, `bio`, `why` — rich text (Tiptap), full editorial feature set
 - `favoriteQuote` (`text` + `source`)
 - `timeline` — repeatable `{ year, label }` rows (add / remove / reorder)
@@ -36,6 +38,10 @@ stores Tiptap JSON.
 ```
 name           : string                       // About heading + post author card
 short          : string                       // post-page author card blurb
+role           : string                       // post-page author card
+location       : string                       // post-page author card
+currentlyReading : string                    // post-page author card
+currentlyWriting : string                    // post-page author card
 portraitUrl    : string | null                // Supabase Storage URL (media library)
 intro          : Tiptap JSON                   // the "space for slow thinking" block
 bio            : Tiptap JSON
@@ -93,8 +99,8 @@ grant insert, update on site_settings to authenticated;  -- RLS still restricts 
   `getAboutContent()` — reads the `'about'` row, validates/parses, and **falls back to
   `defaultAbout`** if the row is missing or malformed (page never renders blank). Captures and logs
   `error` (avoids the silent-swallow pattern flagged in `TODOs.md`).
-- `lib/site.ts` (whose only export `author` is replaced by this) is **deleted** once both call
-  sites read from `getAboutContent()`.
+- Hardcoded author content is replaced by this read path. `lib/site.ts` is **not** deleted because
+  it now owns global brand constants such as `SITE_NAME`.
 - Extract the About presentational markup into `components/public/AboutView.tsx` that takes the
   `about` document as props. The public `app/(public)/about/page.tsx` becomes a thin server
   component: fetch → render `AboutView`. Prose is rendered server-side (sanitized HTML).
@@ -111,7 +117,9 @@ grant insert, update on site_settings to authenticated;  -- RLS still restricts 
   quote; Tiptap editors for `intro`/`bio`/`why`; a timeline rows editor with add/remove/reorder; a
   portrait picker), **right** a live preview that renders the real `AboutView`.
 - **Portrait** uses the existing `MediaUploader` (reuse), writing the resulting Storage URL to
-  `portraitUrl`.
+  `portraitUrl`. `MediaUploader` supports click-to-upload and single-file drag-and-drop.
+- The admin page includes both a full About live preview and a focused **Author Card Preview** for
+  the post-page sidebar module.
 - **Preview prose** must NOT ship `sanitize-html`/`@tiptap/html` to the client (the known
   `PostPreview` P1 issue). Render the prose preview via a server action returning sanitized HTML
   (or the editor's own live HTML) rather than importing the Node renderer into a client component.
@@ -158,8 +166,8 @@ Keep the markdown docs in sync as part of this work:
 2. `lib/validations/about.ts` (Zod) + tests.
 3. `lib/data/about.ts`: `AboutContent` type, `defaultAbout`, `getAboutContent()` with fallback + test.
 4. Extract `AboutView`; point the public About page + post author card at `getAboutContent()`;
-   delete `lib/site.ts`.
+   keep `lib/site.ts` for global brand constants.
 5. `updateAbout` server action (`lib/actions/about.ts`) + revalidation.
-6. Admin `/admin/about` screen (form + Tiptap + timeline editor + media portrait + live preview);
+6. Admin `/admin/about` screen (form + Tiptap + timeline editor + media portrait + live previews);
    small enabling tweaks to `TiptapEditor`/`MediaUploader`; sidebar entry.
 7. Doc updates; per-stage review gate (code / security / UI-UX) before any commit.

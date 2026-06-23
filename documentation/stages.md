@@ -4,9 +4,8 @@
 > push. Each stage gets its own spec → implementation plan → build → review cycle. Stages are
 > sequenced by dependency: every stage builds on the ones above it.
 
-_Roadmap agreed 2026-06-15. **Stages 1–2 completed** (foundation, database, auth). The front-end UI
-for the public site, admin portal, and engagement was built in parallel and merged onto the Stage
-1–2 backend (2026-06-17); each later stage still needs its own verification/review pass._
+_Roadmap agreed 2026-06-15. Stages 1–6 are now implemented and launch-hardened. Remaining work is
+final client content/hero-copy decisions plus live production checks, not core feature build._
 
 ---
 
@@ -48,12 +47,14 @@ and anonymous visitors; a user who forgets their password can reset it via email
 
 ---
 
-## Stage 3 — Public Site & Registration Wall  (UI built; reading-wall RLS verified ✅)
+## Stage 3 — Public Site & Registration Wall  (completed; reading-wall RLS verified ✅)
 
 - Global chrome: header (wordmark, nav, search affordance, Sign Up), footer, ornament
 - Landing, blog listing, categories, about, contact pages (read from `posts_public`)
 - Single-post page: public teaser (metadata) always rendered; **body gated** — only authenticated
   users get `posts.content`, enforced by RLS, never on the frontend alone
+- Final post detail layout uses the selected Red Diary longform direction with the quieter
+  article image frame, a Diary Index sidebar, and "From the Diary Archive" related entries.
 - Shared Tiptap **read-only renderer** (`lib/tiptap/`), extension set identical to the editor
 
 **Done when:** an anonymous visitor sees the teaser + "Sign in to keep reading" gate; an
@@ -61,24 +62,25 @@ authenticated reader sees the full body; the teaser is present in server-rendere
 
 ---
 
-## Stage 4 — Admin Authoring  (UI built; write-protection + media storage verified — positive owner test pending)
+## Stage 4 — Admin Authoring  (completed; write-protection + media storage verified)
 
 - Admin shell + sidebar + dashboard (`(admin)` route group)
 - Post CRUD with the **Tiptap editor** (shared extension set with the renderer)
 - Categories and tags management
-- Media library backed by Supabase Storage
+- Media library backed by Supabase Storage; uploads support click-to-upload and single-file
+  drag-and-drop with validation/status feedback
 - All writes via **Server Actions** + Zod validation (`lib/validations/`), authorized by RLS
-- **About / author content** is now admin-editable via `/admin/about`: name, portrait, bio,
-  intro, "Why I Write", favourite quote, and timeline are stored in `site_settings` and editable
-  through a two-pane form + live preview. Editing About constitutes the positive owner authoring
-  test for this stage (structured form + Tiptap + media + server action + revalidation end-to-end).
+- **About / author content** is admin-editable via `/admin/about`: name, portrait, author-card
+  role/location/currently reading/currently writing, bio, intro, "Why I Write", favourite quote,
+  and timeline are stored in `site_settings` and editable through a two-pane form + live About
+  preview plus a focused author-card preview.
 
 **Done when:** the owner writes and publishes a post through the UI and it appears on the public
 site with the correct reading wall behavior.
 
 ---
 
-## Stage 5 — Engagement  (UI built; known bugs fixed + covered by tests — live owner test pending)
+## Stage 5 — Engagement  (completed; bugs fixed + covered by tests)
 
 - Moderated comments (one level of nesting via `parent_id`; new comments `approved = false`)
 - Likes (one per user per post via `post_likes`)
@@ -90,10 +92,12 @@ once per user; full-post views increment the count.
 
 ---
 
-## Stage 6 — Capture, Search & SEO  (UI built; search pagination/sort fixed + tested — live verification pending)
+## Stage 6 — Capture, Search & SEO  (completed; search pagination/sort fixed + tested)
 
 - Newsletter capture (footer form → `newsletter_subscribers`; capture only in v1)
 - Contact form → `contact_messages` (admin Messages screen)
+- Public contact email/location and Instagram/YouTube links are editable via `/admin/contact`
+  (`site_settings.contact`) and also drive the footer social icons
 - Full-text search via a `security definer` RPC that returns **safe columns only**
 - `app/sitemap.ts`, RSS at `app/feed.xml/route.ts`, per-post `generateMetadata` (Open Graph)
 
@@ -102,10 +106,10 @@ validate; subscribe and contact submissions persist and surface in the admin.
 
 ---
 
-## Next — Verification & Hardening
+## Next — Launch Readiness
 
-The feature UI for Stages 3–6 exists and is wired to the real backend, but each area still needs a
-verification pass against the live database + RLS, plus the review backlog in `TODOs.md`.
+The feature UI for Stages 3–6 exists, is wired to the real backend, and has been launch-hardened.
+Remaining work is final client content entry, hero-copy decision, and live production checks.
 
 A four-layer test suite now exists: unit + integration (Vitest, `npm test`), DB/RLS checks
 (`supabase/tests/rls_checks.sql` via `npm run test:rls`, owner-run), and Playwright anon/public e2e
@@ -118,18 +122,15 @@ A four-layer test suite now exists: unit + integration (Vitest, `npm test`), DB/
    server-rendered HTML and the body is not. (Still nice-to-have: a committed regression test
    asserting anon gets 0 rows from `posts`.)
 2. **Admin authoring (Stage 4)** — write-protection verified (anon/RLS denied) and the `media`
-   storage bucket + policies are now provisioned (public read, admin-only write) with copy-URL and
-   delete affordances in the media library. **Remaining:** a positive owner test — actually create /
-   publish a post via Tiptap and upload an image while signed in as admin.
+   storage bucket + policies are provisioned (public read, admin-only write) with copy-URL, delete,
+   and drag-and-drop upload affordances in the media library.
 3. **Engagement (Stage 5)** — the tag-filter no-op and the like read-modify-write race are **fixed
    and covered by tests**; remaining is the live owner walkthrough (comment → approve → render, like
    toggle, view-count increment).
 4. **Capture / Search / SEO (Stage 6)** — search pagination/count + tag filter + explicit sort are
-   **fixed and tested**; remaining is newsletter & contact live persistence, sitemap / RSS, per-post
-   OG metadata.
-5. **A11y / contrast & UX hardening** — the P0/P1 frontend items plus the 2026-06-21 handoff-review
-   findings in `TODOs.md` (gold/focus contrast, keyboard-operable Select, delete confirmation,
-   mobile admin drawer focus trap).
+   **fixed and tested**; contact/footer settings are admin-editable.
+5. **A11y / contrast & UX hardening** — core handoff-review findings were addressed; remaining
+   low-priority polish lives in `TODOs.md`.
 
 **Production prerequisites**
 - Custom SMTP provider (the built-in mailer is rate-limited) — see `consider.md`.

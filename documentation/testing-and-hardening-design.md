@@ -160,9 +160,10 @@ Fix the known `TODOs.md` correctness bugs and cover what is testable:
 - **Like read-modify-write race P1** (`lib/actions/engagement.ts` `toggleLike`): use upsert
   `on conflict do nothing` for like, check deleted row count for unlike, derive `liked` from the
   post-mutation state.
-- **Search pagination/count P1** (`lib/data/posts.ts` search branch): the `search_posts` RPC caps at
-  50 and `total` is computed from ≤50 rows; push category/tag filtering before the cap and compute
-  the count correctly (or count separately) so pagination and the "{total} posts" label are right.
+- **Search pagination/count P1** (`lib/data/posts.ts` search branch): verify category/tag filtering
+  and pagination/count behavior in the search branch. During implementation, the earlier
+  `search_posts` "~50 row cap" assumption was checked against the migration and found to be stale:
+  the RPC has no `LIMIT`, so the final work added regression coverage rather than a source change.
 - **Silent error swallowing P1** (`lib/data/posts.ts`, `lib/data/admin.ts`): capture and log
   `error` from Supabase responses instead of destructuring only `{ data }`.
 

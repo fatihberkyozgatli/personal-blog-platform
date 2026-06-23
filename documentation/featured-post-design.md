@@ -123,4 +123,4 @@ Integration tests (mocked Supabase, the existing `tests/helpers/mock-supabase.ts
 - Modify `app/(admin)/admin/posts/page.tsx` — Featured column + star toggle form.
 - Add `tests/integration/featured.test.ts`.
 - Docs: note the feature in `architecture.md` (feature notes) and `database.md`
-  (`site_settings` keys: `about`, `featured_post`).
+  (`site_settings` keys: `about`, `contact`, `featured_post`).

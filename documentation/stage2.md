@@ -86,7 +86,7 @@ In `lib/supabase/middleware.ts`, after `getUser()`:
 
 ## 7. Design (`design.md`)
 - Auth forms: parchment card on ivory, gold primary button ("Sign Up" / "Sign In"), maroon
-  secondary, Playfair headings, Inter inputs, error text in `clay`, visible gold focus ring,
+  secondary, Playfair headings, Inter inputs, error text in `clay`, visible maroon focus ring,
   accessible labels. Build the form UI with the **`ui-ux-pro-max`** skill.
 
 ## 8. Verification

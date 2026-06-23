@@ -136,7 +136,12 @@ Indexes: unique on `slug`; index on `(status, published_at)`; index on `category
 Stores singleton site configuration documents. Known keys:
 
 - `about` — About/author document, validated against `lib/validations/about.ts`. Falls back to
-  the `defaultAbout` constant when the row is missing; created on the admin's first save.
+  the `defaultAbout` constant when the row is missing; created on the admin's first save. Includes
+  the About page prose plus the post-page author-card fields (`role`, `location`,
+  `currentlyReading`, `currentlyWriting`).
+- `contact` — public contact details and social links, validated against
+  `lib/validations/contact-settings.ts`. Includes `email`, `location`, `instagramUrl`, and
+  `youtubeUrl`. The public contact page and footer social icons read from this row.
 - `featured_post` — `{ "post_id": "<uuid>" | null }`. Identifies the admin-pinned landing-page
   hero. When `post_id` is null or the row is absent, the read path falls back to the
   most-popular published post.
@@ -257,6 +262,9 @@ update profiles set role = 'admin' where id = '<owner-auth-uid>';
 
 - Bucket `media` for cover images and in-content images.
 - Public read (or signed URLs); writes restricted to admins via Storage policies.
+- Admin uploads support click-to-upload and single-file drag-and-drop through `MediaUploader`.
+- Client validation allows PNG, JPG, WebP, and GIF up to 5 MB; the bucket migration also enforces
+  MIME/size limits server-side.
 - Add the Storage hostname to `next.config` `images.remotePatterns` for `next/image`.
 
 ---
@@ -266,7 +274,7 @@ update profiles set role = 'admin' where id = '<owner-auth-uid>';
 Generate TypeScript types from the live schema and keep them in `types/`:
 
 ```
-supabase gen types typescript --project-id <id> > types/database.ts
+supabase gen types typescript --linked > types/database.ts
 ```
 
 > Migrations live in `supabase/migrations/`. Architecture and feature context: see
