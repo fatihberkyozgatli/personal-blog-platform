@@ -21,6 +21,10 @@ export async function updateAbout(_prev: ActionState, formData: FormData): Promi
     payload = {
       name: String(formData.get("name") ?? ""),
       short: String(formData.get("short") ?? ""),
+      role: String(formData.get("role") ?? ""),
+      location: String(formData.get("location") ?? ""),
+      currentlyReading: String(formData.get("currentlyReading") ?? ""),
+      currentlyWriting: String(formData.get("currentlyWriting") ?? ""),
       portraitUrl: portrait || null,
       intro: JSON.parse(String(formData.get("intro") ?? "{}")),
       bio: JSON.parse(String(formData.get("bio") ?? "{}")),

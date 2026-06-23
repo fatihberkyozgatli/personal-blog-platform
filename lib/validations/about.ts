@@ -8,6 +8,10 @@ export const timelineEntrySchema = z.object({
 export const aboutSchema = z.object({
   name: z.string().min(1, "Name is required.").max(120),
   short: z.string().max(400),
+  role: z.string().max(120).default("writer / reader"),
+  location: z.string().max(160).default(""),
+  currentlyReading: z.string().max(180).default(""),
+  currentlyWriting: z.string().max(180).default(""),
   portraitUrl: z
     .string()
     .url("Portrait must be a valid URL.")

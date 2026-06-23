@@ -5,8 +5,7 @@ Current source of truth for remaining work. Open items stay at the top; complete
 ## Open
 
 ### Client Content / Handoff
-- [ ] **Contact page content.** `app/(public)/contact/page.tsx` still shows placeholder `hello@placeholder.com` / `New York, USA`; replace with real values or remove.
-- [ ] **Footer social links.** `components/public/SiteFooter.tsx` still has dead `href="#"` social links; replace with real profiles or remove them.
+- [ ] **Final content entry.** Client still needs to enter final copy/details in the admin dashboard before launch where applicable.
 
 ### Deferred UI / Polish
 - [ ] **Small touch targets.** Some admin controls / pagination controls are still below the ideal 44px mobile target.
@@ -23,12 +22,6 @@ Not required for launch hardening. These are post-handoff visual/editorial upgra
 Methodology: treat each refinement as a separate visual exploration rather than a direct merge into the product. For each item, create one or more short-lived `design/...` branches from the current `main`, implement only that option, capture local screenshots for client review, and push the branch as a reference. Do not merge or stack these experiments until a direction is chosen; keeping each option isolated makes comparison, rollback, and final selection straightforward.
 
 ### Phase A
-- [ ] **Issue: Pattern overload.** The wallpaper pattern appears globally, so the eye gets fewer quiet surfaces to rest on.
-  - **Fix:** Remove the global body wallpaper. Use pattern only in selected editorial moments, such as the homepage hero, footer, or one feature band per page. Keep normal reading/content sections plain ivory or parchment. If pattern is used, reduce opacity by 40-60% from the current level.
-
-- [ ] **Issue: Author card is generic.** "The Author" and broad descriptive text do not carry much personality.
-  - **Fix:** Replace the generic author card with a personal author module powered by About data: real name, short description, location, currently reading, and currently writing. Do not add lifestyle-style fields such as drinking, favorite tea, or favorite flower; keep the module literary and restrained.
-
 - [ ] **Issue: Homepage hero copy is beautiful but generic.** "Thoughts from the Heart, Stories from the Soul" could belong to many personal blogs.
   - **Fix:** Replace it with copy only this site could say, tied to faith, literature, memory, place, and becoming. Prefer concrete, personal phrasing over abstract inspirational language. Keep the headline short enough to preserve the current hero composition.
 
@@ -39,6 +32,12 @@ Methodology: treat each refinement as a separate visual exploration rather than 
 ---
 
 ## Completed
+
+### Client Decisions
+- [x] **Pattern overload direction selected and merged.** Client chose Pattern Option C: keep the original site pattern character, but protect long-form article reading with a parchment content panel.
+- [x] **Author card direction selected and merged.** Client chose Author Card Option A; the module now supports editable role, location, currently reading, and currently writing fields from the About admin page.
+- [x] **Contact page details are admin-editable.** Public contact email/location and social links are now powered by `site_settings.contact` and managed from `/admin/contact`.
+- [x] **Footer social links are admin-powered.** Footer social icons now use contact settings; dead `href="#"` links and Twitter were removed.
 
 ### Code Correctness
 - [x] **Tag filter is a no-op in production.** Fixed in `lib/data/posts.ts` (Supabase + search branches); covered by `tests/integration/get-posts.test.ts`.

@@ -29,6 +29,7 @@ const items = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { href: "/admin/posts", label: "Posts", icon: FileText },
   { href: "/admin/about", label: "About", icon: UserRound },
+  { href: "/admin/contact", label: "Contact", icon: Mail },
   { href: "/admin/categories", label: "Categories", icon: FolderTree },
   { href: "/admin/tags", label: "Tags", icon: Tags },
   { href: "/admin/comments", label: "Comments", icon: MessageSquare },

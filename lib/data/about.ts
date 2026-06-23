@@ -15,6 +15,10 @@ function doc(...paragraphs: string[]) {
 export const defaultAbout: AboutContent = {
   name: "The Author",
   short: "Writer of quiet essays on faith, history, and the art of paying attention.",
+  role: "writer / reader",
+  location: "Istanbul / Dallas",
+  currentlyReading: "The Museum of Innocence",
+  currentlyWriting: "essay on memory",
   portraitUrl: null,
   intro: doc(
     "This is a space for slow thinking — reflections on faith and doubt, the long shadow of history, the books that have shaped us, and the quiet work of becoming a little wiser than we were yesterday.",

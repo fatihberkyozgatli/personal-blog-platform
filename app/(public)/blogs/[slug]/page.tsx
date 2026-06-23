@@ -168,6 +168,10 @@ export default async function PostPage({
               name={about.name}
               short={about.short}
               portraitUrl={about.portraitUrl}
+              role={about.role}
+              location={about.location}
+              reading={about.currentlyReading}
+              writing={about.currentlyWriting}
             />
 
             <div className="rounded-xl2 border border-gold/20 bg-parchment p-5 shadow-card">

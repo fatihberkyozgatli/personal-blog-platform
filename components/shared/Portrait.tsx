@@ -68,7 +68,9 @@ export function AuthorCard({
             The Author
           </p>
           <h3 className="mt-1 font-display text-2xl leading-none text-maroon">{name}</h3>
-          <p className="mt-2 text-xs uppercase tracking-[0.16em] text-ink-muted">{role}</p>
+          {role && (
+            <p className="mt-2 text-xs uppercase tracking-[0.16em] text-ink-muted">{role}</p>
+          )}
         </div>
       </div>
 

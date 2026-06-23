@@ -25,6 +25,10 @@ export function AboutForm({
   const [state, action, pending] = useActionState(updateAbout, initial);
   const [name, setName] = useState(about.name);
   const [short, setShort] = useState(about.short);
+  const [role, setRole] = useState(about.role);
+  const [location, setLocation] = useState(about.location);
+  const [currentlyReading, setCurrentlyReading] = useState(about.currentlyReading);
+  const [currentlyWriting, setCurrentlyWriting] = useState(about.currentlyWriting);
   const [portraitUrl, setPortraitUrl] = useState(about.portraitUrl ?? "");
   const [quoteText, setQuoteText] = useState(about.favoriteQuote.text);
   const [quoteSource, setQuoteSource] = useState(about.favoriteQuote.source);
@@ -76,6 +80,26 @@ export function AboutForm({
             Short bio <span className="text-ink-muted">(author card)</span>
           </label>
           <textarea id="short" name="short" rows={2} value={short} onChange={(e) => setShort(e.target.value)} className={field} />
+
+          <label htmlFor="role" className="mb-1 mt-4 block text-sm font-medium text-ink">
+            Role <span className="text-ink-muted">(author card)</span>
+          </label>
+          <input id="role" name="role" value={role} onChange={(e) => setRole(e.target.value)} placeholder="writer / reader" className={field} />
+
+          <label htmlFor="location" className="mb-1 mt-4 block text-sm font-medium text-ink">
+            Location <span className="text-ink-muted">(author card)</span>
+          </label>
+          <input id="location" name="location" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Istanbul / Dallas" className={field} />
+
+          <label htmlFor="currentlyReading" className="mb-1 mt-4 block text-sm font-medium text-ink">
+            Currently reading <span className="text-ink-muted">(author card)</span>
+          </label>
+          <input id="currentlyReading" name="currentlyReading" value={currentlyReading} onChange={(e) => setCurrentlyReading(e.target.value)} placeholder="The Museum of Innocence" className={field} />
+
+          <label htmlFor="currentlyWriting" className="mb-1 mt-4 block text-sm font-medium text-ink">
+            Currently writing <span className="text-ink-muted">(author card)</span>
+          </label>
+          <input id="currentlyWriting" name="currentlyWriting" value={currentlyWriting} onChange={(e) => setCurrentlyWriting(e.target.value)} placeholder="essay on memory" className={field} />
 
           <label htmlFor="portraitUrlInput" className="mb-1 mt-4 block text-sm font-medium text-ink">Portrait</label>
           <input

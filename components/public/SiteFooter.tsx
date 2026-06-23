@@ -1,10 +1,11 @@
 import Link from "next/link";
-import { Instagram, Mail, Twitter, Youtube } from "lucide-react";
+import { Instagram, Mail, Youtube } from "lucide-react";
 import { Logo } from "@/components/shared/Logo";
 import { Floret } from "@/components/shared/Ornament";
 import { ManuscriptPanel } from "@/components/shared/ornaments";
 import { PatternBg, FloralAccent } from "@/components/shared/ornament-kit";
 import { NewsletterForm } from "./NewsletterForm";
+import { getContactSettings } from "@/lib/data/contact";
 import { SITE_NAME } from "@/lib/site";
 
 const NAV_LINKS: [string, string][] = [
@@ -36,7 +37,14 @@ function FooterCol({ heading, links }: { heading: string; links: [string, string
   );
 }
 
-export function SiteFooter() {
+export async function SiteFooter() {
+  const contact = await getContactSettings();
+  const socialLinks = [
+    contact.instagramUrl ? { href: contact.instagramUrl, label: "Instagram", icon: Instagram } : null,
+    contact.youtubeUrl ? { href: contact.youtubeUrl, label: "YouTube", icon: Youtube } : null,
+    { href: `mailto:${contact.email}`, label: "Email", icon: Mail },
+  ].filter(Boolean);
+
   return (
     <footer className="mt-20">
       <section className="relative isolate overflow-hidden bg-maroon text-ivory">
@@ -62,18 +70,23 @@ export function SiteFooter() {
               and life.
             </p>
             <div className="mt-5 flex gap-3 text-ivory/70">
-              <a href="#" aria-label="Instagram" className="transition-colors hover:text-gold">
-                <Instagram className="h-5 w-5" />
-              </a>
-              <a href="#" aria-label="Twitter" className="transition-colors hover:text-gold">
-                <Twitter className="h-5 w-5" />
-              </a>
-              <a href="#" aria-label="YouTube" className="transition-colors hover:text-gold">
-                <Youtube className="h-5 w-5" />
-              </a>
-              <a href="#" aria-label="Email" className="transition-colors hover:text-gold">
-                <Mail className="h-5 w-5" />
-              </a>
+              {socialLinks.map((link) => {
+                if (!link) return null;
+                const Icon = link.icon;
+                const external = link.href.startsWith("https://");
+                return (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    aria-label={link.label}
+                    target={external ? "_blank" : undefined}
+                    rel={external ? "noreferrer" : undefined}
+                    className="transition-colors hover:text-gold"
+                  >
+                    <Icon className="h-5 w-5" />
+                  </a>
+                );
+              })}
             </div>
 
             <nav
